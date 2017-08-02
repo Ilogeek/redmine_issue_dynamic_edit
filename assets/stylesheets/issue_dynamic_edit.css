@@ -1,0 +1,31 @@
+.value .dynamicEditSelect select {
+	border-color: transparent;
+	border: 0;
+	border-bottom: 1px solid transparent;
+	border-radius: 0;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	background: none;
+	font-size: inherit;
+	color: inherit;
+	font-family: inherit;
+	padding-left: 0;
+	padding-right: 0; 
+}
+  
+.value:hover .dynamicEditSelect select {
+	border-color: inherit;
+}
+	  
+.value .dynamicEditSelect {
+	position:relative;
+}
+	  
+.value .dynamicEditSelect i.dropdown {
+	position:absolute;
+	right: 5px;
+	top: 50%;
+	transform: translateY(-50%);
+	pointer-events: none;
+}
