@@ -48,6 +48,9 @@ function updateDataIssue(field_name, field_value, cssClass) {
 	    },
 	    success: function(msg) {
 			setTimeout(function(){
+				$('.details .attributes .' + cssClass + '.attribute .value .selectedValue span').html(
+					$('.details .attributes .' + cssClass + '.attribute .value select option:selected').html()
+				);
 				$('.details .attributes .' + cssClass + '.attribute .value i.fa-spin').remove();
 				$('.details .attributes .' + cssClass + '.attribute .value').append(' <i class="fa fa-check"></i>');
 				setTimeout(function(){
@@ -73,12 +76,3 @@ function updateDataIssue(field_name, field_value, cssClass) {
  domSelectUsers.on('change', function(e){
  	updateDataIssue('assigned_to_id', domSelectUsers.val(), 'assigned-to');
  }); /* end on change domSelectUsers */
-	  
- $('.details .attributes .attribute .value').on({
-	mouseenter: function () {
-	  $(this).find('.fa-pencil').removeClass('fa-pencil').addClass('fa-angle-down');
-	},
-	mouseleave: function () {
-	  $(this).find('.fa-angle-down').removeClass('fa-angle-down').addClass('fa-pencil');
-	}
- });

@@ -25,7 +25,9 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 		  o = ''
           statuses = issue.new_statuses_allowed_to(User.current)
           if (!statuses.empty?)
-		    o << "<span class='dynamicEditSelect' id='statusListDropdown'><select data-issue='#{issue_id}'>"
+		    o << "<span class='dynamicEditSelect' id='statusListDropdown'>"
+			o << "<div class='selectedValue'><span>#{issue.status}</span> <i class=\"fa fa-pencil fa-fw\" aria-hidden=\"true\"></i></div> "
+			o << "<select data-issue='#{issue_id}'><option disabled='disabled' selected> </option>"
 			statuses.each do |s|
 				if (s != issue.status)
 					o << "<option value='#{s.id}'>#{s.name}</option>"
@@ -33,11 +35,13 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 					o << "<option value='#{s.id}' selected>#{s.name}</option>"
 				end
 			end
-			o << "</select><i class=\"fa fa-pencil fa-fw dropdown\" aria-hidden=\"true\"></i></span>"
+			o << "</select><i class=\"fa fa-angle-down fa-fw dropdown\" aria-hidden=\"true\"></i></span>"
           end
 		  assignables = project.assignable_users
 		  if (!assignables.empty?)
-			o << "<span class='dynamicEditSelect' id='usersListDropdown'><select data-issue='#{issue_id}'>"
+			o << "<span class='dynamicEditSelect' id='usersListDropdown'>"
+			o << "<div class='selectedValue'><span>#{issue.assigned_to}</span> <i class=\"fa fa-pencil fa-fw\" aria-hidden=\"true\"></i></div> "
+			o << "<select data-issue='#{issue_id}'><option disabled='disabled' selected> </option>"
 			assignables.each do |u|
 				if (u != issue.assigned_to)
 					o << "<option value='#{u.id}'>#{u.name}</option>"
@@ -45,12 +49,14 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 					o << "<option value='#{u.id}' selected>#{u.name}</option>"
 				end
 			end
-			o << "</select><i class=\"fa fa-pencil fa-fw dropdown\" aria-hidden=\"true\"></i></span>"
+			o << "</select><i class=\"fa fa-angle-down fa-fw dropdown\" aria-hidden=\"true\"></i></span>"
           end
 		  
 		  priorities = IssuePriority.all
 		  if(!priorities.empty?)
-			o << "<span class='dynamicEditSelect' id='prioritiesListDropdown'><select data-issue='#{issue_id}'>"
+			o << "<span class='dynamicEditSelect' id='prioritiesListDropdown'>"
+			o << "<div class='selectedValue'><span>#{issue.priority}</span> <i class=\"fa fa-pencil fa-fw\" aria-hidden=\"true\"></i></div> "
+			o << "<select data-issue='#{issue_id}'><option disabled='disabled' selected> </option>"
 			priorities.each do |p|
 				if (p != issue.priority)
 					o << "<option value='#{p.id}'>#{p.name}</option>"
@@ -58,7 +64,7 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 					o << "<option value='#{p.id}' selected>#{p.name}</option>"
 				end
 			end
-			o << "</select><i class=\"fa fa-pencil fa-fw dropdown\" aria-hidden=\"true\"></i></span>"
+			o << "</select><i class=\"fa fa-angle-down fa-fw dropdown\" aria-hidden=\"true\"></i></span>"
 		  end
 		end
 	  end

@@ -1,3 +1,7 @@
+div.issue .attribute .value {
+	overflow: visible;
+}
+
 .value .dynamicEditSelect select {
 	border-color: transparent;
 	border: 0;
@@ -10,16 +14,38 @@
 	font-size: inherit;
 	color: inherit;
 	font-family: inherit;
-	padding-left: 0;
-	padding-right: 0; 
+	background: transparent;
+	padding-left:0;
+}
+
+.value .dynamicEditSelect {
+	padding-left: 5px;
+	margin-left: -6px; /* padding + border */
+	display: inline-block;
+	border: 1px solid transparent;
+	border-radius: 3px;
 }
   
-.value:hover .dynamicEditSelect select {
-	border-color: inherit;
+.value:hover .dynamicEditSelect {
+	border-color: #e0e2e3;
 }
-	  
+
 .value .dynamicEditSelect {
 	position:relative;
+}
+
+.value .dynamicEditSelect .selectedValue {
+	position: absolute;
+	top: 2px;
+	right: 0;
+	left: 5px;
+	background: white;
+	pointer-events: none;
+	opacity: 1;
+}
+
+.value:hover .dynamicEditSelect .selectedValue {
+	opacity: 0;
 }
 	  
 .value .dynamicEditSelect i.dropdown {
@@ -28,4 +54,14 @@
 	top: 50%;
 	transform: translateY(-50%);
 	pointer-events: none;
+	opacity: 0;
+}
+
+.value:hover .dynamicEditSelect i.dropdown {
+	opacity: 1;
+}
+
+.value:hover .dynamicEditSelect select option[disabled="disabled"]
+{ 
+    display:none;
 }
