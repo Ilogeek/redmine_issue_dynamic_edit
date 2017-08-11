@@ -23,7 +23,7 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 	  if (issue)
 		if (User.current.allowed_to?(:edit_issues, project))
 		  o = ''
-          statuses = issue.new_statuses_allowed_to(User.current)
+		  statuses = issue.new_statuses_allowed_to(User.current)
           if (!statuses.empty?)
 		    o << "<span class='dynamicEditSelect' id='statusListDropdown'>"
 			o << "<div class='selectedValue'><span>#{issue.status}</span> <i class=\"fa fa-pencil fa-fw\" aria-hidden=\"true\"></i></div> "

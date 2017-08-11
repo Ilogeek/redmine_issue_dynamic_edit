@@ -1,3 +1,4 @@
+/* FontAwesome inclusion */
 var cssId = 'fontAwesome';
 	if (!document.getElementById(cssId))
 	{
@@ -10,7 +11,8 @@ var cssId = 'fontAwesome';
 		link.media = 'all';
 		head.appendChild(link);
 	}
-	  
+
+/* Put new dropdown lists in the detailed info block */	
 if($('#statusListDropdown').length > 0) {
 	var htmlCopy = $('#statusListDropdown').get(0).outerHTML;
 	$('#statusListDropdown').remove();
@@ -28,23 +30,18 @@ if($('#prioritiesListDropdown').length > 0) {
 	$('#prioritiesListDropdown').remove();
 	$('.details .attributes .priority.attribute .value').html(htmlCopy);
 }
-	  
-function updateDataIssue(field_name, field_value, cssClass) {
+
+function issueDynamicUpdate(field_name, field_value, cssClass){
 	$('.details .attributes .' + cssClass + '.attribute .value').append(' <i class="fa fa-refresh fa-spin fa-fw"></i>');
-	ticketData = '<?xml version="1.0" encoding="UTF-8"?>';
-	ticketData += '<issue>';
-	ticketData += '<id>' + _ISSUE_ID + '</id>';
-	ticketData += '<' + field_name + '>'+ field_value +'</' + field_name + '>';
-	ticketData += '</issue>';
+	var token = $("meta[name=csrf-token]").attr('content');
 	jQuery.ajax({
-	    type: 'PUT',
-	    url: '/issues/' + _ISSUE_ID + '.xml',
-	    crossDomain: true,
+	    type: 'POST',
+	    url: '/issues/bulk_update?back_url=%2Fissues&amp;ids%5B%5D=' + _ISSUE_ID + '&amp;issue%5B' + field_name + '%5D=' + field_value,
+	    data: { "authenticity_token" : token },
+		crossDomain: true,
 	    async: false,
-	    contentType: "application/xml",
-	    data: ticketData,
 	    beforeSend: function(xhr) {
-	        xhr.setRequestHeader("X-Redmine-API-Key", _USER_API_KEY);
+	        xhr.setRequestHeader("authenticity_token", token);
 	    },
 	    success: function(msg) {
 			setTimeout(function(){
@@ -57,22 +54,28 @@ function updateDataIssue(field_name, field_value, cssClass) {
 					$('.details .attributes .' + cssClass + '.attribute .value i.fa-check').remove();
 				}, 2000);
 			}, 500);
+			
+			// update other fields to avoid conflict
+			$('#issue_lock_version').val(parseInt($('#issue_lock_version').val()) + 1 );
+			$('#last_journal_id').val(parseInt($('#last_journal_id').val()) + 1 );
+			$('#issue_' + field_name + ' option').removeAttr('selected').filter('[value=' + field_value + ']').prop('selected', true);
 		},
 	    error: function(xhr, msg, error) {}
 	 });
- } /* end function updateDataIssue */
-	  
+};
+
+/* Listeners foreach dropdown */	  
  var domSelectStatus = $('body').find('#statusListDropdown select');
  domSelectStatus.on('change', function(e){ 
- 	updateDataIssue('status_id', domSelectStatus.val(), 'status');
+ 	issueDynamicUpdate('status_id', domSelectStatus.val(), 'status');
  }); /* end on change domSelectStatus */
 	  
  var domSelectPriorities = $('body').find('#prioritiesListDropdown select');
  domSelectPriorities.on('change', function(e){
- 	updateDataIssue('priority_id', domSelectPriorities.val(), 'priority');
+ 	issueDynamicUpdate('priority_id', domSelectPriorities.val(), 'priority');
  }); /* end on change domSelectPriorities */
 	  
  var domSelectUsers = $('body').find('#usersListDropdown select');
  domSelectUsers.on('change', function(e){
- 	updateDataIssue('assigned_to_id', domSelectUsers.val(), 'assigned-to');
+ 	issueDynamicUpdate('assigned_to_id', domSelectUsers.val(), 'assigned-to');
  }); /* end on change domSelectUsers */
