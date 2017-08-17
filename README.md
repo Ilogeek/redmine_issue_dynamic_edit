@@ -1,6 +1,6 @@
 # redmine_issue_dynamic_edit
 
-Add new dropdown elements on detailed issue page to dynamically update issue's status, assignee and priority fields, directly in the details block of the issue.
+Add new dropdown elements on detailed issue page to dynamically update issue's status, assignee, priority, start and due dates, ratio and estimated time fields, directly in the details block of the issue.
 
 ### Example
 
@@ -18,5 +18,6 @@ This plugin uses [FontAwesome icons](http://fontawesome.io/)
 
 ### Changelog
 
+* **v 0.3.0** : start date, due date, ratio and estimated time fields are now dynamically editable. Translation files added (en, fr). Log added in console when AJAX fails
 * **v 0.2.0** : fixed "conflict" when trying to add a note after an update from dropdowns. New method used, REST API is not required anymore
 * **v 0.1.0** : initial commit

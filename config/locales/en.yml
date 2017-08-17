@@ -1,0 +1,5 @@
+en:
+  ide_txt_validation_btn        : 'Validate the modification'
+  ide_txt_error_positive_number : 'It must be a positive number'
+  ide_txt_error_start_date      : 'Start date must be anterior to due date'
+  ide_txt_error_due_date        : 'Due date must be posterior to start date'
