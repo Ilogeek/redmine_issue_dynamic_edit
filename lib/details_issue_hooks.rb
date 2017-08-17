@@ -26,9 +26,8 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 		  # o << issue.to_json
 		  
 		  # Status dropdown
-		  o << userCanChangeStatus.to_json
 		  statuses = issue.new_statuses_allowed_to(User.current)
-          if (userCanChangeStatus && !statuses.empty?)
+          if (!statuses.empty?)
 		    o << "<span class='dynamicEditSelect' id='statusListDropdown'>"
 			o << "<div class='selectedValue'><span class='transparent'>#{issue.status}</span> <i class=\"fa fa-pencil fa-fw\" aria-hidden=\"true\"></i></div> "
 			o << "<select data-issue='#{issue_id}'><option disabled='disabled' selected> </option>"
