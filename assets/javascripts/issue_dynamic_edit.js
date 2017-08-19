@@ -92,7 +92,7 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 	var token = $("meta[name=csrf-token]").attr('content');
 	jQuery.ajax({
 	    type: 'POST',
-	    url: '/issues/bulk_update?back_url=%2F&amp;ids%5B%5D=' + _ISSUE_ID + '&amp;issue%5B' + field_name + '%5D=' + field_value,
+	    url: _BASE_REDMINE_PATH + '/issues/bulk_update?back_url=%2F&amp;ids%5B%5D=' + _ISSUE_ID + '&amp;issue%5B' + field_name + '%5D=' + field_value,
 	    data: { "authenticity_token" : token },
 		crossDomain: true,
 	    async: false,
@@ -146,7 +146,7 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 			console.log('%c error data: ', 'background: black; color: white;');;
 			console.log(error);
 			console.log('%c ---------------------------------------------------------- ', 'background: #ff0000; color: white; font-weight:900');
-			$('.details .attributes .' + cssClass + '.attribute i.fa-spin').removeClass('fa-refresh fa-spin').addClass('fa-times').html(" Error (check console)");
+			$('.details .attributes .' + cssClass + '.attribute i.fa-spin').removeClass('fa-refresh fa-spin').addClass('fa-times').html(" " + _TXT_ERROR_AJAX_CALL);
 				setTimeout(function(){
 					$('.details .attributes .' + cssClass + '.attribute i.fa-times').remove();
 				}, 2000);

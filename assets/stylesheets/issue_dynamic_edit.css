@@ -10,6 +10,7 @@ table.progress {
 /* If you want to hide edit (pencil) icon, set opacity to 0 below : */
 .selectedValue {
 	position: absolute;
+	white-space: nowrap;
 	top: 2px;
 	right: 0;
 	left: 5px;

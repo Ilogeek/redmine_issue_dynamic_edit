@@ -130,9 +130,13 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 	  
 	  o << " var _ISSUE_ID = \"#{issue_id}\";\n"
 	  o << " var _USER_API_KEY = \"#{User.current.api_key}\";\n"
+	  o << " var _BASE_REDMINE_PATH = \"#{Redmine::Utils.relative_url_root}\";\n"
+
+	  # Translations text
 	  o << " var _TXT_ERROR_POSITIVE_NUMBER = \"" + l(:ide_txt_error_positive_number) + "\";\n"
 	  o << " var _TXT_ERROR_START_DATE = \"" + l(:ide_txt_error_start_date) + "\";\n"
 	  o << " var _TXT_ERROR_DUE_DATE = \"" + l(:ide_txt_error_due_date) + "\";\n"
+	  o << " var _TXT_ERROR_AJAX_CALL = \"" + l(:ide_txt_error_ajax_call) + "\";\n"
 	  
 	  o << "</script>"
 	  return o

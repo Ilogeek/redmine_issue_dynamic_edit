@@ -3,3 +3,4 @@ fr:
   ide_txt_error_positive_number : 'Le nombre doit être positif'
   ide_txt_error_start_date      : "La date de début doit être antérieure à la date d'échéance"
   ide_txt_error_due_date        : "La date d'échéance doit être postérieure à la date de début"
+  ide_txt_error_ajax_call       : 'Erreur (logs dans la console JS)'
