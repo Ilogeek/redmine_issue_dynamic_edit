@@ -12,65 +12,90 @@ var cssId = 'fontAwesome';
 		head.appendChild(link);
 	}
 
-/* Update height of progress bar because of dropdown */
-var dynamicEditSelectHeight = $('.dynamicEditSelect').height();
-var progressBarHeight = $('table.progress').height();
-$('table.progress').css({'marginTop' : (dynamicEditSelectHeight - progressBarHeight)/2 + "px" });
+$(document).on('click', function(e){
+	$('.issue .attributes .attribute .value').removeClass('edited');
+	if($(e.target).closest('.value').length) {
+        $(e.target).closest('.value').addClass('edited');
+    }
+});
 	
 /* Put new dropdown lists in the detailed info block */	
 if($('#statusListDropdown').length > 0) {
 	var htmlCopy = $('#statusListDropdown').get(0).outerHTML;
 	$('#statusListDropdown').remove();
-	$('.details .attributes .status.attribute .value').html(htmlCopy);
+	$('.details .attributes .status.attribute .value').html( '<span class="showValue">' + 
+		$('.details .attributes .status.attribute .value').html() + '</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
+		htmlCopy);
 }
 	  
 if($('#usersListDropdown').length > 0) {
 	var htmlCopy = $('#usersListDropdown').get(0).outerHTML;
 	$('#usersListDropdown').remove();
-	$('.details .attributes .assigned-to.attribute .value').html(htmlCopy);
+	$('.details .attributes .assigned-to.attribute .value').html( '<span class="showValue">' + 
+		$('.details .attributes .assigned-to.attribute .value').html() + '</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
+		htmlCopy);
 }
 	  
 if($('#prioritiesListDropdown').length > 0) {
 	var htmlCopy = $('#prioritiesListDropdown').get(0).outerHTML;
 	$('#prioritiesListDropdown').remove();
-	$('.details .attributes .priority.attribute .value').html(htmlCopy);
+	$('.details .attributes .priority.attribute .value').html( '<span class="showValue">' + 
+		$('.details .attributes .priority.attribute .value').html() + '</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
+		htmlCopy);
 }
 
 if($('#doneRatioListDropdown').length > 0) {
 	var htmlCopy = $('#doneRatioListDropdown').get(0).outerHTML;
 	$('#doneRatioListDropdown').remove();
-	$('.details .attributes .progress.attribute .percent').html(htmlCopy);
+	$('.details .attributes .progress.attribute .value').html('<span class="showValue">' + 
+		$('.details .attributes .progress.attribute .value').html() + '</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
+		htmlCopy);
 }
 
 if($('#EstimatedTimeInput').length > 0) {
 	var htmlCopy = $('#EstimatedTimeInput').get(0).outerHTML;
 	$('#EstimatedTimeInput').remove();
-	$('.details .attributes .estimated-hours.attribute .value').html(htmlCopy);
+	$('.details .attributes .estimated-hours.attribute .value').html('<span class="showValue">' + 
+		$('.details .attributes .estimated-hours.attribute .value').html() + '</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
+		htmlCopy);
 }
 
 if($('#StartDateInput').length > 0) {
 	var htmlCopy = $('#StartDateInput').get(0).outerHTML;
 	$('#StartDateInput').remove();
-	$('.details .attributes .start-date.attribute .value').html(htmlCopy);
+	$('.details .attributes .start-date.attribute .value').html('<span class="showValue">' + 
+		$('.details .attributes .start-date.attribute .value').html() + '</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
+		htmlCopy);
 }
 
 if($('#DueDateInput').length > 0) {
 	var htmlCopy = $('#DueDateInput').get(0).outerHTML;
 	$('#DueDateInput').remove();
-	$('.details .attributes .due-date.attribute .value').html(htmlCopy);
+	$('.details .attributes .due-date.attribute .value').html('<span class="showValue">' + 
+		$('.details .attributes .due-date.attribute .value').html() + '</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
+		htmlCopy);
 }
+
+$('body').on('click', '.btn.close', function(e){
+	e.preventDefault();
+	$(e.target).closest('.value').removeClass('edited');
+	return false;
+});
 
 function issueDynamicUpdate(field_name, field_value, type, cssClass){
 	
+	/* hide edit field */
+	$('.details .attributes .' + cssClass + '.attribute .value').removeClass('edited');
+
 	/* add spin notification */
 	if(type == "progress") { // specific case for progress bar
-		$('.details .attributes .' + cssClass + '.attribute .percent').append(' <i class="fa fa-refresh fa-spin fa-fw"></i>');
+		$('.details .attributes .' + cssClass + '.attribute .value').append(' <i class="fa fa-refresh fa-spin fa-fw"></i>');
 	} else {
 		$('.details .attributes .' + cssClass + '.attribute .value').append(' <i class="fa fa-refresh fa-spin fa-fw"></i>');
 	}
 	
-	/* update value displayed to "move" edit pen icon */
-	$('.details .attributes .' + cssClass + '.attribute .selectedValue span').html(function(){
+	/* update value displayed */
+	$('.details .attributes .' + cssClass + '.attribute .showValue').html(function(){
 		if(type == "select")
 		{
 			return $('.details .attributes .' + cssClass + '.attribute .value select option:selected').html()
@@ -111,10 +136,11 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 			if(type == "progress") { // specific case for progress bar, we need to update the progress bar view
 				var progressBar = "<tbody><tr>";
 				var percentTodo = 100 - parseInt(field_value);
-				progressBar += "<td style='width: " + field_value + "%;' class='closed' title='" + field_value + "%'></td>";
-				progressBar += "<td style='width: " + percentTodo + "%;' class='todo'></td>";
+				if(field_value != 0) { progressBar += "<td style='width: " + field_value + "%;' class='closed' title='" + field_value + "%'></td>"; }
+				if(percentTodo != 0) { progressBar += "<td style='width: " + percentTodo + "%;' class='todo'></td>"; }
 				progressBar += "</tr></tbody>";
 				$('.details .attributes .' + cssClass + '.attribute table.progress').attr('class', 'progress progress-' + field_value).html(progressBar);
+				$('.details .attributes .' + cssClass + ' .percent').html(field_value + "%");
 			} else if( type == "date") { // specific case for start date and due date, we have to update min and max date allowed
 				if(field_name == "start_date")
 				{
@@ -159,11 +185,21 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
  var domSelectStatus = $('body').find('#statusListDropdown select');
  domSelectStatus.on('change', function(e){ 
  	issueDynamicUpdate('status_id', domSelectStatus.val(), 'select', 'status');
+
+ 	/* update the classes status from */
+ 	$("#content > div.issue").removeClass(function (index, className) {
+	    return (className.match (/(^|\s)status-\S+/g) || []).join(' ');
+	}).addClass('status-' + domSelectStatus.val());
  }); /* end on change domSelectStatus */
 	  
  var domSelectPriorities = $('body').find('#prioritiesListDropdown select');
  domSelectPriorities.on('change', function(e){
  	issueDynamicUpdate('priority_id', domSelectPriorities.val(), 'select', 'priority');
+
+ 	/* update the classes priority from */
+ 	$("#content > div.issue").removeClass(function (index, className) {
+	    return (className.match (/(^|\s)priority-\S+/g) || []).join(' ');
+	}).addClass('priority-' + domSelectStatus.val());
  }); /* end on change domSelectPriorities */
 	  
  var domSelectUsers = $('body').find('#usersListDropdown select');
@@ -174,10 +210,10 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
  var domSelectRatio = $('body').find('#doneRatioListDropdown select');
  domSelectRatio.on('change', function(e){
  	issueDynamicUpdate('done_ratio', domSelectRatio.val(), 'progress', 'progress');
- }); /* end on change domSelectUsers */
+ }); /* end on change domSelectRatio */
  
  var domInputEstimatedTime = $('body').find('#EstimatedTimeInput input');
- $('#EstimatedTimeInput a.btn').on('click', function(e)
+ $('#EstimatedTimeInput a.btn.validate').on('click', function(e)
  {
 	e.preventDefault();
 	$('.estimated-hours .value .error').remove();
@@ -197,12 +233,12 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 		$('.details .attributes .estimated-hours.attribute .value input').val()
 	);
 	if (e.keyCode == 13) {
-        $('#EstimatedTimeInput a.btn').click();
+        $('#EstimatedTimeInput a.btn.validate').click();
     }
  });/* end EstimatedTime */
  
  var domInputStartDate = $('body').find('#StartDateInput input');
- $('#StartDateInput a.btn').on('click', function(e)
+ $('#StartDateInput a.btn.validate').on('click', function(e)
  {
 	e.preventDefault();
 	$('.start-date .value .error').remove();
@@ -218,12 +254,12 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
  
  domInputStartDate.on('keyup', function(e){
 	if (e.keyCode == 13) {
-        $('#StartDateInput a.btn').click();
+        $('#StartDateInput a.btn.validate').click();
     }
  });/* end StartDate */
  
  var domInputDueDate = $('body').find('#DueDateInput input');
- $('#DueDateInput a.btn').on('click', function(e)
+ $('#DueDateInput a.btn.validate').on('click', function(e)
  {
 	e.preventDefault();
 	$('.due-date .value .error').remove();
@@ -239,6 +275,6 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
  
  domInputDueDate.on('keyup', function(e){
 	if (e.keyCode == 13) {
-        $('#DueDateInput a.btn').click();
+        $('#DueDateInput a.btn.validate').click();
     }
  });/* end StartDate */

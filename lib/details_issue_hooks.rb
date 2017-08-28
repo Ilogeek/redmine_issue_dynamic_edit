@@ -17,19 +17,21 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
     request = context[:request]
     issue_id = request.path_parameters[:id]
 	back = request.env['HTTP_REFERER']
+
+	o = ''
 	
     if (issue_id)
       issue = Issue.find(issue_id)
 	  if (issue)
 		if (User.current.allowed_to?(:edit_issues, project))
-		  o = ''
-		  # o << issue.to_json
+		  
+		  # if there's a JS error, we hide the generated values
+		  o << '<div style="display:none">'
 		  
 		  # Status dropdown
 		  statuses = issue.new_statuses_allowed_to(User.current)
           if (!statuses.empty?)
-		    o << "<span class='dynamicEditSelect' id='statusListDropdown'>"
-			o << "<div class='selectedValue'><span class='transparent'>#{issue.status}</span> <i class=\"fa fa-pencil fa-fw\" aria-hidden=\"true\"></i></div> "
+		    o << "<span class='dynamicEdit' id='statusListDropdown'>"
 			o << "<select data-issue='#{issue_id}'><option disabled='disabled' selected> </option>"
 			statuses.each do |s|
 				if (s != issue.status)
@@ -38,15 +40,15 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 					o << "<option value='#{s.id}' selected>#{s.name}</option>"
 				end
 			end
-			o << "</select><i class=\"fa fa-angle-down fa-fw dropdown\" aria-hidden=\"true\"></i></span>"
+			o << "</select> <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a></span>"
           end
 		  
 		  # Users dropdown
 		  # userCanChangeAssignee = User.current.allowed_to?(:edit_assigned_to, @project, :global => true)
 		  assignables = project.assignable_users
+		  o << assignables.to_json
 		  if (!assignables.empty?)
-			o << "<span class='dynamicEditSelect' id='usersListDropdown'>"
-			o << "<div class='selectedValue'><span class='transparent'>#{issue.assigned_to}</span> <i class=\"fa fa-pencil fa-fw\" aria-hidden=\"true\"></i></div> "
+			o << "<span class='dynamicEdit' id='usersListDropdown'>"
 			o << "<select data-issue='#{issue_id}'><option disabled='disabled' selected> </option>"
 			assignables.each do |u|
 				if (u != issue.assigned_to)
@@ -55,14 +57,13 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 					o << "<option value='#{u.id}' selected>#{u.name}</option>"
 				end
 			end
-			o << "</select><i class=\"fa fa-angle-down fa-fw dropdown\" aria-hidden=\"true\"></i></span>"
+			o << "</select> <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a></span>"
           end
 		  
 		  # Priorities dropdown
 		  priorities = IssuePriority.all
 		  if(!priorities.empty?)
-			o << "<span class='dynamicEditSelect' id='prioritiesListDropdown'>"
-			o << "<div class='selectedValue'><span class='transparent'>#{issue.priority}</span> <i class=\"fa fa-pencil fa-fw\" aria-hidden=\"true\"></i></div> "
+			o << "<span class='dynamicEdit' id='prioritiesListDropdown'>"
 			o << "<select data-issue='#{issue_id}'><option disabled='disabled' selected> </option>"
 			priorities.each do |p|
 				if (p != issue.priority)
@@ -71,13 +72,12 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 					o << "<option value='#{p.id}' selected>#{p.name}</option>"
 				end
 			end
-			o << "</select><i class=\"fa fa-angle-down fa-fw dropdown\" aria-hidden=\"true\"></i></span>"
+			o << "</select>  <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a></span>"
 		  end
 		  
 		  # %done dropdown
 		  percent = 0
-		  o << "<span class='dynamicEditSelect' id='doneRatioListDropdown'>"
-		  o << "<div class='selectedValue'><span class='transparent'>#{issue.done_ratio}%</span> <i class=\"fa fa-pencil fa-fw\" aria-hidden=\"true\"></i></div> "
+		  o << "<span class='dynamicEdit' id='doneRatioListDropdown'>"
 		  o << "<select data-issue='#{issue_id}'><option disabled='disabled' selected> </option>"
 		  loop do
 			if (percent == issue.done_ratio)
@@ -90,20 +90,20 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 				break
 			end
 		  end
-		  o << "</select><i class=\"fa fa-angle-down fa-fw dropdown\" aria-hidden=\"true\"></i></span>"
+		  o << "</select>  <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a></span>"
 		  
 		  # Estimated_time dropdown
-		  o << "<span class='dynamicEditInput' id='EstimatedTimeInput'>"
-		  o << "	<div class='selectedValue'><span class='transparent'>#{issue.estimated_hours}</span> <i class=\"fa fa-pencil fa-fw\" aria-hidden=\"true\"></i></div> "
+		  o << "<span class='dynamicEdit' id='EstimatedTimeInput'>"
 		  o << "	<input type='text' value='#{issue.estimated_hours}' size='6'/>"
-		  o << "<a href='#' class='btn btn-primary' aria-label='" + l(:ide_txt_validation_btn) + "'><i class='fa fa-check fa-fw' aria-hidden='true'></i></a>"
+		  o << "<a href='#' class='btn btn-primary validate' aria-label='" + l(:ide_txt_validation_btn) + "'><i class='fa fa-check fa-fw' aria-hidden='true'></i></a>"
+		  o << "  <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a>"
 		  o << "</span>"
 		  
 		  # Start date 
-		  o << "<span class='dynamicEditInput' id='StartDateInput'>"
-		  o << "	<div class='selectedValue'><span class='transparent'>XXXX/XX/XX</span> <i class=\"fa fa-pencil fa-fw\" aria-hidden=\"true\"></i></div> "
+		  o << "<span class='dynamicEdit' id='StartDateInput'>"
 		  o << "	<input size=\"10\" value=\"#{issue.start_date}\" type=\"date\" max=\"#{issue.due_date}\">"
-		  o << "<a href='#' class='btn btn-primary' aria-label='" + l(:ide_txt_validation_btn) + "'><i class='fa fa-check fa-fw' aria-hidden='true'></i></a>"
+		  o << " <a href='#' class='btn btn-primary validate' aria-label='" + l(:ide_txt_validation_btn) + "'><i class='fa fa-check fa-fw' aria-hidden='true'></i></a>"
+		  o << " <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a>"
 		  o << "</span>"
 		  o << "<script>"
 		  o << "//<![CDATA[\n"
@@ -112,10 +112,10 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 		  o << "</script>"
 		  
 		  # Due date 
-		  o << "<span class='dynamicEditInput' id='DueDateInput'>"
-		  o << "	<div class='selectedValue'><span class='transparent'>XXXX/XX/XX</span> <i class=\"fa fa-pencil fa-fw\" aria-hidden=\"true\"></i></div> "
+		  o << "<span class='dynamicEdit' id='DueDateInput'>"
 		  o << "	<input size=\"10\" value=\"#{issue.due_date}\" type=\"date\" min=\"#{issue.start_date}\">"
-		  o << "<a href='#' class='btn btn-primary' aria-label='" + l(:ide_txt_validation_btn) + "'><i class='fa fa-check fa-fw' aria-hidden='true'></i></a>"
+		  o << " <a href='#' class='btn btn-primary validate' aria-label='" + l(:ide_txt_validation_btn) + "'><i class='fa fa-check fa-fw' aria-hidden='true'></i></a>"
+		  o << " <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a>"
 		  o << "</span>"
 		  o << "<script>"
 		  o << "//<![CDATA[\n"
@@ -139,6 +139,9 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 	  o << " var _TXT_ERROR_AJAX_CALL = \"" + l(:ide_txt_error_ajax_call) + "\";\n"
 	  
 	  o << "</script>"
+
+	  # closing the display none div parent
+	  o << "</div>"
 	  return o
     end
   end

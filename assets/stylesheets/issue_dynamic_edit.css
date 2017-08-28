@@ -1,5 +1,10 @@
-div.issue .attribute .value {
+div.issue .attribute .value, div.issue .splitcontent {
 	overflow: visible;
+	position: relative;
+}
+
+div.issue .attribute .value .percent {
+	display: inline-block;
 }
 
 /* Progress bar fix */
@@ -7,116 +12,76 @@ table.progress {
 	margin-right: 10px;
 }
 
-/* If you want to hide edit (pencil) icon, set opacity to 0 below : */
-.selectedValue {
-	position: absolute;
-	white-space: nowrap;
-	top: 2px;
-	right: 0;
-	left: 5px;
-	pointer-events: none;
-	opacity: 1; /* <---------------- */
-}
-
-.attribute:hover .selectedValue {
-	opacity: 0;
-}
-
-.selectedValue .transparent {
-	opacity: 0;
-}
-
 .attribute .error {
 	color: #e74c3c;
 	margin-left: 3px;
 }
 
-/* Input Style */
-.dynamicEditInput {
-	position: relative;
-	border: 1px solid transparent;
-	border-radius: 3px;
-	padding: 4px;
-	margin-left: -5px;
-	padding-right: 0;
+.value .fa-pencil {
+	opacity: 0;
+}
+
+.issue.details .showValue {
+	cursor: pointer;
+}
+
+.issue.details:hover .fa-pencil {
+	opacity: 1;
+}
+
+.dynamicEdit {
 	display: inline-block;
+	position:absolute;
+	opacity: 0;
+	left:0;
+	bottom: 100%;
+	margin-bottom: 5px;
+	box-sizing: border-box;
+	padding: 10px;
+	border-radius: 3px;
+	background: white;
+	pointer-events: none;
+	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+	width: max-content;
 }
 
-.dynamicEditInput input {
-	border: 0px;
-	font: inherit;
-	color: inherit;
-	background: transparent;
-	padding: 0;
+.edited .dynamicEdit {
+	pointer-events: auto;
 }
 
-.dynamicEditInput .selectedValue {
-	top:0; left:0;
-}
-
-.attribute:hover .dynamicEditInput {
-	border-color: #e0e2e3;
+div.issue .attribute .value.edited .dynamicEdit {
+	opacity: 1;
 }
 
 .attribute .btn-primary {
-	border-left: 1px solid #e0e2e3;
 	padding: 4px;
-	opacity: 0;
-	pointer-events: none;
-}
-
-.attribute:hover .btn-primary {
-	pointer-events: auto;
-	opacity: 1;
-}
-
-/* End Input Style */
-
-/* Select Style */
-.dynamicEditSelect select {
-	border-color: transparent;
-	border: 0;
-	border-bottom: 1px solid transparent;
-	border-radius: 0;
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
-	background: none;
-	font-size: inherit;
-	color: inherit;
-	font-family: inherit;
-	background: transparent;
-	padding-left:0;
-}
-
-.dynamicEditSelect {
-	padding-left: 5px;
-	margin-left: -6px; /* padding + border */
-	display: inline-block;
-	border: 1px solid transparent;
+	color: white;
 	border-radius: 3px;
-	position:relative;
-}
-  
-.attribute:hover .dynamicEditSelect {
-	border-color: #e0e2e3;
-}
-	  
-.dynamicEditSelect i.dropdown {
-	position:absolute;
-	right: 5px;
-	top: 50%;
-	transform: translateY(-50%);
-	pointer-events: none;
-	opacity: 0;
+	padding: 3px;
 }
 
-.attribute:hover .dynamicEditSelect i.dropdown {
-	opacity: 1;
+.attribute .btn-primary.close {
+	background: #c0392b;
 }
 
-.dynamicEditSelect select option[disabled="disabled"]
+.attribute .btn-primary.validate {
+	background: #27ae60;
+}
+
+.dynamicEdit select {
+	border:none;
+    background-image:none;
+    background-color:transparent;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    font-size: inherit;
+    font-family: inherit;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+}
+
+.dynamicEdit select option[disabled="disabled"]
 { 
     display:none;
 }
-/* End Select Style */
