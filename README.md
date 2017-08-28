@@ -18,6 +18,7 @@ This plugin uses [FontAwesome icons](http://fontawesome.io/)
 
 ### Changelog
 
+* **v 0.4.1** : fixed Github issue #7 : update status list to follow Redmine workflow
 * **v 0.4.0** : fixed Github issues #2, #4, #9. Edited dropdown display
 * **v 0.3.0** : start date, due date, ratio and estimated time fields are now dynamically editable. Translation files added (en, fr). Log added in console when AJAX fails
 * **v 0.2.0** : fixed "conflict" when trying to add a note after an update from dropdowns. New method used, REST API is not required anymore

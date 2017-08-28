@@ -115,9 +115,11 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 	}
 	
 	var token = $("meta[name=csrf-token]").attr('content');
+	// we prepare the return url which is the updated issue detail page with new values
+	var prepareReturnUrl = encodeURIComponent(_BASE_REDMINE_PATH + '/issues/' + _ISSUE_ID);
 	jQuery.ajax({
 	    type: 'POST',
-	    url: _BASE_REDMINE_PATH + '/issues/bulk_update?back_url=%2F&amp;ids%5B%5D=' + _ISSUE_ID + '&amp;issue%5B' + field_name + '%5D=' + field_value,
+	    url: _BASE_REDMINE_PATH + '/issues/bulk_update?back_url=' + prepareReturnUrl + '&amp;ids%5B%5D=' + _ISSUE_ID + '&amp;issue%5B' + field_name + '%5D=' + field_value,
 	    data: { "authenticity_token" : token },
 		crossDomain: true,
 	    async: false,
@@ -125,6 +127,16 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 	        xhr.setRequestHeader("authenticity_token", token);
 	    },
 	    success: function(msg) {
+	    	// get result page content (updated issue detail page with new status)
+	    	var parsed = $.parseHTML(msg);
+        	var statusListDropdown = $(parsed).find("#statusListDropdown select");
+        	var prioritiesListDropdown = $(parsed).find('#prioritiesListDropdown select');
+        	// we update dropdown status with new one from updated page
+        	$('#statusListDropdown select').html(statusListDropdown.html());
+        	$('#issue_status_id').html(statusListDropdown.html());
+        	$('#prioritiesListDropdown select').html(prioritiesListDropdown.html());
+        	$('#issue_priority_id').html(prioritiesListDropdown.html());
+
 			/* data updated, remove spin and add success icon for 2sec */
 			setTimeout(function(){
 				$('.details .attributes .' + cssClass + '.attribute i.fa-spin').removeClass('fa-refresh fa-spin').addClass('fa-check statusOk');
