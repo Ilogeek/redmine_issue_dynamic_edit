@@ -1,35 +1,37 @@
-div.issue .attribute .value, div.issue .splitcontent {
+/* prefix selector with body.controller-issues.action-show  to avoid unwanted style on other page ? */
+
+body.controller-issues.action-show div.issue .attribute .value, body.controller-issues.action-show div.issue .splitcontent {
 	overflow: visible;
 	position: relative;
 }
 
-div.issue .attribute .value .percent {
+body.controller-issues.action-show div.issue .attribute .value .percent {
 	display: inline-block;
 }
 
 /* Progress bar fix */
-table.progress {
+body.controller-issues.action-show table.progress {
 	margin-right: 10px;
 }
 
-.attribute .error {
+body.controller-issues.action-show .attribute .error {
 	color: #e74c3c;
 	margin-left: 3px;
 }
 
-.value .fa-pencil {
+body.controller-issues.action-show .value .fa-pencil {
 	opacity: 0;
 }
 
-.issue.details .showValue {
+body.controller-issues.action-show .issue.details .showValue {
 	cursor: pointer;
 }
 
-.issue.details:hover .fa-pencil {
+body.controller-issues.action-show .issue.details:hover .fa-pencil {
 	opacity: 1;
 }
 
-.dynamicEdit {
+body.controller-issues.action-show .dynamicEdit {
 	display: inline-block;
 	position:absolute;
 	opacity: 0;
@@ -45,30 +47,30 @@ table.progress {
 	width: max-content;
 }
 
-.edited .dynamicEdit {
+body.controller-issues.action-show .edited .dynamicEdit {
 	pointer-events: auto;
 }
 
-div.issue .attribute .value.edited .dynamicEdit {
+body.controller-issues.action-show div.issue .attribute .value.edited .dynamicEdit {
 	opacity: 1;
 }
 
-.attribute .btn-primary {
+body.controller-issues.action-show .attribute .btn-primary {
 	padding: 4px;
 	color: white;
 	border-radius: 3px;
 	padding: 3px;
 }
 
-.attribute .btn-primary.close {
+body.controller-issues.action-show .attribute .btn-primary.close {
 	background: #c0392b;
 }
 
-.attribute .btn-primary.validate {
+body.controller-issues.action-show .attribute .btn-primary.validate {
 	background: #27ae60;
 }
 
-.dynamicEdit select {
+body.controller-issues.action-show .dynamicEdit select {
 	border:none;
     background-image:none;
     background-color:transparent;
@@ -81,7 +83,7 @@ div.issue .attribute .value.edited .dynamicEdit {
 	border-radius: 3px;
 }
 
-.dynamicEdit select option[disabled="disabled"]
+body.controller-issues.action-show .dynamicEdit select option[disabled="disabled"]
 { 
     display:none;
 }

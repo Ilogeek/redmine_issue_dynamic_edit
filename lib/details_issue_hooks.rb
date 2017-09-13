@@ -44,7 +44,6 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
           end
 		  
 		  # Users dropdown
-		  # userCanChangeAssignee = User.current.allowed_to?(:edit_assigned_to, @project, :global => true)
 		  assignables = project.assignable_users
 		  o << assignables.to_json
 		  if (!assignables.empty?)

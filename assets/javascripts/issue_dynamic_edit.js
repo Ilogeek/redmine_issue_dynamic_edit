@@ -76,7 +76,7 @@ if($('#DueDateInput').length > 0) {
 		htmlCopy);
 }
 
-$('body').on('click', '.btn.close', function(e){
+$('body.controller-issues.action-show').on('click', '.btn.close', function(e){
 	e.preventDefault();
 	$(e.target).closest('.value').removeClass('edited');
 	return false;
@@ -127,15 +127,22 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 	        xhr.setRequestHeader("authenticity_token", token);
 	    },
 	    success: function(msg) {
-	    	// get result page content (updated issue detail page with new status)
+	    	/* get result page content (updated issue detail page with new status) */
 	    	var parsed = $.parseHTML(msg);
+			
         	var statusListDropdown = $(parsed).find("#statusListDropdown select");
         	var prioritiesListDropdown = $(parsed).find('#prioritiesListDropdown select');
-        	// we update dropdown status with new one from updated page
+        	/* we update dropdown status with new one from updated page */
         	$('#statusListDropdown select').html(statusListDropdown.html());
         	$('#issue_status_id').html(statusListDropdown.html());
         	$('#prioritiesListDropdown select').html(prioritiesListDropdown.html());
         	$('#issue_priority_id').html(prioritiesListDropdown.html());
+			
+			/* we update issue properties edit block */
+			$('#all_attributes').html($(parsed).find('#all_attributes').html());
+			
+			/* we update the history list */
+			$('#history').append($(parsed).find('#history .journal.has-details:last-child'));
 
 			/* data updated, remove spin and add success icon for 2sec */
 			setTimeout(function(){
