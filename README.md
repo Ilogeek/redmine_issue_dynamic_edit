@@ -1,6 +1,6 @@
 # redmine_issue_dynamic_edit
 
-Add new dropdown elements on detailed issue page to dynamically update issue's status, assignee, priority, start and due dates, ratio and estimated time fields, directly in the details block of the issue.
+Add new dropdown elements on detailed issue page to dynamically update issue's status, assignee, priority, start and due dates, ratio and estimated time fields, directly in the details block of the issue without any page refresh (JIRA style).
 
 ### Example
 
@@ -14,10 +14,12 @@ Add new dropdown elements on detailed issue page to dynamically update issue's s
 ### Customization
 
 Feel free to edit `assets/stylesheets/issue_dynamic_edit.css` to update the look of your fields depending on your current Redmine Theme. 
+
 This plugin uses [FontAwesome icons](http://fontawesome.io/)
 
 ### Changelog
 
+* **v 0.4.4** : fixed Github issues #6, #12 : User can't update status until all required field are filled for this step of the issue
 * **v 0.4.3** : partially fixed Github issue #12 : Read only attributes can't be edited anymore. Dynamic refresh for read only attributes when status changes
 * **v 0.4.2** : fixed Github issue #10 : History list updated after modification
 * **v 0.4.1** : fixed Github issue #7 : update status list to follow Redmine workflow

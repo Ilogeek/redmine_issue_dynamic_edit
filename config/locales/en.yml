@@ -5,3 +5,4 @@ en:
   ide_txt_error_due_date        : 'Due date must be posterior to start date'
   ide_txt_error_ajax_call       : 'Error (check your JS console)'
   ide_txt_cancel_btn            : 'Cancel the modification'
+  ide_txt_required_field        : 'This field is required to go to next step'

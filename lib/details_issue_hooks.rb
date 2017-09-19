@@ -23,7 +23,16 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
     if (issue_id)
       issue = Issue.find(issue_id)
 	  readOnlyAttributes = issue.read_only_attribute_names(User.current)
-	  # o << issue.required_attribute_names(User.current).to_json
+	  requiredAttributes = issue.required_attribute_names(User.current)
+	  
+	  # o << requiredAttributes.to_json
+	  
+	  allRequiredFieldsFilled = true
+	  requiredAttributes.each do |attr|
+		if(issue.read_attribute(attr).to_s.empty?)
+			allRequiredFieldsFilled = false
+		end
+	  end
 	  
 	  if (issue)
 		if (User.current.allowed_to?(:edit_issues, project))
@@ -33,7 +42,7 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 		  
 		  # Status dropdown
 		  statuses = issue.new_statuses_allowed_to(User.current)
-          if (!statuses.empty? && !(readOnlyAttributes.include? 'status_id'))
+          if (!statuses.empty? && !(readOnlyAttributes.include? 'status_id') && allRequiredFieldsFilled)
 		    o << "<span class='dynamicEdit' id='statusListDropdown'>"
 			o << "<select data-issue='#{issue_id}'><option disabled='disabled' selected> </option>"
 			statuses.each do |s|
@@ -146,8 +155,13 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 	  o << " var _TXT_ERROR_START_DATE = \"" + l(:ide_txt_error_start_date) + "\";\n"
 	  o << " var _TXT_ERROR_DUE_DATE = \"" + l(:ide_txt_error_due_date) + "\";\n"
 	  o << " var _TXT_ERROR_AJAX_CALL = \"" + l(:ide_txt_error_ajax_call) + "\";\n"
+	  o << " var _TXT_REQUIRED_FIELD = \"" + l(:ide_txt_required_field) + "\";\n"
+	  o << "</script>\n"
 	  
-	  o << "</script>"
+	  
+	  
+	  o << "<div style='display:none' id='required_field_array'>#{requiredAttributes.to_json}</div>\n"
+	  
 
 	  # closing the display none div parent
 	  o << "</div>"

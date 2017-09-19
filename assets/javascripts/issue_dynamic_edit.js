@@ -79,7 +79,18 @@ function initEditFields()
 	}
 }
 
-initEditFields();	
+initEditFields();
+
+/* Add required style to attributes */
+function updateRequiredFields(reqFieldsArray)
+{
+	for (var i = 0; i < reqFieldsArray.length; i++) {
+	  var htmlLabel = reqFieldsArray[i].replace(/_/g, '-');
+	  $('.issue.details .attribute.' + htmlLabel + ' .label').html('<span title=\"' + _TXT_REQUIRED_FIELD + '\" class=\"field-description\">' + $('.issue.details .attribute.' + htmlLabel + ' .label').html() + '</span> <span class=\"required\"> *</span>');
+	}
+ }
+
+updateRequiredFields(JSON.parse($('#required_field_array').html()));	
 
 
 $('body.controller-issues.action-show').on('click', '.btn.close', function(e){
@@ -134,32 +145,63 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 	    },
 	    success: function(msg) {
 	    	/* get result page content (updated issue detail page with new status) */
+			
 	    	var parsed = $.parseHTML(msg);
 			
-			/* we update the details block */
-			$('div.issue.details').html($(parsed).find('div.issue.details').html());
-			/* we init edit fields */
-			initEditFields();
-			initEditFieldListeners();
-
-			/* we update issue properties edit block */
-			$('#all_attributes').html($(parsed).find('#all_attributes').html());
+			var error = $(parsed).find("#errorExplanation");
 			
-			/* we update the history list */
-			$('#history').append($(parsed).find('#history .journal.has-details:last-child'));
-
-			/* data updated, remove spin and add success icon for 2sec */
-			setTimeout(function(){
-				$('.details .attributes .' + cssClass + '.attribute i.fa-spin').removeClass('fa-refresh fa-spin').addClass('fa-check statusOk');
+			if(error.length)
+			{
+				if($('html').find("#errorExplanation").length == 0)
+				{
+					$('.issue.details').before("<div id='errorExplanation'>" + error.html() + "</div>");
+				} else 
+				{
+					$('html').find("#errorExplanation").html(error.html());
+				}
+				/* data updated, remove spin and add success icon for 2sec */
 				setTimeout(function(){
-					$('.details .attributes .' + cssClass + '.attribute i.fa-check.statusOk').remove();
-				}, 2000);
-			}, 500);
-	
-			// update other fields to avoid conflict
-			$('#issue_lock_version').val(parseInt($('#issue_lock_version').val()) + 1 );
-			$('#last_journal_id').val(parseInt($('#last_journal_id').val()) + 1 );
+					$('.details .attributes .' + cssClass + '.attribute i.fa-spin').removeClass('fa-refresh fa-spin').addClass('fa-times statusKo');
+					setTimeout(function(){
+						$('.details .attributes .' + cssClass + '.attribute i.fa-times.statusKo').remove();
+					}, 2000);
+				}, 500);
+			} else {
+			
+				/* removing error div if exists */
+				$('html').find("#errorExplanation").remove();
+				
+				/* we update the details block */
+				$('div.issue.details').html($(parsed).find('div.issue.details').html());
+				if(type == "progress") { // specific case for progress bar
+					$('body').find('.details .attributes .' + cssClass + '.attribute .value').append(' <i class="fa fa-refresh fa-spin fa-fw"></i>');
+				} else {
+					$('body').find('.details .attributes .' + cssClass + '.attribute .value').append(' <i class="fa fa-refresh fa-spin fa-fw"></i>');
+				}
+				/* we init edit fields */
+				initEditFields();
+				initEditFieldListeners();
+				
+				updateRequiredFields(JSON.parse($(parsed).find('#required_field_array').html()));
 
+				/* we update issue properties edit block */
+				$('#all_attributes').html($(parsed).find('#all_attributes').html());
+				
+				/* we update the history list */
+				$('#history').append($(parsed).find('#history .journal.has-details:last-child'));
+
+				/* data updated, remove spin and add success icon for 2sec */
+				setTimeout(function(){
+					$('.details .attributes .' + cssClass + '.attribute i.fa-spin').removeClass('fa-refresh fa-spin').addClass('fa-check statusOk');
+					setTimeout(function(){
+						$('.details .attributes .' + cssClass + '.attribute i.fa-check.statusOk').remove();
+					}, 2000);
+				}, 500);
+		
+				// update other fields to avoid conflict
+				$('#issue_lock_version').val(parseInt($('#issue_lock_version').val()) + 1 );
+				$('#last_journal_id').val(parseInt($('#last_journal_id').val()) + 1 );
+			}
 		},
 	    error: function(xhr, msg, error) {
 			/* error and no update, info logged into console */
@@ -242,7 +284,7 @@ function initEditFieldListeners()
 	 {
 		e.preventDefault();
 		$('.start-date .value .error').remove();
-		if(new Date(domInputStartDate.val()).getTime() <= new Date($('body').find('#DueDateInput input').val()).getTime())
+		if(new Date(domInputStartDate.val()).getTime() <= new Date($('body').find('#DueDateInput input').val()).getTime() || $('body').find('#DueDateInput input').val() == "")
 		{
 			issueDynamicUpdate('start_date', domInputStartDate.val(), 'date', 'start-date');
 		} else {
@@ -263,7 +305,7 @@ function initEditFieldListeners()
 	 {
 		e.preventDefault();
 		$('.due-date .value .error').remove();
-		if(new Date($('body').find('#StartDateInput input').val()).getTime() <= new Date(domInputDueDate.val()).getTime())
+		if(new Date($('body').find('#StartDateInput input').val()).getTime() <= new Date(domInputDueDate.val()).getTime() || $('body').find('#StartDateInput input').val() == "" )
 		{
 			issueDynamicUpdate('due_date', domInputDueDate.val(), 'date', 'due-date');
 		} else {

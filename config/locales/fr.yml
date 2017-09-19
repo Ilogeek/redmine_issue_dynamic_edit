@@ -5,3 +5,4 @@ fr:
   ide_txt_error_due_date        : "La date d'échéance doit être postérieure à la date de début"
   ide_txt_error_ajax_call       : 'Erreur (logs dans la console JS)'
   ide_txt_cancel_btn            : 'Annuler la modification'
+  ide_txt_required_field        : 'Ce champs est obligatoire pour passer au Statut suivant'
