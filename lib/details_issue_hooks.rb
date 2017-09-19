@@ -22,6 +22,9 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 	
     if (issue_id)
       issue = Issue.find(issue_id)
+	  readOnlyAttributes = issue.read_only_attribute_names(User.current)
+	  # o << issue.required_attribute_names(User.current).to_json
+	  
 	  if (issue)
 		if (User.current.allowed_to?(:edit_issues, project))
 		  
@@ -30,7 +33,7 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 		  
 		  # Status dropdown
 		  statuses = issue.new_statuses_allowed_to(User.current)
-          if (!statuses.empty?)
+          if (!statuses.empty? && !(readOnlyAttributes.include? 'status_id'))
 		    o << "<span class='dynamicEdit' id='statusListDropdown'>"
 			o << "<select data-issue='#{issue_id}'><option disabled='disabled' selected> </option>"
 			statuses.each do |s|
@@ -45,8 +48,7 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 		  
 		  # Users dropdown
 		  assignables = project.assignable_users
-		  o << assignables.to_json
-		  if (!assignables.empty?)
+		  if (!assignables.empty? && !(readOnlyAttributes.include? 'assigned_to_id'))
 			o << "<span class='dynamicEdit' id='usersListDropdown'>"
 			o << "<select data-issue='#{issue_id}'><option disabled='disabled' selected> </option>"
 			assignables.each do |u|
@@ -61,7 +63,7 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 		  
 		  # Priorities dropdown
 		  priorities = IssuePriority.all
-		  if(!priorities.empty?)
+		  if(!priorities.empty? && !(readOnlyAttributes.include? 'priority_id'))
 			o << "<span class='dynamicEdit' id='prioritiesListDropdown'>"
 			o << "<select data-issue='#{issue_id}'><option disabled='disabled' selected> </option>"
 			priorities.each do |p|
@@ -75,52 +77,60 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 		  end
 		  
 		  # %done dropdown
-		  percent = 0
-		  o << "<span class='dynamicEdit' id='doneRatioListDropdown'>"
-		  o << "<select data-issue='#{issue_id}'><option disabled='disabled' selected> </option>"
-		  loop do
-			if (percent == issue.done_ratio)
-					o << "<option value='#{percent}' selected>#{percent}%</option>"
-				else
-					o << "<option value='#{percent}'>#{percent}%</option>"
+		  if(!(readOnlyAttributes.include? 'done_ratio'))
+			  percent = 0
+			  o << "<span class='dynamicEdit' id='doneRatioListDropdown'>"
+			  o << "<select data-issue='#{issue_id}'><option disabled='disabled' selected> </option>"
+			  loop do
+				if (percent == issue.done_ratio)
+						o << "<option value='#{percent}' selected>#{percent}%</option>"
+					else
+						o << "<option value='#{percent}'>#{percent}%</option>"
+					end
+				percent += 10
+				if percent == 110
+					break
 				end
-			percent += 10
-			if percent == 110
-				break
-			end
+			  end
+			  o << "</select>  <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a></span>"
 		  end
-		  o << "</select>  <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a></span>"
 		  
 		  # Estimated_time dropdown
-		  o << "<span class='dynamicEdit' id='EstimatedTimeInput'>"
-		  o << "	<input type='text' value='#{issue.estimated_hours}' size='6'/>"
-		  o << "<a href='#' class='btn btn-primary validate' aria-label='" + l(:ide_txt_validation_btn) + "'><i class='fa fa-check fa-fw' aria-hidden='true'></i></a>"
-		  o << "  <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a>"
-		  o << "</span>"
+		  if(!(readOnlyAttributes.include? 'estimated_hours'))
+			  o << "<span class='dynamicEdit' id='EstimatedTimeInput'>"
+			  o << "	<input type='text' value='#{issue.estimated_hours}' size='6'/>"
+			  o << "<a href='#' class='btn btn-primary validate' aria-label='" + l(:ide_txt_validation_btn) + "'><i class='fa fa-check fa-fw' aria-hidden='true'></i></a>"
+			  o << "  <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a>"
+			  o << "</span>"
+		  end
 		  
 		  # Start date 
-		  o << "<span class='dynamicEdit' id='StartDateInput'>"
-		  o << "	<input size=\"10\" value=\"#{issue.start_date}\" type=\"date\" max=\"#{issue.due_date}\">"
-		  o << " <a href='#' class='btn btn-primary validate' aria-label='" + l(:ide_txt_validation_btn) + "'><i class='fa fa-check fa-fw' aria-hidden='true'></i></a>"
-		  o << " <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a>"
-		  o << "</span>"
-		  o << "<script>"
-		  o << "//<![CDATA[\n"
-		  o << "	$(function() { $('#StartDateInput input').addClass('date').datepickerFallback(datepickerOptions); });\n"
-		  o << "//]]>\n"
-		  o << "</script>"
+		  if(!(readOnlyAttributes.include? 'start_date'))
+			  o << "<span class='dynamicEdit' id='StartDateInput'>"
+			  o << "	<input size=\"10\" value=\"#{issue.start_date}\" type=\"date\" max=\"#{issue.due_date}\">"
+			  o << " <a href='#' class='btn btn-primary validate' aria-label='" + l(:ide_txt_validation_btn) + "'><i class='fa fa-check fa-fw' aria-hidden='true'></i></a>"
+			  o << " <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a>"
+			  o << "</span>"
+			  o << "<script>"
+			  o << "//<![CDATA[\n"
+			  o << "	$(function() { $('#StartDateInput input').addClass('date').datepickerFallback(datepickerOptions); });\n"
+			  o << "//]]>\n"
+			  o << "</script>"
+		  end
 		  
 		  # Due date 
-		  o << "<span class='dynamicEdit' id='DueDateInput'>"
-		  o << "	<input size=\"10\" value=\"#{issue.due_date}\" type=\"date\" min=\"#{issue.start_date}\">"
-		  o << " <a href='#' class='btn btn-primary validate' aria-label='" + l(:ide_txt_validation_btn) + "'><i class='fa fa-check fa-fw' aria-hidden='true'></i></a>"
-		  o << " <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a>"
-		  o << "</span>"
-		  o << "<script>"
-		  o << "//<![CDATA[\n"
-		  o << "	$(function() { $('#DueDateInput input').addClass('date').datepickerFallback(datepickerOptions); });\n"
-		  o << "//]]>\n"
-		  o << "</script>"
+		  if(!(readOnlyAttributes.include? 'due_date'))
+			  o << "<span class='dynamicEdit' id='DueDateInput'>"
+			  o << "	<input size=\"10\" value=\"#{issue.due_date}\" type=\"date\" min=\"#{issue.start_date}\">"
+			  o << " <a href='#' class='btn btn-primary validate' aria-label='" + l(:ide_txt_validation_btn) + "'><i class='fa fa-check fa-fw' aria-hidden='true'></i></a>"
+			  o << " <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a>"
+			  o << "</span>"
+			  o << "<script>"
+			  o << "//<![CDATA[\n"
+			  o << "	$(function() { $('#DueDateInput input').addClass('date').datepickerFallback(datepickerOptions); });\n"
+			  o << "//]]>\n"
+			  o << "</script>"
+		  end
 		  
 		end
 	  end

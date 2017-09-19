@@ -18,6 +18,8 @@ This plugin uses [FontAwesome icons](http://fontawesome.io/)
 
 ### Changelog
 
+* **v 0.4.3** : partially fixed Github issue #12 : Read only attributes can't be edited anymore. Dynamic refresh for read only attributes when status changes
+* **v 0.4.2** : fixed Github issue #10 : History list updated after modification
 * **v 0.4.1** : fixed Github issue #7 : update status list to follow Redmine workflow
 * **v 0.4.0** : fixed Github issues #2, #4, #9. Edited dropdown display
 * **v 0.3.0** : start date, due date, ratio and estimated time fields are now dynamically editable. Translation files added (en, fr). Log added in console when AJAX fails
