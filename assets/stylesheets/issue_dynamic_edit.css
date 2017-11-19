@@ -87,3 +87,12 @@ body.controller-issues.action-show .dynamicEdit select option[disabled="disabled
 { 
     display:none;
 }
+
+body.controller-issues.action-show div.issue .attributes {
+  display: table;
+  width: 100%;
+}
+
+body.controller-issues.action-show div.issue .splitcontent {
+  display: table-row;
+}
