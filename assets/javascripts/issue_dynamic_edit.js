@@ -77,6 +77,13 @@ function initEditFields()
 			$('.details .attributes .due-date.attribute .value').html() + '</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
 			htmlCopy);
 	}
+
+	if($('#TitleInput').length > 0) {
+		var htmlCopy = $('#TitleInput').get(0).outerHTML;
+		$('#TitleInput').remove();
+		$('.subject h3').html('<span class="showValue">' + $('.subject h3').html() + '</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
+			htmlCopy).addClass('value');
+	}
 }
 
 initEditFields();
@@ -102,23 +109,19 @@ $('body.controller-issues.action-show').on('click', '.btn.close', function(e){
 function issueDynamicUpdate(field_name, field_value, type, cssClass){
 	
 	/* hide edit field */
-	$('.details .attributes .' + cssClass + '.attribute .value').removeClass('edited');
+	$('.details .' + cssClass + ' .value').removeClass('edited');
 
 	/* add spin notification */
-	if(type == "progress") { // specific case for progress bar
-		$('.details .attributes .' + cssClass + '.attribute .value').append(' <i class="fa fa-refresh fa-spin fa-fw"></i>');
-	} else {
-		$('.details .attributes .' + cssClass + '.attribute .value').append(' <i class="fa fa-refresh fa-spin fa-fw"></i>');
-	}
+	$('.details .' + cssClass + ' .value').append(' <i class="fa fa-refresh fa-spin fa-fw"></i>');
 	
 	/* update value displayed */
-	$('.details .attributes .' + cssClass + '.attribute .showValue').html(function(){
+	$('.details .' + cssClass + ' .showValue').html(function(){
 		if(type == "select")
 		{
-			return $('.details .attributes .' + cssClass + '.attribute .value select option:selected').html()
+			return $('.details .' + cssClass + ' .value select option:selected').html()
 		} else if (type == "input")
 		{
-			return $('.details .attributes .' + cssClass + '.attribute .value input').val()
+			return $('.details .' + cssClass + ' .value input').val()
 		} else if(type == "date")
 		{
 			return "XXXX/XX/XX";
@@ -128,7 +131,7 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 	/* lost focus on element */
 	if( type != "select")
 	{
-		$('.details .attributes .' + cssClass + '.attribute .value input').blur();
+		$('.details .' + cssClass + ' .value input').blur();
 	}
 	
 	var token = $("meta[name=csrf-token]").attr('content');
@@ -161,9 +164,9 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 				}
 				/* data updated, remove spin and add success icon for 2sec */
 				setTimeout(function(){
-					$('.details .attributes .' + cssClass + '.attribute i.fa-spin').removeClass('fa-refresh fa-spin').addClass('fa-times statusKo');
+					$('.details .' + cssClass + ' i.fa-spin').removeClass('fa-refresh fa-spin').addClass('fa-times statusKo');
 					setTimeout(function(){
-						$('.details .attributes .' + cssClass + '.attribute i.fa-times.statusKo').remove();
+						$('.details .' + cssClass + ' i.fa-times.statusKo').remove();
 					}, 2000);
 				}, 500);
 			} else {
@@ -173,11 +176,8 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 				
 				/* we update the details block */
 				$('div.issue.details').html($(parsed).find('div.issue.details').html());
-				if(type == "progress") { // specific case for progress bar
-					$('body').find('.details .attributes .' + cssClass + '.attribute .value').append(' <i class="fa fa-refresh fa-spin fa-fw"></i>');
-				} else {
-					$('body').find('.details .attributes .' + cssClass + '.attribute .value').append(' <i class="fa fa-refresh fa-spin fa-fw"></i>');
-				}
+				$('body').find('.details .' + cssClass + ' .value').append(' <i class="fa fa-refresh fa-spin fa-fw"></i>');
+				
 				/* we init edit fields */
 				initEditFields();
 				initEditFieldListeners();
@@ -192,9 +192,9 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 
 				/* data updated, remove spin and add success icon for 2sec */
 				setTimeout(function(){
-					$('.details .attributes .' + cssClass + '.attribute i.fa-spin').removeClass('fa-refresh fa-spin').addClass('fa-check statusOk');
+					$('.details .' + cssClass + ' i.fa-spin').removeClass('fa-refresh fa-spin').addClass('fa-check statusOk');
 					setTimeout(function(){
-						$('.details .attributes .' + cssClass + '.attribute i.fa-check.statusOk').remove();
+						$('.details .' + cssClass + ' i.fa-check.statusOk').remove();
 					}, 2000);
 				}, 500);
 		
@@ -213,9 +213,9 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 			console.log('%c error data: ', 'background: black; color: white;');;
 			console.log(error);
 			console.log('%c ---------------------------------------------------------- ', 'background: #ff0000; color: white; font-weight:900');
-			$('.details .attributes .' + cssClass + '.attribute i.fa-spin').removeClass('fa-refresh fa-spin').addClass('fa-times').html(" " + _TXT_ERROR_AJAX_CALL);
+			$('.details .' + cssClass + ' i.fa-spin').removeClass('fa-refresh fa-spin').addClass('fa-times').html(" " + _TXT_ERROR_AJAX_CALL);
 				setTimeout(function(){
-					$('.details .attributes .' + cssClass + '.attribute i.fa-times').remove();
+					$('.details .' + cssClass + ' i.fa-times').remove();
 				}, 2000);
 		}
 	 });
@@ -318,6 +318,21 @@ function initEditFieldListeners()
 	 domInputDueDate.on('keyup', function(e){
 		if (e.keyCode == 13) {
 			$('#DueDateInput a.btn.validate').click();
+		}
+	 });/* end StartDate */
+
+	 var domInputTitle = $('body').find('#TitleInput input');
+	 $('#TitleInput a.btn.validate').on('click', function(e)
+	 {
+		e.preventDefault();
+		issueDynamicUpdate('subject', domInputTitle.val(), 'input', 'subject');
+		
+		return false;
+	 }); 
+	 
+	 domInputTitle.on('keyup', function(e){
+		if (e.keyCode == 13) {
+			$('#TitleInput a.btn.validate').click();
 		}
 	 });/* end StartDate */
 }	

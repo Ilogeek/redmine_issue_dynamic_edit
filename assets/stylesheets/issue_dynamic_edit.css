@@ -1,6 +1,6 @@
 /* prefix selector with body.controller-issues.action-show  to avoid unwanted style on other page ? */
 
-body.controller-issues.action-show div.issue .attribute .value, body.controller-issues.action-show div.issue .splitcontent {
+body.controller-issues.action-show div.issue.details .value, body.controller-issues.action-show div.issue.details .splitcontent {
 	overflow: visible;
 	position: relative;
 }
@@ -19,7 +19,7 @@ body.controller-issues.action-show .attribute .error {
 	margin-left: 3px;
 }
 
-body.controller-issues.action-show .value .fa-pencil {
+body.controller-issues.action-show .fa-pencil {
 	opacity: 0;
 }
 
@@ -51,22 +51,22 @@ body.controller-issues.action-show .edited .dynamicEdit {
 	pointer-events: auto;
 }
 
-body.controller-issues.action-show div.issue .attribute .value.edited .dynamicEdit {
+body.controller-issues.action-show div.issue.details .value.edited .dynamicEdit {
 	opacity: 1;
 }
 
-body.controller-issues.action-show .attribute .btn-primary {
+body.controller-issues.action-show div.issue.details  .btn-primary {
 	padding: 4px;
 	color: white;
 	border-radius: 3px;
 	padding: 3px;
 }
 
-body.controller-issues.action-show .attribute .btn-primary.close {
+body.controller-issues.action-show div.issue.details .btn-primary.close {
 	background: #c0392b;
 }
 
-body.controller-issues.action-show .attribute .btn-primary.validate {
+body.controller-issues.action-show div.issue.details .btn-primary.validate {
 	background: #27ae60;
 }
 
@@ -88,11 +88,15 @@ body.controller-issues.action-show .dynamicEdit select option[disabled="disabled
     display:none;
 }
 
-body.controller-issues.action-show div.issue .attributes {
+body.controller-issues.action-show div.issue.details .attributes {
   display: table;
   width: 100%;
 }
 
-body.controller-issues.action-show div.issue .splitcontent {
+body.controller-issues.action-show div.issue.details .splitcontent {
   display: table-row;
+}
+
+div.issue div.subject h3 {
+	position:relative;
 }
