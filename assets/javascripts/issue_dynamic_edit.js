@@ -84,6 +84,13 @@ function initEditFields()
 		$('.subject h3').html('<span class="showValue">' + $('.subject h3').html() + '</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
 			htmlCopy).addClass('value');
 	}
+
+	if($('#DescriptionInput').length > 0) {
+		var htmlCopy = $('#DescriptionInput').get(0).outerHTML;
+		$('#DescriptionInput').remove();
+		$('div.description .wiki').html(' <i class="fa fa-pencil fa-fw" aria-hidden="true" style="float:right;"></i><span class="showValue">' + $('div.description .wiki').html() + '</span>' +
+			htmlCopy).addClass('value');
+	}
 }
 
 initEditFields();
@@ -122,6 +129,9 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 		} else if (type == "input")
 		{
 			return $('.details .' + cssClass + ' .value input').val()
+		} else if(type == "textarea")
+		{
+			return $('.details .' + cssClass + ' .value textarea').val()
 		} else if(type == "date")
 		{
 			return "XXXX/XX/XX";
@@ -334,7 +344,20 @@ function initEditFieldListeners()
 		if (e.keyCode == 13) {
 			$('#TitleInput a.btn.validate').click();
 		}
-	 });/* end StartDate */
+	 });/* end Title */
+
+	 var domInputDescription = $('body').find('#DescriptionInput textarea');
+	 $('#DescriptionInput a.btn.validate').on('click', function(e)
+	 {
+		e.preventDefault();
+		issueDynamicUpdate('description', domInputDescription.serialize().split('description=')[1], 'textarea', 'description');
+		
+		return false;
+	 });
+	 
+	var wikiToolbar = new jsToolBar(document.getElementById('description_textarea')); wikiToolbar.setHelpLink('/help/fr/wiki_syntax_textile.html'); wikiToolbar.draw();
+	
+	/* end Description */
 }	
 
 initEditFieldListeners();

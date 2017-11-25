@@ -147,6 +147,13 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 		  o << " <a href='#' class='btn btn-primary validate' aria-label='" + l(:ide_txt_validation_btn) + "'><i class='fa fa-check fa-fw' aria-hidden='true'></i></a>"
 		  o << " <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a>"
 		  o << "</span>"
+
+		  # Description
+		  o << "<span class='dynamicEdit' id='DescriptionInput'>"
+		  o << "	<textarea name='description' id='description_textarea' cols='60' rows='10' style='width:calc(100\% - 10px)'>#{issue.description}</textarea>"
+		  o << " <div style='display:block; text-align:right; margin-top:10px;'><a href='#' class='btn btn-primary validate' aria-label='" + l(:ide_txt_validation_btn) + "'><i class='fa fa-check fa-fw' aria-hidden='true'></i></a>"
+		  o << " <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a></div>"
+		  o << "</span>"
 		  
 		end
 	  end
