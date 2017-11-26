@@ -57,7 +57,7 @@ body.controller-issues.action-show div.issue.details .value.edited .dynamicEdit 
 
 body.controller-issues.action-show div.issue.details  .btn-primary {
 	padding: 4px;
-	color: white;
+	color: white !important;
 	border-radius: 3px;
 	padding: 3px;
 }

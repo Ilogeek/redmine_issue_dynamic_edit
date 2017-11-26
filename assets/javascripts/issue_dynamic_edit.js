@@ -179,10 +179,27 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 						$('.details .' + cssClass + ' i.fa-times.statusKo').remove();
 					}, 2000);
 				}, 500);
+
+				jQuery.ajax({
+				    type: 'GET',
+				    url: window.location.href,
+				    data: { "authenticity_token" : token },
+					crossDomain: true,
+				    async: false,
+				    beforeSend: function(xhr) {
+				        xhr.setRequestHeader("authenticity_token", token);
+				    },
+				    success: function(msg) {
+				    	parsed = $.parseHTML(msg);
+				    }
+				});
+
 			} else {
 			
 				/* removing error div if exists */
 				$('html').find("#errorExplanation").remove();
+
+			}
 				
 				/* we update the details block */
 				$('div.issue.details').html($(parsed).find('div.issue.details').html());
@@ -211,7 +228,7 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 				// update other fields to avoid conflict
 				$('#issue_lock_version').val(parseInt($('#issue_lock_version').val()) + 1 );
 				$('#last_journal_id').val(parseInt($('#last_journal_id').val()) + 1 );
-			}
+			
 		},
 	    error: function(xhr, msg, error) {
 			/* error and no update, info logged into console */

@@ -19,6 +19,7 @@ This plugin uses [FontAwesome icons](http://fontawesome.io/)
 
 ### Changelog
 
+* **v 0.4.7** : if error on dynamic update, put back old values in details block (fixed Github issue #8)
 * **v 0.4.6** : description is now dynamically editable (edit field appears if there's already a description written) (Github request #14)
 * **v 0.4.5** : fixed Github issue #13 : CSS display for custom attributes, added Title dynamic edition (Github request #14)
 * **v 0.4.4** : fixed Github issues #6, #12 : User can't update status until all required field are filled for this step of the issue
