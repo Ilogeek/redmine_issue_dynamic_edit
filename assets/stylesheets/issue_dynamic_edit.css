@@ -99,4 +99,5 @@ body.controller-issues.action-show div.issue.details .splitcontent {
 
 div.issue div.subject h3 {
 	position:relative;
+	display: inline-block;
 }
