@@ -364,15 +364,19 @@ function initEditFieldListeners()
 	 });/* end Title */
 
 	 var domInputDescription = $('body').find('#DescriptionInput textarea');
-	 $('#DescriptionInput a.btn.validate').on('click', function(e)
+
+	 if(domInputDescription.length)
 	 {
-		e.preventDefault();
-		issueDynamicUpdate('description', domInputDescription.serialize().split('description=')[1], 'textarea', 'description');
-		
-		return false;
-	 });
-	 
-	var wikiToolbar = new jsToolBar(document.getElementById('description_textarea')); wikiToolbar.setHelpLink('/help/fr/wiki_syntax_textile.html'); wikiToolbar.draw();
+	 	$('#DescriptionInput a.btn.validate').on('click', function(e)
+		 {
+			e.preventDefault();
+			issueDynamicUpdate('description', domInputDescription.serialize().split('description=')[1], 'textarea', 'description');
+			
+			return false;
+		 });
+		 
+		var wikiToolbar = new jsToolBar(document.getElementById('description_textarea')); wikiToolbar.setHelpLink('/help/fr/wiki_syntax_textile.html'); wikiToolbar.draw();
+	 }
 	
 	/* end Description */
 }	
