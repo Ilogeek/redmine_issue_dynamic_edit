@@ -19,6 +19,7 @@ This plugin uses [FontAwesome icons](http://fontawesome.io/)
 
 ### Changelog
 
+* **v 0.4.9** : fixed Github issue #17 : Datepicker fallback added for date fields
 * **v 0.4.8** : fixed Github issues #15 and #16
 * **v 0.4.7** : if error on dynamic update, put back old values in details block (fixed Github issue #8)
 * **v 0.4.6** : description is now dynamically editable (edit field appears if there's already a description written) (Github request #14)

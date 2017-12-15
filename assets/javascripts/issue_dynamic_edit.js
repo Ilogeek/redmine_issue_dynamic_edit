@@ -228,6 +228,9 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 				// update other fields to avoid conflict
 				$('#issue_lock_version').val(parseInt($('#issue_lock_version').val()) + 1 );
 				$('#last_journal_id').val(parseInt($('#last_journal_id').val()) + 1 );
+
+				//set datepicker fallback for input type date
+				$('body').find('input[type=date]').datepickerFallback(datepickerOptions);
 			
 		},
 	    error: function(xhr, msg, error) {
