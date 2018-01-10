@@ -377,8 +377,13 @@ function initEditFieldListeners()
 			
 			return false;
 		 });
-		 
-		var wikiToolbar = new jsToolBar(document.getElementById('description_textarea')); wikiToolbar.setHelpLink('/help/fr/wiki_syntax_textile.html'); wikiToolbar.draw();
+	 	
+	 	if(typeof(jsToolBar) === typeof(Function))
+		{
+			var wikiToolbar = new jsToolBar(document.getElementById('description_textarea')); wikiToolbar.setHelpLink('/help/fr/wiki_syntax_textile.html'); wikiToolbar.draw();
+		} else if(typeof(CKEDITOR) === "object" && typeof(CKEDITOR.replace) === typeof(Function)) {
+			CKEDITOR.replace('description_textarea', { height: 100, zIndex: 999});
+		}
 	 }
 	
 	/* end Description */

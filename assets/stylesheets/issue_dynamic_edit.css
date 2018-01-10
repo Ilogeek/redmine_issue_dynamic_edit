@@ -53,6 +53,7 @@ body.controller-issues.action-show .edited .dynamicEdit {
 
 body.controller-issues.action-show div.issue.details .value.edited .dynamicEdit {
 	opacity: 1;
+	z-index: 999;
 }
 
 body.controller-issues.action-show div.issue.details  .btn-primary {
