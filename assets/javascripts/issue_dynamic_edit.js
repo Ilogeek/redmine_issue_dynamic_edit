@@ -91,6 +91,37 @@ function initEditFields()
 		$('div.description .wiki').html(' <i class="fa fa-pencil fa-fw" aria-hidden="true" style="float:right;"></i><span class="showValue">' + $('div.description .wiki').html() + '</span>' +
 			htmlCopy).addClass('value');
 	}
+
+	for(var i = 0 ; i < CF_VALUE_JSON.length ; i++)
+	{
+		var info = CF_VALUE_JSON[i].custom_field;
+		var value = CF_VALUE_JSON[i].value;
+		if(info.visible && info.editable)
+		{
+			if($('.details .attributes .cf_' + info.id + '.attribute .value').length)
+			{
+				var htmlCopy = $('#issue_custom_field_values_' + info.id).get(0).outerHTML;
+				// 2 technics with simple or double quote (safety first)
+				htmlCopy = htmlCopy.replace('id="', 'id="dynamic_').replace("id='", "id='dynamic_");
+				htmlCopy = htmlCopy.replace('class="', 'class="cf_' + info.id + ' ').replace("class='", "class='cf_" + info.id + " ");
+				
+				var editHTML = "<span class='dynamicEdit' id='dynamic_edit_cf_" + info.id + "'>";
+	  			editHTML += htmlCopy;
+  				editHTML += " <a href='#' class='btn btn-primary validate' aria-label='" + _TXT_VALIDATION_BTN + "'><i class='fa fa-check fa-fw' aria-hidden='true'></i></a>";
+	  			editHTML += " <a href='#' class='btn btn-primary close' aria-label='" + _TXT_CANCEL_BTN + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a>";
+	  			editHTML += "</span>";
+
+				$('.details .attributes .cf_' + info.id + '.attribute .value').html('<span class="showValue">' + 
+					$('.details .attributes .cf_' + info.id + '.attribute .value').html() + '</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
+					editHTML);
+
+				if(info.field_format == "date")
+				{
+					$('body').find('#dynamic_issue_custom_field_values_' + info.id).datepickerFallback(datepickerOptions);
+				}
+			}
+		}
+	}
 }
 
 initEditFields();
@@ -152,7 +183,6 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 	    url: _BASE_REDMINE_PATH + '/issues/bulk_update?back_url=' + prepareReturnUrl + '&amp;ids%5B%5D=' + _ISSUE_ID + '&amp;issue%5B' + field_name + '%5D=' + field_value,
 	    data: { "authenticity_token" : token },
 		crossDomain: true,
-	    async: false,
 	    beforeSend: function(xhr) {
 	        xhr.setRequestHeader("authenticity_token", token);
 	    },
@@ -205,14 +235,14 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 				$('div.issue.details').html($(parsed).find('div.issue.details').html());
 				$('body').find('.details .' + cssClass + ' .value').append(' <i class="fa fa-refresh fa-spin fa-fw"></i>');
 				
+				/* we update issue properties edit block */
+				$('#all_attributes').html($(parsed).find('#all_attributes').html());
+
 				/* we init edit fields */
 				initEditFields();
 				initEditFieldListeners();
 				
 				updateRequiredFields(JSON.parse($(parsed).find('#required_field_array').html()));
-
-				/* we update issue properties edit block */
-				$('#all_attributes').html($(parsed).find('#all_attributes').html());
 				
 				/* we update the history list */
 				$('#history').append($(parsed).find('#history .journal.has-details:last-child'));
@@ -387,6 +417,59 @@ function initEditFieldListeners()
 	 }
 	
 	/* end Description */
+
+	/* Custom fields */
+	for(var i = 0 ; i < CF_VALUE_JSON.length ; i++)
+	{
+		(function() {
+			var info = CF_VALUE_JSON[i].custom_field;
+			var value = CF_VALUE_JSON[i].value;
+			if(info.visible && info.editable)
+			{
+				var inputType = "input";
+				switch (info.field_format)
+				{
+					case "bool":
+					case "user":
+					case "list":
+					case "enumeration":
+					case "version":
+					inputType = "select";
+					break;
+					case "text":
+					inputType = "textarea";
+					break;
+					
+				}
+				
+				var domInputField = $('body').find('#dynamic_issue_custom_field_values_' + info.id);
+				 $('body').find('#dynamic_edit_cf_' + info.id + ' a.btn.validate').on('click', function(e)
+				 {
+					issueDynamicUpdate('custom_field_values%5D%5B' + info.id , domInputField.val(), inputType, 'cf_' + info.id);
+					
+					return false;
+				 }); 
+				 
+				 domInputField.on('keyup', function(e){
+					if (e.keyCode == 13 && inputType != "textarea") {
+						$('body').find('#dynamic_edit_cf_' + info.id + ' a.btn.validate').click();
+					}
+				 });
+
+				 if(inputType == "textarea")
+				 {
+				 	if(typeof(jsToolBar) === typeof(Function))
+					{
+						var wikiToolbar = new jsToolBar(domInputField); wikiToolbar.setHelpLink('/help/fr/wiki_syntax_textile.html'); wikiToolbar.draw();
+					} else if(typeof(CKEDITOR) === "object" && typeof(CKEDITOR.replace) === typeof(Function)) {
+						CKEDITOR.replace('dynamic_issue_custom_field_values_' + info.id, { height: 100 });
+					}
+				 }
+
+			}
+		}()); // closure FTW
+	}
+
 }	
 
 initEditFieldListeners();

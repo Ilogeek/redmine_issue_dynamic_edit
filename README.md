@@ -1,8 +1,9 @@
 # redmine_issue_dynamic_edit
 
-Add new elements on detailed issue page to dynamically update issue's title, status, assignee, priority, start and due dates, ratio and estimated time fields, directly in the details block of the issue without any page refresh (JIRA style).
+Add new elements on detailed issue page to **dynamically update issue's attributes and custom fields**, directly in the details block of the issue **without any page refresh** (*JIRA style*).
 
-### 🔴  What info should you provide when opening an issue
+
+### 🔴  What info you should provide when opening an issue
 >This plugin use JS a lot. Could you then please check your JS console from your web browser ( [HowTo](https://webmasters.stackexchange.com/a/77337) ) and try again your issue. You'll see some information about what goes wrong. 
 >
 >Could you copy / paste it in your issue and expand all possible object (error data for example) so we can look if there's a problem with the ajax call the plugin performs to update the issue or if there's any JS error.
@@ -24,6 +25,7 @@ This plugin uses [FontAwesome icons](http://fontawesome.io/)
 
 ### Changelog
 
+* **v 0.6.0** : NOW WITH CUSTOM FIELDS SUPPORT ! (Github #19)
 * **v 0.5.0** : fixed Github issue #18 : textarea fixed (jstoolbar or ckeditor)
 * **v 0.4.9** : fixed Github issue #17 : Datepicker fallback added for date fields
 * **v 0.4.8** : fixed Github issues #15 and #16

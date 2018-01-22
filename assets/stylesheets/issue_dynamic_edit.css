@@ -102,3 +102,7 @@ div.issue div.subject h3 {
 	position:relative;
 	display: inline-block;
 }
+
+body.controller-issues.action-show .dynamicEdit input[type="text"] {
+	width: auto !important;
+}

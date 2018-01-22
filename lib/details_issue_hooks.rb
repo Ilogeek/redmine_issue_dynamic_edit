@@ -159,12 +159,16 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 	  end
 	  
 	  o << "<script>"
+
+	  o << " var CF_VALUE_JSON = " + issue.editable_custom_field_values(User.current).to_json + ";\n"
 	  
 	  o << " var _ISSUE_ID = \"#{issue_id}\";\n"
 	  o << " var _USER_API_KEY = \"#{User.current.api_key}\";\n"
 	  o << " var _BASE_REDMINE_PATH = \"#{Redmine::Utils.relative_url_root}\";\n"
 
 	  # Translations text
+	  o << " var _TXT_VALIDATION_BTN = \"" + l(:ide_txt_validation_btn) + "\";\n"
+	  o << " var _TXT_CANCEL_BTN = \"" + l(:ide_txt_cancel_btn) + "\";\n"
 	  o << " var _TXT_ERROR_POSITIVE_NUMBER = \"" + l(:ide_txt_error_positive_number) + "\";\n"
 	  o << " var _TXT_ERROR_START_DATE = \"" + l(:ide_txt_error_start_date) + "\";\n"
 	  o << " var _TXT_ERROR_DUE_DATE = \"" + l(:ide_txt_error_due_date) + "\";\n"
