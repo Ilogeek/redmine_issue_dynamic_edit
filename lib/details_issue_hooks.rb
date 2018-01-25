@@ -2,14 +2,22 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
   
   def protect_against_forgery?
     false
-  end 
+	end
 
-  def view_layouts_base_html_head(context) 
-	stylesheet_link_tag('issue_dynamic_edit.css', :plugin => :redmine_issue_dynamic_edit)
+	def current_is_detail_page(context)
+		ret = context[:controller] && context[:controller].is_a?(IssuesController) && context[:request].original_url.rindex(/\/issues\/\d+/)
+	end
+
+	def view_layouts_base_html_head(context)
+		if current_is_detail_page(context)
+			stylesheet_link_tag('issue_dynamic_edit.css', :plugin => :redmine_issue_dynamic_edit)
+		end
   end
   
-  def view_layouts_base_body_bottom(context) 
-	javascript_include_tag('issue_dynamic_edit.js', :plugin => :redmine_issue_dynamic_edit)
+	def view_layouts_base_body_bottom(context)
+		if current_is_detail_page(context)
+			javascript_include_tag('issue_dynamic_edit.js', :plugin => :redmine_issue_dynamic_edit)
+		end
   end
 
   def view_issues_show_details_bottom(context = { })
