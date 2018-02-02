@@ -98,7 +98,8 @@ function initEditFields()
 		var value = CF_VALUE_JSON[i].value;
 		if(info.visible && info.editable)
 		{
-			if($('.details .attributes .cf_' + info.id + '.attribute .value').length)
+			if($('.details .attributes .cf_' + info.id + '.attribute .value').length
+				&& $('#issue_custom_field_values_' + info.id).length )
 			{
 				var htmlCopy = $('#issue_custom_field_values_' + info.id).get(0).outerHTML;
 				// 2 technics with simple or double quote (safety first)

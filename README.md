@@ -25,6 +25,7 @@ This plugin uses [FontAwesome icons](http://fontawesome.io/)
 
 ### Changelog
 
+* **v 0.6.1** : fixed Github issue #20
 * **v 0.6.0** : NOW WITH CUSTOM FIELDS SUPPORT ! (Github #19)
 * **v 0.5.0** : fixed Github issue #18 : textarea fixed (jstoolbar or ckeditor)
 * **v 0.4.9** : fixed Github issue #17 : Datepicker fallback added for date fields
