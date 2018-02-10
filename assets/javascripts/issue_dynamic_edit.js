@@ -177,14 +177,15 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 	}
 	
 	var token = $("meta[name=csrf-token]").attr('content');
-	// we prepare the return url which is the updated issue detail page with new values
-	var prepareReturnUrl = encodeURIComponent(_BASE_REDMINE_PATH + '/issues/' + _ISSUE_ID);
+	
+	$('#issue-form').find("#issue_" + field_name).val(field_value).css({"display": "inline-block"});
+	var formData = $('#issue-form').serialize();
+	
 	jQuery.ajax({
 	    type: 'POST',
-	    url: _BASE_REDMINE_PATH + '/issues/bulk_update?back_url=' + prepareReturnUrl + '&amp;ids%5B%5D=' + _ISSUE_ID + '&amp;issue%5B' + field_name + '%5D=' + field_value,
-	    data: { "authenticity_token" : token },
-		crossDomain: true,
-	    beforeSend: function(xhr) {
+	    url: _BASE_REDMINE_PATH + '/issues/' + _ISSUE_ID,
+	    data: formData,
+		beforeSend: function(xhr) {
 	        xhr.setRequestHeader("authenticity_token", token);
 	    },
 	    success: function(msg) {
@@ -236,6 +237,9 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 				$('div.issue.details').html($(parsed).find('div.issue.details').html());
 				$('body').find('.details .' + cssClass + ' .value').append(' <i class="fa fa-refresh fa-spin fa-fw"></i>');
 				
+				/* we update form*/
+				$('form#issue-form').html($(parsed).find('form#issue-form').html());
+
 				/* we update issue properties edit block */
 				$('#all_attributes').html($(parsed).find('#all_attributes').html());
 
@@ -255,10 +259,6 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 						$('.details .' + cssClass + ' i.fa-check.statusOk').remove();
 					}, 2000);
 				}, 500);
-		
-				// update other fields to avoid conflict
-				$('#issue_lock_version').val(parseInt($('#issue_lock_version').val()) + 1 );
-				$('#last_journal_id').val(parseInt($('#last_journal_id').val()) + 1 );
 
 				//set datepicker fallback for input type date
 				$('body').find('input[type=date]').datepickerFallback(datepickerOptions);
@@ -404,14 +404,21 @@ function initEditFieldListeners()
 	 	$('#DescriptionInput a.btn.validate').on('click', function(e)
 		 {
 			e.preventDefault();
-			issueDynamicUpdate('description', domInputDescription.serialize().split('description=')[1], 'textarea', 'description');
+			var new_value = domInputDescription.val();
 			
+			if(typeof(CKEDITOR) === "object" 
+				&& typeof(CKEDITOR.instances['description_textarea'].getData) === typeof(Function)){
+				new_value = CKEDITOR.instances['description_textarea'].getData();
+			}
+			
+			issueDynamicUpdate('description', new_value, 'textarea', 'description');
+
 			return false;
 		 });
 	 	
 	 	if(typeof(jsToolBar) === typeof(Function))
 		{
-			var wikiToolbar = new jsToolBar(document.getElementById('description_textarea')); wikiToolbar.setHelpLink('/help/fr/wiki_syntax_textile.html'); wikiToolbar.draw();
+			var wikiToolbar = new jsToolBar(document.getElementById('description_textarea')); wikiToolbar.draw();
 		} else if(typeof(CKEDITOR) === "object" && typeof(CKEDITOR.replace) === typeof(Function)) {
 			CKEDITOR.replace('description_textarea', { height: 100 });
 		}
@@ -446,7 +453,14 @@ function initEditFieldListeners()
 				var domInputField = $('body').find('#dynamic_issue_custom_field_values_' + info.id);
 				 $('body').find('#dynamic_edit_cf_' + info.id + ' a.btn.validate').on('click', function(e)
 				 {
-					issueDynamicUpdate('custom_field_values%5D%5B' + info.id , domInputField.val(), inputType, 'cf_' + info.id);
+				 	var new_value = domInputField.val();
+			
+					if(typeof(CKEDITOR) === "object" 
+						&& typeof(CKEDITOR.instances['dynamic_issue_custom_field_values_' + info.id].getData) === typeof(Function)){
+						new_value = CKEDITOR.instances['dynamic_issue_custom_field_values_' + info.id].getData();
+					}
+
+			 		issueDynamicUpdate('custom_field_values_' + info.id , new_value, inputType, 'cf_' + info.id);
 					
 					return false;
 				 }); 
@@ -456,16 +470,6 @@ function initEditFieldListeners()
 						$('body').find('#dynamic_edit_cf_' + info.id + ' a.btn.validate').click();
 					}
 				 });
-
-				 if(inputType == "textarea")
-				 {
-				 	if(typeof(jsToolBar) === typeof(Function))
-					{
-						var wikiToolbar = new jsToolBar(domInputField); wikiToolbar.setHelpLink('/help/fr/wiki_syntax_textile.html'); wikiToolbar.draw();
-					} else if(typeof(CKEDITOR) === "object" && typeof(CKEDITOR.replace) === typeof(Function)) {
-						CKEDITOR.replace('dynamic_issue_custom_field_values_' + info.id, { height: 100 });
-					}
-				 }
 
 			}
 		}()); // closure FTW
