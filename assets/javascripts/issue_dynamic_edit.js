@@ -118,7 +118,11 @@ function initEditFields()
 
 				if(info.field_format == "date")
 				{
-					$('body').find('#dynamic_issue_custom_field_values_' + info.id).datepickerFallback(datepickerOptions);
+					if(	$('body').find('#dynamic_issue_custom_field_values_' + info.id).length
+					    && $('body').find('#dynamic_issue_custom_field_values_' + info.id).datepickerFallback instanceof Function)
+					{
+						$('body').find('#dynamic_issue_custom_field_values_' + info.id).datepickerFallback(datepickerOptions);
+					}
 				}
 			}
 		}
@@ -261,7 +265,11 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 				}, 500);
 
 				//set datepicker fallback for input type date
-				$('body').find('input[type=date]').datepickerFallback(datepickerOptions);
+				if(	$('body').find('input[type=date]').length
+					&& $('body').find('input[type=date]').datepickerFallback instanceof Function)
+				{
+					$('body').find('input[type=date]').datepickerFallback(datepickerOptions);
+				}
 			
 		},
 	    error: function(xhr, msg, error) {
@@ -455,12 +463,7 @@ function initEditFieldListeners()
 				 {
 				 	var new_value = domInputField.val();
 			
-					if(typeof(CKEDITOR) === "object" 
-						&& typeof(CKEDITOR.instances['dynamic_issue_custom_field_values_' + info.id].getData) === typeof(Function)){
-						new_value = CKEDITOR.instances['dynamic_issue_custom_field_values_' + info.id].getData();
-					}
-
-			 		issueDynamicUpdate('custom_field_values_' + info.id , new_value, inputType, 'cf_' + info.id);
+					issueDynamicUpdate('custom_field_values_' + info.id , new_value, inputType, 'cf_' + info.id);
 					
 					return false;
 				 }); 
