@@ -47,6 +47,10 @@ body.controller-issues.action-show .dynamicEdit {
 	width: max-content;
 }
 
+body.controller-issues.action-show .dynamicEdit.version {
+	max-width: 100%;
+}
+
 body.controller-issues.action-show .edited .dynamicEdit {
 	pointer-events: auto;
 }

@@ -102,11 +102,15 @@ function initEditFields()
 				&& $('#issue_custom_field_values_' + info.id).length )
 			{
 				var htmlCopy = $('#issue_custom_field_values_' + info.id).get(0).outerHTML;
+				if(info.field_format == "version" && info.format_store.edit_tag_style == "check_box")
+				{
+					htmlCopy = 	$('#issue_custom_field_values_' + info.id).parents('span').html();
+				}
 				// 2 technics with simple or double quote (safety first)
-				htmlCopy = htmlCopy.replace('id="', 'id="dynamic_').replace("id='", "id='dynamic_");
-				htmlCopy = htmlCopy.replace('class="', 'class="cf_' + info.id + ' ').replace("class='", "class='cf_" + info.id + " ");
+				htmlCopy = htmlCopy.replace(/id="/g, 'id="dynamic_').replace(/id='/g, "id='dynamic_");
+				htmlCopy = htmlCopy.replace(/class="/g, 'class="cf_' + info.id + ' ').replace(/class='/g, "class='cf_" + info.id + " ");
 				
-				var editHTML = "<span class='dynamicEdit' id='dynamic_edit_cf_" + info.id + "'>";
+				var editHTML = "<span class='dynamicEdit " + info.field_format + "' id='dynamic_edit_cf_" + info.id + "'>";
 	  			editHTML += htmlCopy;
   				editHTML += " <a href='#' class='btn btn-primary validate' aria-label='" + _TXT_VALIDATION_BTN + "'><i class='fa fa-check fa-fw' aria-hidden='true'></i></a>";
 	  			editHTML += " <a href='#' class='btn btn-primary close' aria-label='" + _TXT_CANCEL_BTN + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a>";
@@ -456,6 +460,15 @@ function initEditFieldListeners()
 					inputType = "textarea";
 					break;
 					
+				}
+
+				// Specific case : version field with checkboxes
+				if(info.field_format == "version" && info.format_store.edit_tag_style == "check_box")
+				{
+					inputType = "version";
+					$('body').find('#dynamic_edit_cf_' + info.id + ' input').on('click', function(e){
+			 			$('label[for=issue_custom_field_values_' + info.id + ']').next().find('input[value=' + $(this).val() + ']').click();
+			 		});
 				}
 				
 				var domInputField = $('body').find('#dynamic_issue_custom_field_values_' + info.id);

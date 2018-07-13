@@ -4,9 +4,9 @@ Add new elements on detailed issue page to **dynamically update issue's attribut
 
 
 ### 🔴  What info you should provide when opening an issue
->This plugin use JS a lot. Could you then please check your JS console from your web browser ( [HowTo](https://webmasters.stackexchange.com/a/77337) ) and try again your issue. You'll see some information about what goes wrong. 
+>This plugin use JS a lot. Check your JS console from your web browser ( [HowTo](https://webmasters.stackexchange.com/a/77337) ) and try again to reproduce your issue. You'll see some information about what goes wrong. 
 >
->Could you copy / paste it in your issue and expand all possible object (error data for example) so we can look if there's a problem with the ajax call the plugin performs to update the issue or if there's any JS error.
+>Copy and paste the result that appears in your console in the Github issue and expand all possible object (error data for example). With this data, we can look if there's a problem with the ajax call the plugin performs to update the issue or if there's any JS error.
 
 ### Example
 
@@ -25,10 +25,11 @@ This plugin uses [FontAwesome icons](http://fontawesome.io/)
 
 ### Changelog
 
+* **v.0.6.4** : version field with checkbox display is now supported (Github request #24)
 * **v 0.6.3** : fixed Github issue #22 : DatepickerFallback raised an error
 * **v 0.6.2** : fixed Github issue #22 : long description is now supported (no more 414 errors)
 * **v 0.6.1** : fixed Github issue #20
-* **v 0.6.0** : NOW WITH CUSTOM FIELDS SUPPORT ! (Github #19)
+* **v 0.6.0** : **NOW WITH CUSTOM FIELDS SUPPORT** ! (Github #19)
 * **v 0.5.0** : fixed Github issue #18 : textarea fixed (jstoolbar or ckeditor)
 * **v 0.4.9** : fixed Github issue #17 : Datepicker fallback added for date fields
 * **v 0.4.8** : fixed Github issues #15 and #16
