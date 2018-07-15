@@ -92,6 +92,38 @@ function initEditFields()
 			htmlCopy).addClass('value');
 	}
 
+	if($('select#issue_assigned_to_id').length > 0)
+	{
+		var htmlCopy = $('select#issue_assigned_to_id').get(0).outerHTML;
+		// 2 technics with simple or double quote (safety first)
+		htmlCopy = htmlCopy.replace(/id="/g, 'id="dynamic_').replace(/id='/g, "id='dynamic_");
+
+		var editHTML = "<span class='dynamicEdit' id='dynamic_edit_assigned_to_id'>";
+		editHTML += htmlCopy;
+		editHTML += " <a href='#' class='btn btn-primary close' aria-label='" + _TXT_CANCEL_BTN + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a>";
+		editHTML += "</span>";
+				
+		$('.details .attributes .assigned-to.attribute .value').html('<span class="showValue">' + 
+			$('.details .attributes .assigned-to.attribute .value').html() + '</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
+			editHTML);
+	}
+
+	if($('select#issue_fixed_version_id').length > 0)
+	{
+		var htmlCopy = $('select#issue_fixed_version_id').get(0).outerHTML;
+		// 2 technics with simple or double quote (safety first)
+		htmlCopy = htmlCopy.replace(/id="/g, 'id="dynamic_').replace(/id='/g, "id='dynamic_");
+
+		var editHTML = "<span class='dynamicEdit' id='dynamic_edit_fixed_version'>";
+		editHTML += htmlCopy;
+		editHTML += " <a href='#' class='btn btn-primary close' aria-label='" + _TXT_CANCEL_BTN + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a>";
+		editHTML += "</span>";
+				
+		$('.details .attributes .fixed-version.attribute .value').html('<span class="showValue">' + 
+			$('.details .attributes .fixed-version.attribute .value').html() + '</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
+			editHTML);
+	}
+
 	for(var i = 0 ; i < CF_VALUE_JSON.length ; i++)
 	{
 		var info = CF_VALUE_JSON[i].custom_field;
@@ -434,6 +466,24 @@ function initEditFieldListeners()
 		} else if(typeof(CKEDITOR) === "object" && typeof(CKEDITOR.replace) === typeof(Function)) {
 			CKEDITOR.replace('description_textarea', { height: 100 });
 		}
+	 }
+
+	 var dynamic_edit_assigned_to_id = $('body').find('#dynamic_edit_assigned_to_id select');
+
+	 if(dynamic_edit_assigned_to_id.length)
+	 {
+	 	dynamic_edit_assigned_to_id.on('change', function(e){
+			issueDynamicUpdate('assigned_to_id', dynamic_edit_assigned_to_id.val(), 'select', 'assigned-to');
+		 });
+	 }
+
+	 var dynamic_edit_fixed_version = $('body').find('#dynamic_edit_fixed_version select');
+
+	 if(dynamic_edit_fixed_version.length)
+	 {
+	 	dynamic_edit_fixed_version.on('change', function(e){
+			issueDynamicUpdate('fixed_version_id', dynamic_edit_fixed_version.val(), 'select', 'fixed-version');
+		 });
 	 }
 	
 	/* end Description */
