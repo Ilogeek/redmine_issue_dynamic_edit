@@ -1,3 +1,6 @@
+/* Allow inclusion from other page */
+var LOCATION_HREF = typeof custom_location_href !== 'undefined' ? custom_location_href  : window.location.href;
+
 /* FontAwesome inclusion */
 var cssId = 'fontAwesome';
 	if (!document.getElementById(cssId))
@@ -155,7 +158,8 @@ function initEditFields()
 				if(info.field_format == "date")
 				{
 					if(	$('body').find('#dynamic_issue_custom_field_values_' + info.id).length
-					    && $('body').find('#dynamic_issue_custom_field_values_' + info.id).datepickerFallback instanceof Function)
+					    && $('body').find('#dynamic_issue_custom_field_values_' + info.id).datepickerFallback instanceof Function
+					    && typeof datepickerOptions !== 'undefined')
 					{
 						$('body').find('#dynamic_issue_custom_field_values_' + info.id).datepickerFallback(datepickerOptions);
 					}
@@ -176,7 +180,9 @@ function updateRequiredFields(reqFieldsArray)
 	}
  }
 
-updateRequiredFields(JSON.parse($('#required_field_array').html()));	
+if($('#required_field_array').length) {
+	updateRequiredFields(JSON.parse($('#required_field_array').html()));	
+}
 
 
 $('body.controller-issues.action-show').on('click', '.btn.close', function(e){
@@ -184,6 +190,26 @@ $('body.controller-issues.action-show').on('click', '.btn.close', function(e){
 	$(e.target).closest('.value').removeClass('edited');
 	return false;
 });
+
+function getLastLockVersion() {
+	var token = $("meta[name=csrf-token]").attr('content');
+	var lock_version = $('#issue_lock_version').val();
+	jQuery.ajax({
+	    type: 'GET',
+	    url: LOCATION_HREF,
+	    data: { "authenticity_token" : token },
+		crossDomain: true,
+	    async: false,
+	    beforeSend: function(xhr) {
+	        xhr.setRequestHeader("authenticity_token", token);
+	    },
+	    success: function(msg) {
+	    	parsed = $.parseHTML(msg);
+	    	lock_version = $(parsed).find('#issue_lock_version').val();
+	    }
+	});
+	return lock_version;
+}
 
 function issueDynamicUpdate(field_name, field_value, type, cssClass){
 	
@@ -219,11 +245,14 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 	var token = $("meta[name=csrf-token]").attr('content');
 	
 	$('#issue-form').find("#issue_" + field_name).val(field_value).css({"display": "inline-block"});
+	// avoid conflict revision
+	var lastLockVersion = getLastLockVersion();
+	$('#issue_lock_version').val(lastLockVersion);
 	var formData = $('#issue-form').serialize();
 	
 	jQuery.ajax({
 	    type: 'POST',
-	    url: _BASE_REDMINE_PATH + '/issues/' + _ISSUE_ID,
+	    url: LOCATION_HREF,
 	    data: formData,
 		beforeSend: function(xhr) {
 	        xhr.setRequestHeader("authenticity_token", token);
@@ -254,7 +283,7 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 
 				jQuery.ajax({
 				    type: 'GET',
-				    url: window.location.href,
+				    url: LOCATION_HREF,
 				    data: { "authenticity_token" : token },
 					crossDomain: true,
 				    async: false,
@@ -287,7 +316,9 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 				initEditFields();
 				initEditFieldListeners();
 				
-				updateRequiredFields(JSON.parse($(parsed).find('#required_field_array').html()));
+				if($(parsed).find('#required_field_array').length) {
+					updateRequiredFields(JSON.parse($(parsed).find('#required_field_array').html()));
+				}
 				
 				/* we update the history list */
 				$('#history').append($(parsed).find('#history .journal.has-details:last-child'));
@@ -302,7 +333,8 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 
 				//set datepicker fallback for input type date
 				if(	$('body').find('input[type=date]').length
-					&& $('body').find('input[type=date]').datepickerFallback instanceof Function)
+					&& $('body').find('input[type=date]').datepickerFallback instanceof Function
+					&& typeof datepickerOptions !== 'undefined')
 				{
 					$('body').find('input[type=date]').datepickerFallback(datepickerOptions);
 				}

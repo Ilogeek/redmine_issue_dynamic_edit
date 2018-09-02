@@ -5,7 +5,7 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 	end
 
 	def current_is_detail_page(context)
-		ret = context[:controller] && context[:controller].is_a?(IssuesController) && context[:request].original_url.rindex(/\/issues\/\d+/)
+		ret = context[:controller] && context[:controller].is_a?(IssuesController) && context[:request].original_url.rindex(/\/issues\/\S+/)
 	end
 
 	def view_layouts_base_html_head(context)
