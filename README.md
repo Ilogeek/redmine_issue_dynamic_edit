@@ -25,6 +25,7 @@ This plugin uses [FontAwesome icons](http://fontawesome.io/)
 
 ### Changelog
 
+* **v.0.6.5** : Checklists plugin support (and all other plugins that compute fields when there's an issue update) (Github requests #26 and #28) + custom url support (Github request #29)
 * **v.0.6.4** : version field with checkbox display is now supported, Target version and Assignee fields are also supported (Github request #24)
 * **v 0.6.3** : fixed Github issue #22 : DatepickerFallback raised an error
 * **v 0.6.2** : fixed Github issue #22 : long description is now supported (no more 414 errors)
