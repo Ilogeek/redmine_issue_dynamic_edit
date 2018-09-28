@@ -260,7 +260,7 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 	    success: function(msg) {
 	    	/* get result page content (updated issue detail page with new status) */
 			
-	    	var parsed = $.parseHTML(msg);
+               var parsed = $.parseHTML(msg, true); // That it keeps script tag.
 			
 			var error = $(parsed).find("#errorExplanation");
 			
@@ -291,7 +291,7 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass){
 				        xhr.setRequestHeader("authenticity_token", token);
 				    },
 				    success: function(msg) {
-				    	parsed = $.parseHTML(msg);
+				        parsed = $.parseHTML(msg, true); // That it keeps script tag.
 				    }
 				});
 
