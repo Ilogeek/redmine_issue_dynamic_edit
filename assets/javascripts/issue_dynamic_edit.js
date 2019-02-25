@@ -378,7 +378,7 @@ function initEditFieldListeners()
 		/* update the classes priority from */
 		$("#content > div.issue").removeClass(function (index, className) {
 			return (className.match (/(^|\s)priority-\S+/g) || []).join(' ');
-		}).addClass('priority-' + domSelectStatus.val());
+		}).addClass('priority-' + domSelectPriorities.val());
 	 }); /* end on change domSelectPriorities */
 		  
 	 var domSelectUsers = $('body').find('#usersListDropdown select');
