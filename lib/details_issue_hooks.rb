@@ -17,7 +17,7 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
   
 	def view_layouts_base_body_bottom(context)
 		if current_is_detail_page(context)
-			javascript_include_tag('issue_dynamic_edit.js', :plugin => :redmine_issue_dynamic_edit)
+			javascript_include_tag('issue_dynamic_edit_configuration_file.js', 'issue_dynamic_edit.js', :plugin => :redmine_issue_dynamic_edit)
 		end
   end
 
