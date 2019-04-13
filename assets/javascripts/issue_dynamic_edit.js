@@ -1,4 +1,7 @@
-/* Allow inclusion from other page */
+/* 
+ * Allow inclusion from other page 
+ * See https://github.com/Ilogeek/redmine_issue_dynamic_edit/commit/26684a2dd9b12dcc7377afd79e9fe5c142d26ebd for more info
+ */
 var LOCATION_HREF = typeof custom_location_href !== 'undefined' ? custom_location_href  : window.location.href;
 
 /* FontAwesome inclusion */
@@ -17,6 +20,7 @@ var cssId = 'fontAwesome';
 
 $(document).on('click', function(e){
 	$('.issue .attributes .attribute .value').removeClass('edited');
+	if($(e.target).closest('a').length){ return; }
 	if($(e.target).closest('.value').length) {
         $(e.target).closest('.value').addClass('edited');
     }
