@@ -33,14 +33,6 @@ function initEditFields()
 			htmlCopy);
 	}
 		  
-	if($('#usersListDropdown').length > 0) {
-		var htmlCopy = $('#usersListDropdown').get(0).outerHTML;
-		$('#usersListDropdown').remove();
-		$('.details .attributes .assigned-to.attribute .value').html( '<span class="showValue">' + 
-			$('.details .attributes .assigned-to.attribute .value').html() + '</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
-			htmlCopy);
-	}
-		  
 	if($('#prioritiesListDropdown').length > 0) {
 		var htmlCopy = $('#prioritiesListDropdown').get(0).outerHTML;
 		$('#prioritiesListDropdown').remove();
