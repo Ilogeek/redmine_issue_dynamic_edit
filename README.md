@@ -1,32 +1,43 @@
-# redmine_issue_dynamic_edit
+# ✨  redmine_issue_dynamic_edit
 
 Add new elements on detailed issue page to **dynamically update issue's attributes and custom fields**, directly in the details block of the issue **without any page refresh** (*JIRA style*).
 
 
 ### 🔴  What info you should provide when opening an issue
+>Please list your installed plugins and the Redmine version you use. Note that I can't fix every issue when you have conflict with an other plugin that also edit the page.
+>
 >This plugin use JS a lot. Check your JS console from your web browser ( [HowTo](https://webmasters.stackexchange.com/a/77337) ) and try again to reproduce your issue. You'll see some information about what goes wrong. 
 >
 >Copy and paste the result that appears in your console in the Github issue and expand all possible object (error data for example). With this data, we can look if there's a problem with the ajax call the plugin performs to update the issue or if there's any JS error.
 
-### Example
+### 🔎  Example
 
 ![Gif that represents dynamic edition of field from the detailled issue's view](/doc/edit.gif)
 
-### Installation
+### 📦  Installation
 
 * Clone repo into plugins directory : `git clone https://github.com/Ilogeek/redmine_issue_dynamic_edit.git` (be sure that the parent folder is called `redmine_issue_dynamic_edit`)
 * Restart your Redmine instance
 
-### Customization
+### ⚙  Configuration (new since v 0.6.6)
+
+You can set some settings by editing the file `assets/javascripts/issue_dynamic_edit_configuration_file.js`. Inside this file you'll find different variable :
+* **\_CONF\_FORCE\_HTTPS** : Will force AJAX call performed by the plugin to be done with https protocol. Use this value if you encounter some difficulties with "Mixed content" issues
+* **\_CONF\_LISTENER\_TYPE** : Choose which action will trigger the apparition of the edition block
+* **\_CONF\_LISTENER\_TARGET** : Choose which area will trigger the apparition of the edition block
+* **\_CONF\_EXCLUDED\_FIELD\_ID** : Choose which fields to exclude. They won't have the edit block and pencil
+
+### 🎨  Customization
 
 Feel free to edit `assets/stylesheets/issue_dynamic_edit.css` to update the look of your fields depending on your current Redmine Theme. 
 
 This plugin uses [FontAwesome icons](http://fontawesome.io/)
 
-### Changelog
+### 🆕  Changelog
 
-* **v.0.6.5** : Checklists plugin support (and all other plugins that compute fields when there's an issue update) (Github requests #26 and #28) + custom url support (Github request #29)
-* **v.0.6.4** : version field with checkbox display is now supported, Target version and Assignee fields are also supported (Github request #24)
+* **v 0.6.6** : New configuration file + Multiple fixes (#30 #31 #35 #36 #37 #38 #41)
+* **v 0.6.5** : Checklists plugin support (and all other plugins that compute fields when there's an issue update) (Github requests #26 and #28) + custom url support (Github request #29)
+* **v 0.6.4** : version field with checkbox display is now supported, Target version and Assignee fields are also supported (Github request #24)
 * **v 0.6.3** : fixed Github issue #22 : DatepickerFallback raised an error
 * **v 0.6.2** : fixed Github issue #22 : long description is now supported (no more 414 errors)
 * **v 0.6.1** : fixed Github issue #20
