@@ -5,7 +5,8 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 	end
 
 	def current_is_detail_page(context)
-		ret = context[:controller] && context[:controller].is_a?(IssuesController) && context[:request].original_url.rindex(/\/issues\/\S+/)
+		# check if we see an issue but not creating a new one or on the specific edit page
+		ret = context[:controller] && context[:controller].is_a?(IssuesController) && context[:request].original_url.rindex(/\/issues\/\S+/) && !context[:request].original_url.rindex(/\/issues\/new/) && !context[:request].original_url.rindex(/\/issues\/\d+\/edit/)
 	end
 
 	def view_layouts_base_html_head(context)
