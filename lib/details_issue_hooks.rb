@@ -131,7 +131,9 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 			  o << "</span>"
 			  o << "<script>"
 			  o << "//<![CDATA[\n"
-			  o << "	$(function() { $('#StartDateInput input').addClass('date').datepickerFallback(datepickerOptions); });\n"
+			  o << "	if(typeof datepickerOptions !== 'undefined'){\n"
+			  o << "		$(function() { $('#StartDateInput input').addClass('date').datepickerFallback(datepickerOptions); });\n"
+			  o << "	}\n"
 			  o << "//]]>\n"
 			  o << "</script>"
 		  end
@@ -145,7 +147,9 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 			  o << "</span>"
 			  o << "<script>"
 			  o << "//<![CDATA[\n"
-			  o << "	$(function() { $('#DueDateInput input').addClass('date').datepickerFallback(datepickerOptions); });\n"
+			  o << "	if(typeof datepickerOptions !== 'undefined'){\n"
+			  o << "		$(function() { $('#DueDateInput input').addClass('date').datepickerFallback(datepickerOptions); });\n"
+			  o << "	}\n"
 			  o << "//]]>\n"
 			  o << "</script>"
 		  end
