@@ -33,7 +33,10 @@ $(document).on(_CONF_LISTENER_TYPE, function(e){
 	if($(e.target).closest('.' + _CONF_LISTENER_TARGET).length) {
 		// avoid text selection if dblclick
 		var sel = window.getSelection ? window.getSelection() : document.selection;
-		if (sel) {
+		var activeElement = document.activeElement;
+		var inputs = ['input', 'select', 'button', 'textarea'];
+
+		if (sel && inputs.indexOf(activeElement.tagName.toLowerCase()) === -1) {
 		    if (sel.removeAllRanges) {
 		        sel.removeAllRanges();
 		    } else if (sel.empty) {
