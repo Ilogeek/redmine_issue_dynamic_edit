@@ -35,7 +35,7 @@ body.controller-issues.action-show .dynamicEdit {
 	display: inline-block;
 	position:absolute;
 	opacity: 0;
-	/* left:0; */
+	/* left:0; correct position on top of icon */
 	bottom: 100%;
 	margin-bottom: 5px;
 	box-sizing: border-box;
