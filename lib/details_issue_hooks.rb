@@ -5,7 +5,8 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 	end
 
 	def current_is_detail_page(context)
-		ret = context[:controller] && context[:controller].is_a?(IssuesController) && context[:request].original_url.rindex(/\/issues\/\S+/)
+		# check if we see an issue but not creating a new one or on the specific edit page
+		ret = context[:controller] && context[:controller].is_a?(IssuesController) && context[:request].original_url.rindex(/\/issues\/\S+/) && !context[:request].original_url.rindex(/\/issues\/new/) && !context[:request].original_url.rindex(/\/issues\/\d+\/edit/)
 	end
 
 	def view_layouts_base_html_head(context)
@@ -16,7 +17,7 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
   
 	def view_layouts_base_body_bottom(context)
 		if current_is_detail_page(context)
-			javascript_include_tag('issue_dynamic_edit.js', :plugin => :redmine_issue_dynamic_edit)
+			javascript_include_tag('issue_dynamic_edit_configuration_file.js', 'issue_dynamic_edit.js', :plugin => :redmine_issue_dynamic_edit)
 		end
   end
 
@@ -130,7 +131,9 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 			  o << "</span>"
 			  o << "<script>"
 			  o << "//<![CDATA[\n"
-			  o << "	$(function() { $('#StartDateInput input').addClass('date').datepickerFallback(datepickerOptions); });\n"
+			  o << "	if(typeof datepickerOptions !== 'undefined'){\n"
+			  o << "		$(function() { $('#StartDateInput input').addClass('date').datepickerFallback(datepickerOptions); });\n"
+			  o << "	}\n"
 			  o << "//]]>\n"
 			  o << "</script>"
 		  end
@@ -144,7 +147,9 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 			  o << "</span>"
 			  o << "<script>"
 			  o << "//<![CDATA[\n"
-			  o << "	$(function() { $('#DueDateInput input').addClass('date').datepickerFallback(datepickerOptions); });\n"
+			  o << "	if(typeof datepickerOptions !== 'undefined'){\n"
+			  o << "		$(function() { $('#DueDateInput input').addClass('date').datepickerFallback(datepickerOptions); });\n"
+			  o << "	}\n"
 			  o << "//]]>\n"
 			  o << "</script>"
 		  end

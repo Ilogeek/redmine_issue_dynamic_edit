@@ -1,5 +1,17 @@
-/* Allow inclusion from other page */
+/*
+ * OPTIONS DEFINED FROM CONFIGURATION FILE
+ */
+var _CONF_FORCE_HTTPS = _CONF_FORCE_HTTPS || false;
+var _CONF_LISTENER_TYPE = _CONF_LISTENER_TYPE || "click";
+var _CONF_LISTENER_TARGET = _CONF_LISTENER_TARGET || "value";
+var _CONF_EXCLUDED_FIELD_ID = _CONF_EXCLUDED_FIELD_ID || [];
+
+/* 
+ * Allow inclusion from other page 
+ * See https://github.com/Ilogeek/redmine_issue_dynamic_edit/commit/26684a2dd9b12dcc7377afd79e9fe5c142d26ebd for more info
+ */
 var LOCATION_HREF = typeof custom_location_href !== 'undefined' ? custom_location_href  : window.location.href;
+if(_CONF_FORCE_HTTPS) { LOCATION_HREF = LOCATION_HREF.replace(/^http:\/\//i, 'https://'); }
 
 /* FontAwesome inclusion */
 var cssId = 'fontAwesome';
@@ -15,17 +27,35 @@ var cssId = 'fontAwesome';
 		head.appendChild(link);
 	}
 
-$(document).on('click', function(e){
+$(document).on(_CONF_LISTENER_TYPE, function(e){
 	$('.issue .attributes .attribute .value').removeClass('edited');
-	if($(e.target).closest('.value').length) {
+	if($(e.target).closest('a').length){ return; }
+	if($(e.target).closest('.' + _CONF_LISTENER_TARGET).length) {
+		// avoid text selection if dblclick
+		var sel = window.getSelection ? window.getSelection() : document.selection;
+		var activeElement = document.activeElement;
+		var inputs = ['input', 'select', 'button', 'textarea'];
+
+		if (sel && inputs.indexOf(activeElement.tagName.toLowerCase()) === -1) {
+		    if (sel.removeAllRanges) {
+		        sel.removeAllRanges();
+		    } else if (sel.empty) {
+		        sel.empty();
+		    }
+		}
+		// we show the edit box
         $(e.target).closest('.value').addClass('edited');
     }
 });
 
+function isExcluded(elmt_id) {
+  return _CONF_EXCLUDED_FIELD_ID.indexOf(elmt_id) > -1;
+}
+
 function initEditFields()
 {
 	/* Put new dropdown lists in the detailed info block */	
-	if($('#statusListDropdown').length > 0) {
+	if($('#statusListDropdown').length > 0 && !isExcluded('statusListDropdown')) {
 		var htmlCopy = $('#statusListDropdown').get(0).outerHTML;
 		$('#statusListDropdown').remove();
 		$('.details .attributes .status.attribute .value').html( '<span class="showValue">' + 
@@ -33,15 +63,7 @@ function initEditFields()
 			htmlCopy);
 	}
 		  
-	if($('#usersListDropdown').length > 0) {
-		var htmlCopy = $('#usersListDropdown').get(0).outerHTML;
-		$('#usersListDropdown').remove();
-		$('.details .attributes .assigned-to.attribute .value').html( '<span class="showValue">' + 
-			$('.details .attributes .assigned-to.attribute .value').html() + '</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
-			htmlCopy);
-	}
-		  
-	if($('#prioritiesListDropdown').length > 0) {
+	if($('#prioritiesListDropdown').length > 0 && !isExcluded('prioritiesListDropdown')) {
 		var htmlCopy = $('#prioritiesListDropdown').get(0).outerHTML;
 		$('#prioritiesListDropdown').remove();
 		$('.details .attributes .priority.attribute .value').html( '<span class="showValue">' + 
@@ -49,7 +71,7 @@ function initEditFields()
 			htmlCopy);
 	}
 
-	if($('#doneRatioListDropdown').length > 0) {
+	if($('#doneRatioListDropdown').length > 0 && !isExcluded('doneRatioListDropdown')) {
 		var htmlCopy = $('#doneRatioListDropdown').get(0).outerHTML;
 		$('#doneRatioListDropdown').remove();
 		$('.details .attributes .progress.attribute .value').html('<span class="showValue">' + 
@@ -57,7 +79,7 @@ function initEditFields()
 			htmlCopy);
 	}
 
-	if($('#EstimatedTimeInput').length > 0) {
+	if($('#EstimatedTimeInput').length > 0 && !isExcluded('EstimatedTimeInput')) {
 		var htmlCopy = $('#EstimatedTimeInput').get(0).outerHTML;
 		$('#EstimatedTimeInput').remove();
 		$('.details .attributes .estimated-hours.attribute .value').html('<span class="showValue">' + 
@@ -65,7 +87,7 @@ function initEditFields()
 			htmlCopy);
 	}
 
-	if($('#StartDateInput').length > 0) {
+	if($('#StartDateInput').length > 0 && !isExcluded('StartDateInput')) {
 		var htmlCopy = $('#StartDateInput').get(0).outerHTML;
 		$('#StartDateInput').remove();
 		$('.details .attributes .start-date.attribute .value').html('<span class="showValue">' + 
@@ -73,7 +95,7 @@ function initEditFields()
 			htmlCopy);
 	}
 
-	if($('#DueDateInput').length > 0) {
+	if($('#DueDateInput').length > 0 && !isExcluded('DueDateInput')) {
 		var htmlCopy = $('#DueDateInput').get(0).outerHTML;
 		$('#DueDateInput').remove();
 		$('.details .attributes .due-date.attribute .value').html('<span class="showValue">' + 
@@ -81,21 +103,21 @@ function initEditFields()
 			htmlCopy);
 	}
 
-	if($('#TitleInput').length > 0) {
+	if($('#TitleInput').length > 0 && !isExcluded('TitleInput')) {
 		var htmlCopy = $('#TitleInput').get(0).outerHTML;
 		$('#TitleInput').remove();
 		$('.subject h3').html('<span class="showValue">' + $('.subject h3').html() + '</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
 			htmlCopy).addClass('value');
 	}
 
-	if($('#DescriptionInput').length > 0) {
+	if($('#DescriptionInput').length > 0 && !isExcluded('DescriptionInput')) {
 		var htmlCopy = $('#DescriptionInput').get(0).outerHTML;
 		$('#DescriptionInput').remove();
 		$('div.description .wiki').html(' <i class="fa fa-pencil fa-fw" aria-hidden="true" style="float:right;"></i><span class="showValue">' + $('div.description .wiki').html() + '</span>' +
 			htmlCopy).addClass('value');
 	}
 
-	if($('select#issue_assigned_to_id').length > 0)
+	if($('select#issue_assigned_to_id').length > 0 && !isExcluded('issue_assigned_to_id'))
 	{
 		var htmlCopy = $('select#issue_assigned_to_id').get(0).outerHTML;
 		// 2 technics with simple or double quote (safety first)
@@ -111,7 +133,7 @@ function initEditFields()
 			editHTML);
 	}
 
-	if($('select#issue_fixed_version_id').length > 0)
+	if($('select#issue_fixed_version_id').length > 0 && !isExcluded('issue_fixed_version_id'))
 	{
 		var htmlCopy = $('select#issue_fixed_version_id').get(0).outerHTML;
 		// 2 technics with simple or double quote (safety first)
@@ -131,7 +153,7 @@ function initEditFields()
 	{
 		var info = CF_VALUE_JSON[i].custom_field;
 		var value = CF_VALUE_JSON[i].value;
-		if(info.visible && info.editable)
+		if(info.visible && info.editable && !isExcluded("issue_custom_field_values_" + info.id))
 		{
 			if($('.details .attributes .cf_' + info.id + '.attribute .value').length
 				&& $('#issue_custom_field_values_' + info.id).length )
@@ -378,7 +400,7 @@ function initEditFieldListeners()
 		/* update the classes priority from */
 		$("#content > div.issue").removeClass(function (index, className) {
 			return (className.match (/(^|\s)priority-\S+/g) || []).join(' ');
-		}).addClass('priority-' + domSelectStatus.val());
+		}).addClass('priority-' + domSelectPriorities.val());
 	 }); /* end on change domSelectPriorities */
 		  
 	 var domSelectUsers = $('body').find('#usersListDropdown select');
