@@ -155,8 +155,10 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 		  end
 
 		  # Title
+		  # Make quotings in subject! (PP)
+		  clonesubject = issue.subject.gsub('"','&quot;')
 		  o << "<span class='dynamicEdit' id='TitleInput'>"
-		  o << "	<input size=\"50\" value=\"#{issue.subject}\" type=\"text\">"
+		  o << "	<input size=\"50\" value=\"#{clonesubject}\" type=\"text\">"
 		  o << " <a href='#' class='btn btn-primary validate' aria-label='" + l(:ide_txt_validation_btn) + "'><i class='fa fa-check fa-fw' aria-hidden='true'></i></a>"
 		  o << " <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a>"
 		  o << "</span>"
