@@ -9,7 +9,7 @@
  * Use this value if you encounter some difficulties with "Mixed content" issues
  * Allowed values : false (default), true
  */
-var _CONF_FORCE_HTTPS = true;
+var _CONF_FORCE_HTTPS = false;
 
 /*
  * _CONF_LISTENER_TYPE (string)
