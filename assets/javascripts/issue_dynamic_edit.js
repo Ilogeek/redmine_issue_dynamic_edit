@@ -217,6 +217,17 @@ function initEditFields() {
 						$('body').find('#dynamic_issue_custom_field_values_' + info.id).datepickerFallback(datepickerOptions);
 					}
 				}
+
+				if (info.field_format == "datetime") {
+					if (
+						$('body').find('#dynamic_issue_custom_field_values_' + info.id).length &&
+						$('body').find('#dynamic_issue_custom_field_values_' + info.id).datepickerFallback instanceof Function &&
+						typeof datepickerOptions !== 'undefined'
+					) {
+						cf_datetime = $('body').find('#dynamic_issue_custom_field_values_' + info.id);
+						cf_datetime.datetimepicker(datetimepickerOptions);
+					}
+				}
 			}
 		}
 	}
