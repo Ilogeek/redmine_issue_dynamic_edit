@@ -218,13 +218,12 @@ function initEditFields() {
 					}
 				}
 
+				cf_datetime = $('body').find('#dynamic_issue_custom_field_values_' + info.id);
 				if (info.field_format == "datetime") {
 					if (
-						$('body').find('#dynamic_issue_custom_field_values_' + info.id).length &&
-						$('body').find('#dynamic_issue_custom_field_values_' + info.id).datepickerFallback instanceof Function &&
-						typeof datepickerOptions !== 'undefined'
+						cf_datetime.length &&
+						typeof datetimepickerOptions !== 'undefined'
 					) {
-						cf_datetime = $('body').find('#dynamic_issue_custom_field_values_' + info.id);
 						cf_datetime.datetimepicker(datetimepickerOptions);
 					}
 				}
