@@ -183,11 +183,16 @@ function initEditFields() {
 		if (info.visible && info.editable && !isExcluded("issue_custom_field_values_" + info.id)) {
 			if (
 				$('.details .attributes .cf_' + info.id + '.attribute .value').length &&
-				$('#issue_custom_field_values_' + info.id).length
+				(
+					$('#issue_custom_field_values_' + info.id).length ||
+					$('input[name=issue\\[custom_field_values\\]\\[' + info.id + '\\]\\[\\]]').length
+				)
 			) {
-				var htmlCopy = $('#issue_custom_field_values_' + info.id).get(0).outerHTML;
-				if (info.field_format == "version" && info.format_store.edit_tag_style == "check_box") {
-					htmlCopy = 	$('#issue_custom_field_values_' + info.id).parents('span').html();
+				// if single input first case, else checkboxes second case
+				if($('#issue_custom_field_values_' + info.id).length) {
+					var htmlCopy = $('#issue_custom_field_values_' + info.id).get(0).outerHTML;
+				} else {
+					var htmlCopy = $('input[name=issue\\[custom_field_values\\]\\[' + info.id + '\\]\\[\\]]').parents('.check_box_group').get(0).outerHTML;
 				}
 
 				// 2 technics with simple or double quote (safety first)
@@ -309,7 +314,18 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass) {
 	// avoid conflict revision
 	var lastLockVersion = getLastLockVersion();
 	$('#issue_lock_version').val(lastLockVersion);
-	var formData = $('#issue-form').serialize();
+	var formData = "";
+	
+	// If checkbox we have to uncheck everything in the issue-form and get data from dynamic edit
+	if(type == "checkbox"){
+		formData = field_value + "&";
+		var cf_id = field_name.replace(/\D/g,'');
+		$('input[name=issue\\[custom_field_values\\]\\[' + cf_id + '\\]\\[\\]]').each(function(){
+			$(this).prop('checked', false);
+		});
+	}
+
+	formData += $('#issue-form').serialize();
 
 
 	jQuery.ajax({
@@ -597,17 +613,19 @@ function initEditFieldListeners() {
 							break;
 					}
 
-					// Specific case : version field with checkboxes
-					if (info.field_format == "version" && info.format_store.edit_tag_style == "check_box") {
-						inputType = "version";
-						$('body').find('#dynamic_edit_cf_' + info.id + ' input').on('click', function(e) {
-			 				$('label[for=issue_custom_field_values_' + info.id + ']').next().find('input[value=' + $(this).val() + ']').click();
-			 			});
+					if(info.format_store.edit_tag_style == "check_box"){
+						inputType = "checkbox";
 					}
 
 					var domInputField = $('body').find('#dynamic_issue_custom_field_values_' + info.id);
 				 	$('body').find('#dynamic_edit_cf_' + info.id + ' a.btn.validate').on('click', function(e) {
 				 		var new_value = domInputField.val();
+
+				 		// Specific case with checkboxes
+				 		if(typeof new_value === 'undefined'){
+			 				var new_value = $('body').find('#dynamic_edit_cf_' + info.id + " :input").serialize();
+			 				console.log(new_value);
+				 		}
 
 						issueDynamicUpdate('custom_field_values_' + info.id , new_value, inputType, 'cf_' + info.id);
 

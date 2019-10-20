@@ -110,3 +110,8 @@ div.issue div.subject h3 {
 body.controller-issues.action-show .dynamicEdit input[type="text"] {
 	width: auto !important;
 }
+
+body.controller-issues.action-show .dynamicEdit .check_box_group {
+	border: 0px !important;
+	margin-bottom: 10px;
+}
