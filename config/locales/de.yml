@@ -1,0 +1,9 @@
+# Translation by Peter Pfläging <peter@pflaeging.net>
+de:
+  ide_txt_validation_btn        : 'Änderung bestätitgen'
+  ide_txt_error_positive_number : 'Hier muss eine positive Zahl stehen'
+  ide_txt_error_start_date      : 'Das Startdatum muss vor dem Enddatum liegen'
+  ide_txt_error_due_date        : 'Das Enddatum muss nach dem Startdatum liegen'
+  ide_txt_error_ajax_call       : 'Error (Javascript Konsole kontrollieren)'
+  ide_txt_cancel_btn            : 'Änderungen ignorieren'
+  ide_txt_required_field        : 'Pflichtfeld bitte ausfüllen'
