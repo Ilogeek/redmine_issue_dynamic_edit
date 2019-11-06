@@ -82,6 +82,17 @@ function initEditFields() {
 		);
 	}
 
+	if ($('#categoriesListDropdown').length > 0 && !isExcluded('categoriesListDropdown')) {
+		var htmlCopy = $('#categoriesListDropdown').get(0).outerHTML;
+		$('#categoriesListDropdown').remove();
+		$('.details .attributes .category.attribute .value').html(
+			'<span class="showValue">' +
+			$('.details .attributes .category.attribute .value').html() +
+			'</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
+			htmlCopy
+		);
+	}
+
 	if ($('#doneRatioListDropdown').length > 0 && !isExcluded('doneRatioListDropdown')) {
 		var htmlCopy = $('#doneRatioListDropdown').get(0).outerHTML;
 		$('#doneRatioListDropdown').remove();
@@ -455,6 +466,16 @@ function initEditFieldListeners() {
 		}).addClass('priority-' + domSelectPriorities.val());
 	}); /* end on change domSelectPriorities */
 
+	var domSelectCategories = $('body').find('#categoriesListDropdown select');
+	domSelectCategories.on('change', function(e){
+		issueDynamicUpdate('category_id', domSelectCategories.val(), 'select', 'category');
+
+		/* update the classes priority from */
+		$("#content > div.issue").removeClass(function (index, className) {
+			return (className.match (/(^|\s)priority-\S+/g) || []).join(' ');
+		}).addClass('category-' + domSelectPriorities.val());
+	}); /* end on change domSelectCategories */
+
 	var domSelectUsers = $('body').find('#usersListDropdown select');
 	domSelectUsers.on('change', function(e){
 		issueDynamicUpdate('assigned_to_id', domSelectUsers.val(), 'select', 'assigned-to');
@@ -550,6 +571,18 @@ function initEditFieldListeners() {
 	var domInputDescription = $('body').find('#DescriptionInput textarea');
 
 	if(domInputDescription.length) {
+
+		if (
+				typeof(CKEDITOR) === "object" &&
+				typeof(CKEDITOR.instances['issue_description'].getData) === typeof(Function)
+		) {
+			var cfg = CKEDITOR.instances['issue_description'].config;
+			cfg.height = 100;
+			CKEDITOR.replace("description_textarea", cfg)
+		}else if (typeof(jsToolBar) === typeof(Function)) {
+			var wikiToolbar = new jsToolBar(document.getElementById('description_textarea')); wikiToolbar.draw();
+		}
+
 	 	$('#DescriptionInput a.btn.validate').on('click', function(e) {
 			e.preventDefault();
 			var new_value = domInputDescription.val();
@@ -565,12 +598,6 @@ function initEditFieldListeners() {
 
 			return false;
 		});
-
-	 	if (typeof(jsToolBar) === typeof(Function)) {
-			var wikiToolbar = new jsToolBar(document.getElementById('description_textarea')); wikiToolbar.draw();
-		} else if (typeof(CKEDITOR) === "object" && typeof(CKEDITOR.replace) === typeof(Function)) {
-			CKEDITOR.replace('description_textarea', { height: 100 });
-		}
 	}
 
 	var dynamic_edit_assigned_to_id = $('body').find('#dynamic_edit_assigned_to_id select');
@@ -624,7 +651,6 @@ function initEditFieldListeners() {
 				 		// Specific case with checkboxes
 				 		if(typeof new_value === 'undefined'){
 			 				var new_value = $('body').find('#dynamic_edit_cf_' + info.id + " :input").serialize();
-			 				console.log(new_value);
 				 		}
 
 						issueDynamicUpdate('custom_field_values_' + info.id , new_value, inputType, 'cf_' + info.id);

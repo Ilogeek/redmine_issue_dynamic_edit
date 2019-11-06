@@ -105,6 +105,24 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
             o << "</select>  <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a></span>"
           end
 
+          # Categories dropdown
+          categories = IssueCategory.all
+
+          if !categories.empty? && !(readOnlyAttributes.include? 'category_id')
+            o << "<span class='dynamicEdit' id='categoriesListDropdown'>"
+            o << "<select data-issue='#{issue_id}'><option value='' selected> </option>"
+
+            categories.each do |c|
+              if (c != issue.category)
+                o << "<option value='#{c.id}'>#{c.name}</option>"
+              else
+                o << "<option value='#{c.id}' selected>#{c.name}</option>"
+              end
+            end
+
+            o << "</select>  <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a></span>"
+          end
+
           # %done dropdown
           if ! readOnlyAttributes.include?('done_ratio')
             percent = 0

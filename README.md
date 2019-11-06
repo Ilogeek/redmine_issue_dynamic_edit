@@ -35,6 +35,7 @@ This plugin uses [FontAwesome icons](http://fontawesome.io/)
 
 ### 🆕  Changelog
 
+* **v 0.6.9** : Category field support (Github request #54)
 * **v 0.6.8** : Checkboxes custom fields fixed (#53)
 * **v 0.6.7** : fixed Github issue #46 : text field focus issue
 * **v 0.6.6** : New configuration file + Multiple fixes (#30 #31 #35 #36 #37 #38 #41)
