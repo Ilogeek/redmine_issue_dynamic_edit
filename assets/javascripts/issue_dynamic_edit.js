@@ -32,7 +32,9 @@ if (!document.getElementById(cssId)) {
 }
 
 $(document).on(_CONF_LISTENER_TYPE, function(e) {
-	$('.issue .attributes .attribute .value').removeClass('edited');
+	if (!$(e.target).hasClass('date')) {
+		$('.issue .attributes .attribute .value').removeClass('edited');
+	}
 
 	if ($(e.target).closest('a').length) { return; }
 	if ($(e.target).closest('.' + _CONF_LISTENER_TARGET).length) {
