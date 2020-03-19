@@ -33,7 +33,13 @@ if (!document.getElementById(cssId)) {
 
 $(document).on(_CONF_LISTENER_TYPE, function(e) {
 	$('.issue .attributes .attribute .value').removeClass('edited');
-
+	// bind click to show edit block if click inside an edit box or on trigger, except button inside edit box
+	if(!$(e.target).closest('a.btn.btn-primary').length &&
+		($(e.target).closest('.' + _CONF_LISTENER_TARGET).length ||
+		$(e.target).closest('span.dynamicEdit').length)
+		) {
+		$(e.target).closest('.value').addClass('edited');
+	}
 	if ($(e.target).closest('a').length) { return; }
 	if ($(e.target).closest('.' + _CONF_LISTENER_TARGET).length) {
 		// avoid text selection if dblclick
@@ -48,9 +54,6 @@ $(document).on(_CONF_LISTENER_TYPE, function(e) {
 				sel.empty();
 			}
 		}
-
-		// we show the edit box
-		$(e.target).closest('.value').addClass('edited');
 	}
 });
 
