@@ -106,7 +106,7 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
           end
 
           # Categories dropdown
-          categories = IssueCategory.all
+          categories = project.issue_categories
 
           if !categories.empty? && !(readOnlyAttributes.include? 'category_id')
             o << "<span class='dynamicEdit' id='categoriesListDropdown'>"

@@ -31,10 +31,11 @@ You can set some settings by editing the file `assets/javascripts/issue_dynamic_
 
 Feel free to edit `assets/stylesheets/issue_dynamic_edit.css` to update the look of your fields depending on your current Redmine Theme. 
 
-This plugin uses [FontAwesome icons](http://fontawesome.io/)
+This plugin uses [FontAwesome icons 4.7](https://fontawesome.com/v4.7.0/)
 
 ### 🆕  Changelog
 
+* **v 0.7.0** : Category filter by project added (#55) and prevent dialog closing when using fa-pencil selector (#59)
 * **v 0.6.9** : Category field support (Github request #54)
 * **v 0.6.8** : Checkboxes custom fields fixed (#53)
 * **v 0.6.7** : fixed Github issue #46 : text field focus issue
