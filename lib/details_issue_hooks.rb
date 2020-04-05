@@ -190,6 +190,15 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
           o << "	<input size=\"50\" value=\"#{clonesubject}\" type=\"text\">"
           o << " <a href='#' class='btn btn-primary validate' aria-label='" + l(:ide_txt_validation_btn) + "'><i class='fa fa-check fa-fw' aria-hidden='true'></i></a>"
           o << " <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a>"
+          o << "<script>"
+          o << "//<![CDATA[\n"
+          o << "  function resizeTitleInput() {\n"
+          o << "    $('#TitleInput input')[0].size = Math.max(50, Math.trunc(window.innerWidth / 11));\n"
+          o << "  }\n"
+          o << "  resizeTitleInput();\n"
+          o << "  window.addEventListener('resize', resizeTitleInput);\n"
+          o << "//]]>\n"
+          o << "</script>"
           o << "</span>"
 
           # Description
