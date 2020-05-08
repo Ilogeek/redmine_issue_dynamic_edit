@@ -27,8 +27,9 @@ body.controller-issues.action-show .issue.details .showValue {
 	cursor: pointer;
 }
 
-body.controller-issues.action-show .issue.details:hover .fa-pencil {
+body.controller-issues.action-show .issue.details .value:hover .fa-pencil {
 	opacity: 1;
+	cursor: pointer;
 }
 
 body.controller-issues.action-show .dynamicEdit {
@@ -47,6 +48,10 @@ body.controller-issues.action-show .dynamicEdit {
 	width: max-content;
 }
 
+body.controller-issues.action-show #TitleInput.dynamicEdit {
+	font-size: 0.57em;
+}
+
 body.controller-issues.action-show .dynamicEdit.version {
 	max-width: 100%;
 }
@@ -60,11 +65,11 @@ body.controller-issues.action-show div.issue.details .value.edited .dynamicEdit 
 	z-index: 999;
 }
 
-body.controller-issues.action-show div.issue.details  .btn-primary {
-	padding: 4px;
+body.controller-issues.action-show div.issue.details .btn-primary {
 	color: white !important;
 	border-radius: 3px;
 	padding: 3px;
+	vertical-align: middle;
 }
 
 body.controller-issues.action-show div.issue.details .btn-primary.close {
@@ -109,6 +114,11 @@ div.issue div.subject h3 {
 
 body.controller-issues.action-show .dynamicEdit input[type="text"] {
 	width: auto !important;
+}
+
+body.controller-issues.action-show .dynamicEdit input,
+body.controller-issues.action-show .dynamicEdit select {
+	vertical-align: middle;
 }
 
 body.controller-issues.action-show .dynamicEdit .check_box_group {

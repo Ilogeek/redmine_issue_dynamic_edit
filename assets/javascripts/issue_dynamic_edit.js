@@ -67,10 +67,10 @@ function initEditFields() {
 		var htmlCopy = $('#statusListDropdown').get(0).outerHTML;
 		$('#statusListDropdown').remove();
 		$('.details .attributes .status.attribute .value').html(
+			htmlCopy +
 			'<span class="showValue">' +
 			$('.details .attributes .status.attribute .value').html() +
-			'</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
-			htmlCopy
+			'</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>'
 		);
 	}
 
@@ -78,10 +78,10 @@ function initEditFields() {
 		var htmlCopy = $('#prioritiesListDropdown').get(0).outerHTML;
 		$('#prioritiesListDropdown').remove();
 		$('.details .attributes .priority.attribute .value').html(
+			htmlCopy +
 			'<span class="showValue">' +
 			$('.details .attributes .priority.attribute .value').html() +
-			'</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
-			htmlCopy
+			'</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>'
 		);
 	}
 
@@ -89,29 +89,31 @@ function initEditFields() {
 		var htmlCopy = $('#categoriesListDropdown').get(0).outerHTML;
 		$('#categoriesListDropdown').remove();
 		$('.details .attributes .category.attribute .value').html(
+			htmlCopy +
 			'<span class="showValue">' +
 			$('.details .attributes .category.attribute .value').html() +
-			'</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
-			htmlCopy
+			'</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>'
 		);
 	}
 
 	if ($('#doneRatioListDropdown').length > 0 && !isExcluded('doneRatioListDropdown')) {
 		var htmlCopy = $('#doneRatioListDropdown').get(0).outerHTML;
 		$('#doneRatioListDropdown').remove();
-		$('.details .attributes .progress.attribute .value').html('<span class="showValue">' +
-			$('.details .attributes .progress.attribute .value').html() + '</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
-			htmlCopy);
+		$('.details .attributes .progress.attribute .value').html(
+			htmlCopy +
+			'<span class="showValue">' +
+			$('.details .attributes .progress.attribute .value').html() + '</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>'
+		);
 	}
 
 	if ($('#EstimatedTimeInput').length > 0 && !isExcluded('EstimatedTimeInput')) {
 		var htmlCopy = $('#EstimatedTimeInput').get(0).outerHTML;
 		$('#EstimatedTimeInput').remove();
 		$('.details .attributes .estimated-hours.attribute .value').html(
+			htmlCopy +
 			'<span class="showValue">' +
 			$('.details .attributes .estimated-hours.attribute .value').html() +
-			'</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
-			htmlCopy
+			'</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>'
 		);
 	}
 
@@ -119,10 +121,10 @@ function initEditFields() {
 		var htmlCopy = $('#StartDateInput').get(0).outerHTML;
 		$('#StartDateInput').remove();
 		$('.details .attributes .start-date.attribute .value').html(
+			htmlCopy +
 			'<span class="showValue">' +
 			$('.details .attributes .start-date.attribute .value').html() +
-			'</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
-			htmlCopy
+			'</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>'
 		);
 	}
 
@@ -130,27 +132,31 @@ function initEditFields() {
 		var htmlCopy = $('#DueDateInput').get(0).outerHTML;
 		$('#DueDateInput').remove();
 		$('.details .attributes .due-date.attribute .value').html(
+			htmlCopy +
 			'<span class="showValue">' +
 			$('.details .attributes .due-date.attribute .value').html() +
-			'</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
-			htmlCopy
+			'</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>'
 		);
 	}
 
 	if ($('#TitleInput').length > 0 && !isExcluded('TitleInput')) {
 		var htmlCopy = $('#TitleInput').get(0).outerHTML;
 		$('#TitleInput').remove();
-		$('.subject h3').html('<span class="showValue">' + $('.subject h3').html() + '</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
-			htmlCopy).addClass('value');
+		$('.subject h3').html(
+			htmlCopy +
+			'<span class="showValue">' +
+			$('.subject h3').html() +
+			'</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>'
+		).addClass('value');
 	}
 
 	if ($('#DescriptionInput').length > 0 && !isExcluded('DescriptionInput')) {
 		var htmlCopy = $('#DescriptionInput').get(0).outerHTML;
 		$('#DescriptionInput').remove();
 		$('div.description .wiki').html(
+			htmlCopy +
 			' <i class="fa fa-pencil fa-fw" aria-hidden="true" style="float:right;"></i><span class="showValue">' +
-			$('div.description .wiki').html() + '</span>' +
-			htmlCopy
+			$('div.description .wiki').html() + '</span>'
 		).addClass('value');
 	}
 
@@ -165,10 +171,10 @@ function initEditFields() {
 		editHTML += "</span>";
 
 		$('.details .attributes .assigned-to.attribute .value').html(
+			editHTML +
 			'<span class="showValue">' +
 			$('.details .attributes .assigned-to.attribute .value').html() +
-			'</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
-			editHTML
+			'</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>'
 		);
 	}
 
@@ -183,10 +189,10 @@ function initEditFields() {
 		editHTML += "</span>";
 
 		$('.details .attributes .fixed-version.attribute .value').html(
+			editHTML +
 			'<span class="showValue">' +
 			$('.details .attributes .fixed-version.attribute .value').html() +
-			'</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
-			editHTML
+			'</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>'
 		);
 	}
 
@@ -221,10 +227,10 @@ function initEditFields() {
 				editHTML += "</span>";
 
 				$('.details .attributes .cf_' + info.id + '.attribute .value').html(
+					editHTML +
 					'<span class="showValue">' +
 					$('.details .attributes .cf_' + info.id + '.attribute .value').html() +
-					'</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>' +
-					editHTML
+					'</span> <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>'
 				);
 
 				if (info.field_format == "date") {
