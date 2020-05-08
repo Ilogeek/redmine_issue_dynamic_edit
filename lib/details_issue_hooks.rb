@@ -11,13 +11,17 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
   def view_layouts_base_html_head(context)
     return unless current_is_detail_page(context)
 
-    stylesheet_link_tag('issue_dynamic_edit.css', :plugin => :redmine_issue_dynamic_edit)
+    if User.current.allowed_to?(:edit_issues, context[:project])
+      stylesheet_link_tag('issue_dynamic_edit.css', :plugin => :redmine_issue_dynamic_edit)
+    end
   end
 
   def view_layouts_base_body_bottom(context)
     return unless current_is_detail_page(context)
 
-    javascript_include_tag('issue_dynamic_edit_configuration_file.js', 'issue_dynamic_edit.js', :plugin => :redmine_issue_dynamic_edit)
+    if User.current.allowed_to?(:edit_issues, context[:project])
+      javascript_include_tag('issue_dynamic_edit_configuration_file.js', 'issue_dynamic_edit.js', :plugin => :redmine_issue_dynamic_edit)
+    end
   end
 
   def view_issues_show_details_bottom(context = {})
@@ -55,7 +59,8 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
             allRequiredFieldsFilled
           )
             o << "<span class='dynamicEdit' id='statusListDropdown'>"
-            o << "<select data-issue='#{issue_id}'><option disabled='disabled' selected> </option>"
+            o << "<select data-issue='#{issue_id}'>"
+            o << "<option disabled='disabled' selected> </option>"
             statuses.each do |s|
               if (s != issue.status)
                 o << "<option value='#{s.id}'>#{s.name}</option>"
@@ -64,7 +69,9 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
               end
             end
 
-            o << "</select> <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a></span>"
+            o << "</select>"
+            o << " <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a>"
+            o << "</span>"
           end
 
           # Users dropdown
@@ -74,7 +81,8 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
             !readOnlyAttributes.include?('assigned_to_id')
           )
             o << "<span class='dynamicEdit' id='usersListDropdown'>"
-            o << "<select data-issue='#{issue_id}'><option disabled='disabled' selected> </option>"
+            o << "<select data-issue='#{issue_id}'>"
+            o << "<option disabled='disabled' selected> </option>"
 
             assignables.each do |u|
               if (u != issue.assigned_to)
@@ -84,7 +92,9 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
               end
             end
 
-            o << "</select> <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a></span>"
+            o << "</select>"
+            o << " <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a>"
+            o << "</span>"
           end
 
           # Priorities dropdown
@@ -92,7 +102,8 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 
           if !priorities.empty? && !(readOnlyAttributes.include? 'priority_id')
             o << "<span class='dynamicEdit' id='prioritiesListDropdown'>"
-            o << "<select data-issue='#{issue_id}'><option disabled='disabled' selected> </option>"
+            o << "<select data-issue='#{issue_id}'>"
+            o << "<option disabled='disabled' selected> </option>"
 
             priorities.each do |p|
               if (p != issue.priority)
@@ -102,7 +113,9 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
               end
             end
 
-            o << "</select>  <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a></span>"
+            o << "</select>"
+            o << "  <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a>"
+            o << "</span>"
           end
 
           # Categories dropdown
@@ -110,7 +123,8 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
 
           if !categories.empty? && !(readOnlyAttributes.include? 'category_id')
             o << "<span class='dynamicEdit' id='categoriesListDropdown'>"
-            o << "<select data-issue='#{issue_id}'><option value='' selected> </option>"
+            o << "<select data-issue='#{issue_id}'>"
+            o << "<option value='' selected> </option>"
 
             categories.each do |c|
               if (c != issue.category)
@@ -120,14 +134,18 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
               end
             end
 
-            o << "</select>  <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a></span>"
+            o << "</select>"
+            o << "  <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a>"
+            o << "</span>"
           end
 
           # %done dropdown
           if ! readOnlyAttributes.include?('done_ratio')
             percent = 0
             o << "<span class='dynamicEdit' id='doneRatioListDropdown'>"
-            o << "<select data-issue='#{issue_id}'><option disabled='disabled' selected> </option>"
+            o << "<select data-issue='#{issue_id}'>"
+            o << "<option disabled='disabled' selected> </option>"
+
             loop do
               if percent == issue.done_ratio
                 o << "<option value='#{percent}' selected>#{percent}%</option>"
@@ -139,7 +157,9 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
               break if percent == 110
             end
 
-            o << "</select>  <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a></span>"
+            o << "</select>"
+            o << "  <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a>"
+            o << "</span>"
           end
 
           # Estimated_time dropdown
@@ -198,34 +218,35 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
           o << " <div style='display:block; text-align:right; margin-top:10px;'><a href='#' class='btn btn-primary validate' aria-label='" + l(:ide_txt_validation_btn) + "'><i class='fa fa-check fa-fw' aria-hidden='true'></i></a>"
           o << " <a href='#' class='btn btn-primary close' aria-label='" + l(:ide_txt_cancel_btn) + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a></div>"
           o << "</span>"
+
+          # JS Part at the end of the edit block
+          o << "<script>"
+
+          o << " var CF_VALUE_JSON = " + issue.editable_custom_field_values(User.current).to_json + ";\n"
+
+          o << " var _ISSUE_ID = \"#{issue_id}\";\n"
+          o << " var _USER_API_KEY = \"#{User.current.api_key}\";\n"
+          o << " var _BASE_REDMINE_PATH = \"#{Redmine::Utils.relative_url_root}\";\n"
+
+          # Translations text
+          o << " var _TXT_VALIDATION_BTN = \"" + l(:ide_txt_validation_btn) + "\";\n"
+          o << " var _TXT_CANCEL_BTN = \"" + l(:ide_txt_cancel_btn) + "\";\n"
+          o << " var _TXT_ERROR_POSITIVE_NUMBER = \"" + l(:ide_txt_error_positive_number) + "\";\n"
+          o << " var _TXT_ERROR_START_DATE = \"" + l(:ide_txt_error_start_date) + "\";\n"
+          o << " var _TXT_ERROR_DUE_DATE = \"" + l(:ide_txt_error_due_date) + "\";\n"
+          o << " var _TXT_ERROR_AJAX_CALL = \"" + l(:ide_txt_error_ajax_call) + "\";\n"
+          o << " var _TXT_REQUIRED_FIELD = \"" + l(:ide_txt_required_field) + "\";\n"
+          o << "</script>\n"
+
+          o << "<div style='display:none' id='required_field_array'>#{requiredAttributes.to_json}</div>\n"
+
+          # closing the display none div parent
+          o << "</div>"
         end
       end
 
-      o << "<script>"
-
-      o << " var CF_VALUE_JSON = " + issue.editable_custom_field_values(User.current).to_json + ";\n"
-
-      o << " var _ISSUE_ID = \"#{issue_id}\";\n"
-      o << " var _USER_API_KEY = \"#{User.current.api_key}\";\n"
-      o << " var _BASE_REDMINE_PATH = \"#{Redmine::Utils.relative_url_root}\";\n"
-
-      # Translations text
-      o << " var _TXT_VALIDATION_BTN = \"" + l(:ide_txt_validation_btn) + "\";\n"
-      o << " var _TXT_CANCEL_BTN = \"" + l(:ide_txt_cancel_btn) + "\";\n"
-      o << " var _TXT_ERROR_POSITIVE_NUMBER = \"" + l(:ide_txt_error_positive_number) + "\";\n"
-      o << " var _TXT_ERROR_START_DATE = \"" + l(:ide_txt_error_start_date) + "\";\n"
-      o << " var _TXT_ERROR_DUE_DATE = \"" + l(:ide_txt_error_due_date) + "\";\n"
-      o << " var _TXT_ERROR_AJAX_CALL = \"" + l(:ide_txt_error_ajax_call) + "\";\n"
-      o << " var _TXT_REQUIRED_FIELD = \"" + l(:ide_txt_required_field) + "\";\n"
-      o << "</script>\n"
-
-      o << "<div style='display:none' id='required_field_array'>#{requiredAttributes.to_json}</div>\n"
-
-      # closing the display none div parent
-      o << "</div>"
-
       return o
-      
+
     end
   end
 end

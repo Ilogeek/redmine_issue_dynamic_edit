@@ -35,6 +35,7 @@ This plugin uses [FontAwesome icons 4.7](https://fontawesome.com/v4.7.0/)
 
 ### 🆕  Changelog
 
+* **v 0.7.1** : Fixed incorrect DOM structure if user has read only access to the issue (#61 #64)
 * **v 0.7.0** : Category filter by project added (#55) and prevent dialog closing when using fa-pencil selector (#59)
 * **v 0.6.9** : Category field support (Github request #54)
 * **v 0.6.8** : Checkboxes custom fields fixed (#53)
