@@ -27,7 +27,12 @@ body.controller-issues.action-show .issue.details .showValue {
 	cursor: pointer;
 }
 
-body.controller-issues.action-show .issue.details .value:hover .fa-pencil {
+body.controller-issues.action-show .issue.details.no-cursor .showValue {
+	cursor: initial;
+}
+
+body.controller-issues.action-show .issue.details .value:hover .fa-pencil,
+body.controller-issues.action-show .issue.details.showDynamicEdit:hover .value .fa-pencil {
 	opacity: 1;
 	cursor: pointer;
 }
@@ -45,7 +50,8 @@ body.controller-issues.action-show .dynamicEdit {
 	background: white;
 	pointer-events: none;
 	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-	width: max-content;
+	width: auto;
+	white-space: nowrap; /* force icons to stay on the same line */
 }
 
 body.controller-issues.action-show #TitleInput.dynamicEdit {
@@ -114,6 +120,12 @@ div.issue div.subject h3 {
 
 body.controller-issues.action-show .dynamicEdit input[type="text"] {
 	width: auto !important;
+}
+
+body.controller-issues.action-show .dynamicEdit textarea {
+	width: 100%;
+	display: block;
+	margin-bottom: 10px;
 }
 
 body.controller-issues.action-show .dynamicEdit input,

@@ -12,9 +12,16 @@
 var _CONF_FORCE_HTTPS = false;
 
 /*
+ * _CONF_DISPLAY_EDIT_ICON (string)
+ * Choose if hovering the details block will display all the pencil icons next to editable values or if the user has to hover every value to check if (s)he can edit it
+ * Allowed values : single (default), block
+ */
+var _CONF_DISPLAY_EDIT_ICON = "single";
+
+/*
  * _CONF_LISTENER_TYPE_VALUE (string)
  * Choose which action will trigger the apparition of the edition block
- * Allowed values : click (default), dblclick
+ * Allowed values : click (default), dblclick, none
  */
 var _CONF_LISTENER_TYPE_VALUE = "click";
 
@@ -22,9 +29,9 @@ var _CONF_LISTENER_TYPE_VALUE = "click";
  * _CONF_LISTENER_TYPE_ICON (string)
  * If different from _CONF_LISTENER_TYPE_VALUE, the action set below will trigger
  * the apparition of the edition block if it comes from the pencil icon.
- * Allowed values : click (default), dblclick
+ * Allowed values : click (default), dblclick, none
  */
-var _CONF_LISTENER_TYPE_ICON = _CONF_LISTENER_TYPE_VALUE;
+var _CONF_LISTENER_TYPE_ICON = "click";
 
 /*
  * _CONF_LISTENER_TARGET (string)

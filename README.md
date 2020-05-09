@@ -16,17 +16,19 @@ Add new elements on detailed issue page to **dynamically update issue's attribut
 
 ### 📦  Installation
 
+* If you update the plugin, be sure to save your configuration modification (`assets/javascripts/issue_dynamic_edit_configuration_file.js`) in a safe place to set them back after the update 
 * Clone repo into plugins directory : `git clone https://github.com/Ilogeek/redmine_issue_dynamic_edit.git` (be sure that the parent folder is called `redmine_issue_dynamic_edit`)
 * Restart your Redmine instance
 
 ### ⚙  Configuration (new since v 0.6.6)
 
 You can set some settings by editing the file `assets/javascripts/issue_dynamic_edit_configuration_file.js`. Inside this file you'll find different variable :
-* **\_CONF\_FORCE\_HTTPS** : Will force AJAX call performed by the plugin to be done with https protocol. Use this value if you encounter some difficulties with "Mixed content" issues
-* **\_CONF\_LISTENER\_TYPE\_VALUE** : Choose which action will trigger the apparition of the edition block
-* **\_CONF\_LISTENER\_TYPE\_ICON** : Choose which action will trigger the apparition of the edition block when fired from the pencil icon (by default: same as **\_CONF\_LISTENER\_TYPE\_VALUE**)
+* **\_CONF\_FORCE\_HTTPS** : Will force AJAX call performed by the plugin to be done with https protocol. Use this value if you encounter some difficulties with "Mixed content" issues 
+* **\_CONF\_DISPLAY\_EDIT\_ICON** : Choose if hovering the details block will display all the pencil icons next to editable values or if the user has to hover every value to check if (s)he can edit it. Allowed value : `single`, `block`
+* **\_CONF\_LISTENER\_TYPE\_VALUE** : Choose which action will trigger the apparition of the edition block when fired from the current value. Allowed value : `none`, `click`, `dblclick`
+* **\_CONF\_LISTENER\_TYPE\_ICON** : Choose which action will trigger the apparition of the edition block when fired from the pencil icon (by default: same as **\_CONF\_LISTENER\_TYPE\_VALUE**). Allowed value : `none`, `click`, `dblclick`
 * **\_CONF\_LISTENER\_TARGET** : Choose which area will trigger the apparition of the edition block
-* **\_CONF\_EXCLUDED\_FIELD\_ID** : Choose which fields to exclude. They won't have the edit block and pencil
+* **\_CONF\_EXCLUDED\_FIELD\_ID** : Choose which fields to exclude. They won't have the edit block and pencil. Eg: `TitleInput`, `DescriptionInput`, `statusListDropdown` ...
 
 ### 🎨  Customization
 
@@ -36,6 +38,7 @@ This plugin uses [FontAwesome icons 4.7](https://fontawesome.com/v4.7.0/)
 
 ### 🆕  Changelog
 
+* **v 0.7.2** : New settings added into config file (`\_CONF\_DISPLAY\_EDIT\_ICON` and `\_CONF\_LISTENER\_TYPE\_ICON`) see Configuration part for more info ; new event `none` for `\_CONF\_LISTENER\_TYPE\_VALUE` disabling listener on value ; css fix
 * **v 0.7.1** : Fixed incorrect DOM structure if user has read only access to the issue (#61 #64)
 * **v 0.7.0** : Category filter by project added (#55) and prevent dialog closing when using fa-pencil selector (#59)
 * **v 0.6.9** : Category field support (Github request #54)
