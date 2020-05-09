@@ -12,11 +12,19 @@
 var _CONF_FORCE_HTTPS = false;
 
 /*
- * _CONF_LISTENER_TYPE (string)
+ * _CONF_LISTENER_TYPE_VALUE (string)
  * Choose which action will trigger the apparition of the edition block
  * Allowed values : click (default), dblclick
  */
-var _CONF_LISTENER_TYPE = "click";
+var _CONF_LISTENER_TYPE_VALUE = "click";
+
+/*
+ * _CONF_LISTENER_TYPE_ICON (string)
+ * If different from _CONF_LISTENER_TYPE_VALUE, the action set below will trigger
+ * the apparition of the edition block if it comes from the pencil icon.
+ * Allowed values : click (default), dblclick
+ */
+var _CONF_LISTENER_TYPE_ICON = _CONF_LISTENER_TYPE_VALUE;
 
 /*
  * _CONF_LISTENER_TARGET (string)

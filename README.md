@@ -23,7 +23,8 @@ Add new elements on detailed issue page to **dynamically update issue's attribut
 
 You can set some settings by editing the file `assets/javascripts/issue_dynamic_edit_configuration_file.js`. Inside this file you'll find different variable :
 * **\_CONF\_FORCE\_HTTPS** : Will force AJAX call performed by the plugin to be done with https protocol. Use this value if you encounter some difficulties with "Mixed content" issues
-* **\_CONF\_LISTENER\_TYPE** : Choose which action will trigger the apparition of the edition block
+* **\_CONF\_LISTENER\_TYPE\_VALUE** : Choose which action will trigger the apparition of the edition block
+* **\_CONF\_LISTENER\_TYPE\_ICON** : Choose which action will trigger the apparition of the edition block when fired from the pencil icon (by default: same as **\_CONF\_LISTENER\_TYPE\_VALUE**)
 * **\_CONF\_LISTENER\_TARGET** : Choose which area will trigger the apparition of the edition block
 * **\_CONF\_EXCLUDED\_FIELD\_ID** : Choose which fields to exclude. They won't have the edit block and pencil
 

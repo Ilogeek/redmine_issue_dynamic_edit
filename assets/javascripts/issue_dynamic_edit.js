@@ -2,7 +2,8 @@
  * OPTIONS DEFINED FROM CONFIGURATION FILE
  */
 var _CONF_FORCE_HTTPS = _CONF_FORCE_HTTPS || false;
-var _CONF_LISTENER_TYPE = _CONF_LISTENER_TYPE || "click";
+var _CONF_LISTENER_TYPE_VALUE = _CONF_LISTENER_TYPE_VALUE || "click";
+var _CONF_LISTENER_TYPE_ICON = _CONF_LISTENER_TYPE_ICON || "click";
 var _CONF_LISTENER_TARGET = _CONF_LISTENER_TARGET || "value";
 var _CONF_EXCLUDED_FIELD_ID = _CONF_EXCLUDED_FIELD_ID || [];
 
@@ -31,7 +32,7 @@ if (!document.getElementById(cssId)) {
 	head.appendChild(link);
 }
 
-$(document).on(_CONF_LISTENER_TYPE, function(e) {
+function editActionHandler(e) {
 	$('.issue .attributes .attribute .value').removeClass('edited');
 	// bind click to show edit block if click inside an edit box or on trigger, except button inside edit box
 	if(!$(e.target).closest('a.btn.btn-primary').length &&
@@ -55,7 +56,22 @@ $(document).on(_CONF_LISTENER_TYPE, function(e) {
 			}
 		}
 	}
-});
+}
+
+// Listen on events on a whole line for any field
+$(document).on(_CONF_LISTENER_TYPE_VALUE, editActionHandler);
+
+// If a supplementary type of event is set specifically for the dynamic edit icon,
+// add another listener for it
+if (_CONF_LISTENER_TYPE_VALUE !== _CONF_LISTENER_TYPE_ICON) {
+	$(document).on(_CONF_LISTENER_TYPE_ICON, function (e) {
+		if (!$(e.target).closest('.fa-pencil').length ||
+				!$(e.target).closest('.value').length) {
+			return;
+		}
+		editActionHandler(e);
+	});
+}
 
 function isExcluded(elmt_id) {
 	return _CONF_EXCLUDED_FIELD_ID.indexOf(elmt_id) > -1;
