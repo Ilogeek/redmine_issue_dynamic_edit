@@ -86,8 +86,13 @@ body.controller-issues.action-show div.issue.details .btn-primary.validate {
 	background: #27ae60;
 }
 
+body.controller-issues.action-show .edited .dynamicEdit select {
+        display: inline-block;
+}
+
 body.controller-issues.action-show .dynamicEdit select {
 	border:none;
+	display:none;
     background-image:none;
     background-color:transparent;
     -webkit-box-shadow: none;
