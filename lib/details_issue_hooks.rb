@@ -213,7 +213,7 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
           o << "<script>"
           o << "//<![CDATA[\n"
           o << "  function resizeTitleInput() {\n"
-          o << "    $('#TitleInput input')[0].size = Math.max(50, Math.trunc(window.innerWidth / 11));\n"
+          o << "    $('#TitleInput input')[0].size = Math.max(50, Math.floor(window.innerWidth / 11));\n"
           o << "  }\n"
           o << "  resizeTitleInput();\n"
           o << "  window.addEventListener('resize', resizeTitleInput);\n"
