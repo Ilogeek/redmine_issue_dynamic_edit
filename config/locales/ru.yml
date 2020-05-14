@@ -1,0 +1,8 @@
+ru:
+  ide_txt_validation_btn        : 'Подтвердите изменение'
+  ide_txt_error_positive_number : 'Должно быть положительным числом'
+  ide_txt_error_start_date      : 'Дата начала должна быть раньше срока'
+  ide_txt_error_due_date        : 'Дата должна быть после даты начала'
+  ide_txt_error_ajax_call       : 'Ошибка (проверьте Вашу JS консоль)'
+  ide_txt_cancel_btn            : 'Отменить изменения'
+  ide_txt_required_field        : 'Это поле обязательно для перехода к следующему шагу'
