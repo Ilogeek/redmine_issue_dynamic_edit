@@ -35,7 +35,7 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
     if issue_id
       issue = Issue.find(issue_id)
       readOnlyAttributes = issue.read_only_attribute_names(User.current)
-      requiredAttributes = issue.required_attribute_names(User.current)
+      requiredAttributes = issue.required_attribute_names(User.current) & issue.safe_attribute_names(User.current)
 
       # o << requiredAttributes.to_json
 
