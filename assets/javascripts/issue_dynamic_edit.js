@@ -49,6 +49,7 @@ function editActionHandler(e) {
 		$(e.target).closest('span.dynamicEdit').length)
 		) {
 		$(e.target).closest('.value').addClass('edited');
+		$(e.target).addClass('modified');
 	}
 	if ($(e.target).closest('a').length) { return; }
 	if ($(e.target).closest('.' + _CONF_LISTENER_TARGET).length) {
@@ -359,27 +360,32 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass) {
 	// avoid conflict revision
 	var lastLockVersion = getLastLockVersion();
 	$('#issue_lock_version').val(lastLockVersion);
-	var formData = "";
+	var formData = {};
 	
 	// If checkbox we have to uncheck everything in the issue-form and get data from dynamic edit
 	if(type == "checkbox"){
-		formData = field_value + "&";
 		var cf_id = field_name.replace(/\D/g,'');
+		var check_box_name= 'issue[custom_field_values][' + cf_id + '][]';
+		var values = new Array();
+		$('.dynamicEdit input[name=issue\\[custom_field_values\\]\\[' + 4 + '\\]\\[\\]]:checked').each(function(){
+			values.push($(this).val());
+		});
 		$('input[name=issue\\[custom_field_values\\]\\[' + cf_id + '\\]\\[\\]]').each(function(){
 			$(this).prop('checked', false);
 		});
+		formData[check_box_name] = values;
+	}else{
+		formData['issue['+field_name+']'] = field_value; 
 	}
 
-	formData += $('#issue-form').serialize();
+	formData['_method'] ='patch'; 	
+	formData['authenticity_token'] = token;
 
 
 	jQuery.ajax({
 		type: 'POST',
 		url: LOCATION_HREF,
 		data: formData,
-		beforeSend: function(xhr) {
-			xhr.setRequestHeader("authenticity_token", token);
-		},
 		success: function(msg) {
 			/* get result page content (updated issue detail page with new status) */
 
@@ -704,3 +710,4 @@ function initEditFieldListeners() {
 }
 
 initEditFieldListeners();
+
