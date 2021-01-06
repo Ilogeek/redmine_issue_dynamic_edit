@@ -49,7 +49,6 @@ function editActionHandler(e) {
 		$(e.target).closest('span.dynamicEdit').length)
 		) {
 		$(e.target).closest('.value').addClass('edited');
-		$(e.target).addClass('modified');
 	}
 	if ($(e.target).closest('a').length) { return; }
 	if ($(e.target).closest('.' + _CONF_LISTENER_TARGET).length) {
