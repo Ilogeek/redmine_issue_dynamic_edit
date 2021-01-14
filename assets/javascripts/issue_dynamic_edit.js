@@ -366,13 +366,17 @@ function issueDynamicUpdate(field_name, field_value, type, cssClass) {
 		var cf_id = field_name.replace(/\D/g,'');
 		var check_box_name= 'issue[custom_field_values][' + cf_id + '][]';
 		var values = new Array();
-		$('.dynamicEdit input[name=issue\\[custom_field_values\\]\\[' + 4 + '\\]\\[\\]]:checked').each(function(){
+		$('.dynamicEdit input[name=issue\\[custom_field_values\\]\\[' + cf_id + '\\]\\[\\]]:checked').each(function(){
 			values.push($(this).val());
 		});
 		$('input[name=issue\\[custom_field_values\\]\\[' + cf_id + '\\]\\[\\]]').each(function(){
 			$(this).prop('checked', false);
 		});
-		formData[check_box_name] = values;
+		if (values.length) {
+		    formData[check_box_name] = values;
+                } else {
+		    formData[check_box_name] = [''];
+                }
 	}else{
 		formData['issue['+field_name+']'] = field_value; 
 	}
