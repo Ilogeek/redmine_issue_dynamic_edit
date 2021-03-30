@@ -114,10 +114,6 @@ body.controller-issues.action-show div.issue.details .attributes {
   width: 100%;
 }
 
-body.controller-issues.action-show div.issue.details .splitcontent {
-  display: table-row;
-}
-
 div.issue div.subject h3 {
 	position:relative;
 	display: inline-block;
