@@ -4,9 +4,21 @@
 var _CONF_FORCE_HTTPS = _CONF_FORCE_HTTPS || false;
 var _CONF_DISPLAY_EDIT_ICON = _CONF_DISPLAY_EDIT_ICON || "single";
 var _CONF_LISTENER_TYPE_VALUE = _CONF_LISTENER_TYPE_VALUE || "click";
-var _CONF_LISTENER_TYPE_ICON = _CONF_LISTENER_TYPE_ICON || "click";
+var _CONF_LISTENER_TYPE_ICON = _CONF_LISTENER_TYPE_ICON || "none";
 var _CONF_LISTENER_TARGET = _CONF_LISTENER_TARGET || "value";
 var _CONF_EXCLUDED_FIELD_ID = _CONF_EXCLUDED_FIELD_ID || [];
+var _CONF_CHECK_ISSUE_UPDATE_CONFLICT = _CONF_CHECK_ISSUE_UPDATE_CONFLICT || false;
+
+_CONF_LISTENER_TARGET = _CONF_LISTENER_TARGET === "all" ? "*" : _CONF_LISTENER_TARGET;
+
+/*
+ *	SVG ICONS
+ *  Source : https://www.iconfinder.com/iconsets/glyphs
+ */
+
+var SVG_EDIT = '<svg style="width: 1em; height: 1em;" version="1.1" viewBox="0 0 24 24" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g class="svg_edit"><path d="m2 20c0 1.1.9 2 2 2h2.6l-4.6-4.6z"/><path d="m21.6 5.6-3.2-3.2c-.8-.8-2-.8-2.8 0l-.2.2c-.4.4-.4 1 0 1.4l4.6 4.6c.4.4 1 .4 1.4 0l.2-.2c.8-.8.8-2 0-2.8z"/><path d="m14 5.4c-.4-.4-1-.4-1.4 0l-9.1 9.1c-.5.5-.5 1.1-.1 1.5l4.6 4.6c.4.4 1 .4 1.4 0l9.1-9.1c.4-.4.4-1 0-1.4z"/></g></svg>';
+var SVG_VALID = '<svg style="width: 1em; height: 1em; fill:white;" version="1.1" viewBox="0 0 24 24" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="info"/><g id="icons"><path d="M10,18c-0.5,0-1-0.2-1.4-0.6l-4-4c-0.8-0.8-0.8-2,0-2.8c0.8-0.8,2.1-0.8,2.8,0l2.6,2.6l6.6-6.6   c0.8-0.8,2-0.8,2.8,0c0.8,0.8,0.8,2,0,2.8l-8,8C11,17.8,10.5,18,10,18z" class="svg_check"/></g></svg>';
+var SVG_CANCEL = '<svg style="width: 1em; height: 1em;" version="1.1" viewBox="0 0 24 24" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="info"/><g id="icons"><path d="M14.8,12l3.6-3.6c0.8-0.8,0.8-2,0-2.8c-0.8-0.8-2-0.8-2.8,0L12,9.2L8.4,5.6c-0.8-0.8-2-0.8-2.8,0   c-0.8,0.8-0.8,2,0,2.8L9.2,12l-3.6,3.6c-0.8,0.8-0.8,2,0,2.8C6,18.8,6.5,19,7,19s1-0.2,1.4-0.6l3.6-3.6l3.6,3.6   C16,18.8,16.5,19,17,19s1-0.2,1.4-0.6c0.8-0.8,0.8-2,0-2.8L14.8,12z" class="svg_cancel"/></g></svg>';
 
 /*
  * Allow inclusion from other page
@@ -22,685 +34,324 @@ if (_CONF_FORCE_HTTPS) {
  * or if user has to hover every element to discover if (s)he can edit it
  */
 if (_CONF_DISPLAY_EDIT_ICON === "block"){
-	$('body.controller-issues.action-show .issue.details').addClass('showDynamicEdit');
+	$('body.controller-issues.action-show .issue.details').addClass('showPencils');
 }
 
+/* Generate edit block */
+var getEditFormHTML = function(attribute){
+	var formElement = $('#issue_' + attribute + "_id");
+	formElement = formElement.length ? formElement : $('#issue_' + attribute);
+	formElement = formElement.length ? formElement : $('#' + attribute);
 
-
-/* FontAwesome inclusion */
-var cssId = 'fontAwesome';
-
-if (!document.getElementById(cssId)) {
-	var head   = document.getElementsByTagName('head')[0];
-	var link   = document.createElement('link');
-	link.id    = cssId;
-	link.rel   = 'stylesheet';
-	link.type  = 'text/css';
-	link.href  = 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css';
-	link.media = 'all';
-	head.appendChild(link);
-}
-
-function editActionHandler(e) {
-	$('.issue .attributes .attribute .value').removeClass('edited');
-	// bind click to show edit block if click inside an edit box or on trigger, except button inside edit box
-	if(!$(e.target).closest('a.btn.btn-primary').length &&
-		($(e.target).closest('.' + _CONF_LISTENER_TARGET).length ||
-		$(e.target).closest('span.dynamicEdit').length)
-		) {
-		$(e.target).closest('.value').addClass('edited');
-	}
-	if ($(e.target).closest('a').length) { return; }
-	if ($(e.target).closest('.' + _CONF_LISTENER_TARGET).length) {
-		// avoid text selection if dblclick
-		var sel = window.getSelection ? window.getSelection() : document.selection;
-		var activeElement = document.activeElement;
-		var inputs = ['input', 'select', 'button', 'textarea'];
-
-		if (sel && inputs.indexOf(activeElement.tagName.toLowerCase()) === -1) {
-			if (sel.removeAllRanges) {
-				sel.removeAllRanges();
-			} else if (sel.empty) {
-				sel.empty();
-			}
-		}
-	}
-}
-
-// Listen on events on a whole line for any field
-if(_CONF_LISTENER_TYPE_VALUE !== "none") {
-	$(document).on(_CONF_LISTENER_TYPE_VALUE, editActionHandler);
-} else {
-	$('body.controller-issues.action-show .issue.details').addClass('no-cursor');
-}
-
-// If a supplementary type of event is set specifically for the dynamic edit icon,
-// add another listener for it
-if (_CONF_LISTENER_TYPE_VALUE !== _CONF_LISTENER_TYPE_ICON && _CONF_LISTENER_TYPE_ICON !== "none") {
-	$(document).on(_CONF_LISTENER_TYPE_ICON, '.fa-pencil.dynamicEditIcon' , function (e) {
-		editActionHandler(e);
-	});
-}
-
-function isExcluded(elmt_id) {
-	return _CONF_EXCLUDED_FIELD_ID.indexOf(elmt_id) > -1;
-}
-
-function initEditFields() {
-	/* Put new dropdown lists in the detailed info block */
-	if ($('#statusListDropdown').length > 0 && !isExcluded('statusListDropdown')) {
-		var htmlCopy = $('#statusListDropdown').get(0).outerHTML;
-		$('#statusListDropdown').remove();
-		$('.details .attributes .status.attribute .value').html(
-			htmlCopy +
-			'<span class="showValue">' +
-			$('.details .attributes .status.attribute .value').html() +
-			'</span> <i class="fa fa-pencil dynamicEditIcon fa-fw" aria-hidden="true"></i>'
-		);
-	}
-
-	if ($('#prioritiesListDropdown').length > 0 && !isExcluded('prioritiesListDropdown')) {
-		var htmlCopy = $('#prioritiesListDropdown').get(0).outerHTML;
-		$('#prioritiesListDropdown').remove();
-		$('.details .attributes .priority.attribute .value').html(
-			htmlCopy +
-			'<span class="showValue">' +
-			$('.details .attributes .priority.attribute .value').html() +
-			'</span> <i class="fa fa-pencil dynamicEditIcon fa-fw" aria-hidden="true"></i>'
-		);
-	}
-
-	if ($('#categoriesListDropdown').length > 0 && !isExcluded('categoriesListDropdown')) {
-		var htmlCopy = $('#categoriesListDropdown').get(0).outerHTML;
-		$('#categoriesListDropdown').remove();
-		$('.details .attributes .category.attribute .value').html(
-			htmlCopy +
-			'<span class="showValue">' +
-			$('.details .attributes .category.attribute .value').html() +
-			'</span> <i class="fa fa-pencil dynamicEditIcon fa-fw" aria-hidden="true"></i>'
-		);
-	}
-
-	if ($('#doneRatioListDropdown').length > 0 && !isExcluded('doneRatioListDropdown')) {
-		var htmlCopy = $('#doneRatioListDropdown').get(0).outerHTML;
-		$('#doneRatioListDropdown').remove();
-		$('.details .attributes .progress.attribute .value').html(
-			htmlCopy +
-			'<span class="showValue">' +
-			$('.details .attributes .progress.attribute .value').html() + '</span> <i class="fa fa-pencil dynamicEditIcon fa-fw" aria-hidden="true"></i>'
-		);
-	}
-
-	if ($('#EstimatedTimeInput').length > 0 && !isExcluded('EstimatedTimeInput')) {
-		var htmlCopy = $('#EstimatedTimeInput').get(0).outerHTML;
-		$('#EstimatedTimeInput').remove();
-		$('.details .attributes .estimated-hours.attribute .value').html(
-			htmlCopy +
-			'<span class="showValue">' +
-			$('.details .attributes .estimated-hours.attribute .value').html() +
-			'</span> <i class="fa fa-pencil dynamicEditIcon fa-fw" aria-hidden="true"></i>'
-		);
-	}
-
-	if ($('#StartDateInput').length > 0 && !isExcluded('StartDateInput')) {
-		var htmlCopy = $('#StartDateInput').get(0).outerHTML;
-		$('#StartDateInput').remove();
-		$('.details .attributes .start-date.attribute .value').html(
-			htmlCopy +
-			'<span class="showValue">' +
-			$('.details .attributes .start-date.attribute .value').html() +
-			'</span> <i class="fa fa-pencil dynamicEditIcon fa-fw" aria-hidden="true"></i>'
-		);
-	}
-
-	if ($('#DueDateInput').length > 0 && !isExcluded('DueDateInput')) {
-		var htmlCopy = $('#DueDateInput').get(0).outerHTML;
-		$('#DueDateInput').remove();
-		$('.details .attributes .due-date.attribute .value').html(
-			htmlCopy +
-			'<span class="showValue">' +
-			$('.details .attributes .due-date.attribute .value').html() +
-			'</span> <i class="fa fa-pencil dynamicEditIcon fa-fw" aria-hidden="true"></i>'
-		);
-	}
-
-	if ($('#TitleInput').length > 0 && !isExcluded('TitleInput')) {
-		var htmlCopy = $('#TitleInput').get(0).outerHTML;
-		$('#TitleInput').remove();
-		$('.subject h3').html(
-			htmlCopy +
-			'<span class="showValue">' +
-			$('.subject h3').html() +
-			'</span> <i class="fa fa-pencil dynamicEditIcon fa-fw" aria-hidden="true"></i>'
-		).addClass('value');
-	}
-
-	if ($('#DescriptionInput').length > 0 && !isExcluded('DescriptionInput')) {
-		var htmlCopy = $('#DescriptionInput').get(0).outerHTML;
-		$('#DescriptionInput').remove();
-		$('div.description .wiki').html(
-			htmlCopy +
-			' <i class="fa fa-pencil dynamicEditIcon fa-fw" aria-hidden="true" style="float:right;"></i><span class="showValue">' +
-			$('div.description .wiki').html() + '</span>'
-		).addClass('value');
-	}
-
-	if ($('select#issue_assigned_to_id').length > 0 && !isExcluded('issue_assigned_to_id')) {
-		var htmlCopy = $('select#issue_assigned_to_id').get(0).outerHTML;
-		// 2 technics with simple or double quote (safety first)
-		htmlCopy = htmlCopy.replace(/id="/g, 'id="dynamic_').replace(/id='/g, "id='dynamic_");
-
-		var editHTML = "<span class='dynamicEdit' id='dynamic_edit_assigned_to_id'>";
-		editHTML += htmlCopy;
-		editHTML += " <a href='#' class='btn btn-primary close' aria-label='" + _TXT_CANCEL_BTN + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a>";
-		editHTML += "</span>";
-
-		$('.details .attributes .assigned-to.attribute .value').html(
-			editHTML +
-			'<span class="showValue">' +
-			$('.details .attributes .assigned-to.attribute .value').html() +
-			'</span> <i class="fa fa-pencil dynamicEditIcon fa-fw" aria-hidden="true"></i>'
-		);
-	}
-
-	if ($('select#issue_fixed_version_id').length > 0 && !isExcluded('issue_fixed_version_id')) {
-		var htmlCopy = $('select#issue_fixed_version_id').get(0).outerHTML;
-		// 2 technics with simple or double quote (safety first)
-		htmlCopy = htmlCopy.replace(/id="/g, 'id="dynamic_').replace(/id='/g, "id='dynamic_");
-
-		var editHTML = "<span class='dynamicEdit' id='dynamic_edit_fixed_version'>";
-		editHTML += htmlCopy;
-		editHTML += " <a href='#' class='btn btn-primary close' aria-label='" + _TXT_CANCEL_BTN + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a>";
-		editHTML += "</span>";
-
-		$('.details .attributes .fixed-version.attribute .value').html(
-			editHTML +
-			'<span class="showValue">' +
-			$('.details .attributes .fixed-version.attribute .value').html() +
-			'</span> <i class="fa fa-pencil dynamicEditIcon fa-fw" aria-hidden="true"></i>'
-		);
-	}
-
-	for (var i = 0 ; i < CF_VALUE_JSON.length ; i++) {
-		var info = CF_VALUE_JSON[i].custom_field;
-		var value = CF_VALUE_JSON[i].value;
-
-		if (info.visible && info.editable && !isExcluded("issue_custom_field_values_" + info.id)) {
-			if (
-				$('.details .attributes .cf_' + info.id + '.attribute .value').length &&
-				(
-					$('#issue_custom_field_values_' + info.id).length ||
-					$('input[name=issue\\[custom_field_values\\]\\[' + info.id + '\\]\\[\\]]').length
-				)
-			) {
-				// if single input first case, else checkboxes second case
-				if($('#issue_custom_field_values_' + info.id).length) {
-					var htmlCopy = $('#issue_custom_field_values_' + info.id).get(0).outerHTML;
-				} else {
-					var htmlCopy = $('input[name=issue\\[custom_field_values\\]\\[' + info.id + '\\]\\[\\]]').parents('.check_box_group').get(0).outerHTML;
-				}
-
-				// 2 technics with simple or double quote (safety first)
-				htmlCopy = htmlCopy.replace(/id="/g, 'id="dynamic_').replace(/id='/g, "id='dynamic_");
-				htmlCopy = htmlCopy.replace(/class="/g, 'class="cf_' + info.id + ' ').replace(/class='/g, "class='cf_" + info.id + " ");
-
-				var editHTML = "<span class='dynamicEdit " + info.field_format + "' id='dynamic_edit_cf_" + info.id + "'>";
-
-				editHTML += htmlCopy;
-				editHTML += " <a href='#' class='btn btn-primary validate' aria-label='" + _TXT_VALIDATION_BTN + "'><i class='fa fa-check fa-fw' aria-hidden='true'></i></a>";
-				editHTML += " <a href='#' class='btn btn-primary close' aria-label='" + _TXT_CANCEL_BTN + "'><i class='fa fa-times fa-fw' aria-hidden='true'></i></a>";
-				editHTML += "</span>";
-
-				$('.details .attributes .cf_' + info.id + '.attribute .value').html(
-					editHTML +
-					'<span class="showValue">' +
-					$('.details .attributes .cf_' + info.id + '.attribute .value').html() +
-					'</span> <i class="fa fa-pencil dynamicEditIcon fa-fw" aria-hidden="true"></i>'
-				);
-
-				if (info.field_format == "date") {
-					if (
-						$('body').find('#dynamic_issue_custom_field_values_' + info.id).length &&
-						$('body').find('#dynamic_issue_custom_field_values_' + info.id).datepickerFallback instanceof Function &&
-						typeof datepickerOptions !== 'undefined'
-					) {
-						$('body').find('#dynamic_issue_custom_field_values_' + info.id).datepickerFallback(datepickerOptions);
-					}
-				}
-
-				cf_datetime = $('body').find('#dynamic_issue_custom_field_values_' + info.id);
-				if (info.field_format == "datetime") {
-					if (
-						cf_datetime.length &&
-						typeof datetimepickerOptions !== 'undefined'
-					) {
-						cf_datetime.datetimepicker(datetimepickerOptions);
-					}
-				}
-			}
-		}
-	}
-}
-
-initEditFields();
-
-/* Add required style to attributes */
-function updateRequiredFields(reqFieldsArray) {
-	for (var i = 0; i < reqFieldsArray.length; i++) {
-		var htmlLabel = reqFieldsArray[i].replace(/_/g, '-');
-		$('.issue.details .attribute.' + htmlLabel + ' .label').html(
-			'<span title=\"' + _TXT_REQUIRED_FIELD + '\" class=\"field-description\">' +
-			$('.issue.details .attribute.' + htmlLabel + ' .label').html() +
-			'</span> <span class=\"required\"> *</span>'
-		);
-	}
-}
-
-if ($('#required_field_array').length) {
-	updateRequiredFields(JSON.parse($('#required_field_array').html()));
-}
-
-$('body.controller-issues.action-show').on('click', '.btn.close', function(e) {
-	e.preventDefault();
-	$(e.target).closest('.value').removeClass('edited');
-	return false;
-});
-
-function getLastLockVersion() {
-	var token = $("meta[name=csrf-token]").attr('content');
-	var lock_version = $('#issue_lock_version').val();
-
-
-	jQuery.ajax({
-		type: 'GET',
-		url: LOCATION_HREF,
-		data: { "authenticity_token" : token },
-		crossDomain: true,
-		async: false,
-		beforeSend: function(xhr) {
-			xhr.setRequestHeader("authenticity_token", token);
-		},
-		success: function(msg) {
-			parsed = $.parseHTML(msg);
-			lock_version = $(parsed).find('#issue_lock_version').val();
-		}
-	});
-	return lock_version;
-}
-
-function issueDynamicUpdate(field_name, field_value, type, cssClass) {
-	/* hide edit field */
-	$('.details .' + cssClass + ' .value').removeClass('edited');
-
-	/* add spin notification */
-	$('.details .' + cssClass + ' .value').append(' <i class="fa fa-refresh fa-spin fa-fw"></i>');
-
-	/* update value displayed */
-	$('.details .' + cssClass + ' .showValue').html(function() {
-		if (type == "select") {
-			return $('.details .' + cssClass + ' .value select option:selected').html()
-		} else if (type == "input") {
-			return $('.details .' + cssClass + ' .value input').val()
-		} else if (type == "textarea") {
-			return $('.details .' + cssClass + ' .value textarea').val()
-		} else if (type == "date") {
-			return "XXXX/XX/XX";
-		}
-	});
-
-	/* lost focus on element */
-	if (type != "select") {
-		$('.details .' + cssClass + ' .value input').blur();
-	}
-
-	var token = $("meta[name=csrf-token]").attr('content');
-
-	$('#issue-form').find("#issue_" + field_name).val(field_value).css({"display": "inline-block"});
-	// avoid conflict revision
-	var lastLockVersion = getLastLockVersion();
-	$('#issue_lock_version').val(lastLockVersion);
-	var formData = "";
-	
-	// If checkbox we have to uncheck everything in the issue-form and get data from dynamic edit
-	if(type == "checkbox"){
-		formData = field_value + "&";
-		var cf_id = field_name.replace(/\D/g,'');
-		$('input[name=issue\\[custom_field_values\\]\\[' + cf_id + '\\]\\[\\]]').each(function(){
-			$(this).prop('checked', false);
-		});
-	}
-
-	formData += $('#issue-form').serialize();
-
-
-	jQuery.ajax({
-		type: 'POST',
-		url: LOCATION_HREF,
-		data: formData,
-		beforeSend: function(xhr) {
-			xhr.setRequestHeader("authenticity_token", token);
-		},
-		success: function(msg) {
-			/* get result page content (updated issue detail page with new status) */
-
-			var parsed = $.parseHTML(msg);
-
-			var error = $(parsed).find("#errorExplanation");
-
-			if (error.length) {
-				if ($('html').find("#errorExplanation").length == 0) {
-					$('.issue.details').before("<div id='errorExplanation'>" + error.html() + "</div>");
-				} else {
-					$('html').find("#errorExplanation").html(error.html());
-				}
-
-				/* data updated, remove spin and add success icon for 2sec */
-				setTimeout(function() {
-					$('.details .' + cssClass + ' i.fa-spin').removeClass('fa-refresh fa-spin').addClass('fa-times statusKo');
-					setTimeout(function() {
-						$('.details .' + cssClass + ' i.fa-times.statusKo').remove();
-					}, 2000);
-				}, 500);
-
-
-				jQuery.ajax({
-					type: 'GET',
-					url: LOCATION_HREF,
-					data: { "authenticity_token" : token },
-					crossDomain: true,
-					async: false,
-					beforeSend: function(xhr) {
-						xhr.setRequestHeader("authenticity_token", token);
-					},
-					success: function(msg) {
-						parsed = $.parseHTML(msg);
-					}
-				});
+	// Checkbox specific case
+	var is_checkboxes = false;
+	let is_file = false;
+	let is_list = false;
+	let CF_ID = false;
+	if(!formElement.length && attribute.startsWith("custom_field_values_")){
+		CF_ID = attribute.split("custom_field_values_")[1];
+		/* Is it a checkbox block ? */
+		formElement = $('#issue_custom_field_values_' + CF_ID);
+		if(formElement.length){
+			formElement = formElement.parents('.check_box_group');
+			is_checkboxes = CF_ID;
+		} else {
+			/* Is it a file block ? */
+			formElement = $('#issue_custom_field_values_' + CF_ID + '_blank');
+			if(formElement.length){
+				formElement = formElement.parents('p');
+				formElement.find('label').remove();
+				is_file = CF_ID;
 			} else {
-				/* removing error div if exists */
-				$('html').find("#errorExplanation").remove();
+				/* Is it a checkbox/radio group ? */
+				formElement = $('#issue-form .cf_' + CF_ID + '.check_box_group');
+				is_list = CF_ID;
 			}
-
-			/* we update the details block */
-			$('div.issue.details').html( $(parsed).find('div.issue.details').html() );
-			$('body').find('.details .' + cssClass + ' .value').append(' <i class="fa fa-refresh fa-spin fa-fw"></i>');
-
-			/* we update form*/
-			$('form#issue-form').html( $(parsed).find('form#issue-form').html() );
-
-			/* we update issue properties edit block */
-			$('#all_attributes').html( $(parsed).find('#all_attributes').html() );
-
-			/* we init edit fields */
-			initEditFields();
-			initEditFieldListeners();
-
-			if ($(parsed).find('#required_field_array').length) {
-				updateRequiredFields(JSON.parse($(parsed).find('#required_field_array').html()));
-			}
-
-			/* we update the history list */
-			$('#history').append($(parsed).find('#history .journal.has-details:last-child'));
-
-			/* data updated, remove spin and add success icon for 2sec */
-			setTimeout(function(){
-				$('.details .' + cssClass + ' i.fa-spin').removeClass('fa-refresh fa-spin').addClass('fa-check statusOk');
-				setTimeout(function(){
-					$('.details .' + cssClass + ' i.fa-check.statusOk').remove();
-				}, 2000);
-			}, 500);
-
-			//set datepicker fallback for input type date
-			if (
-				$('body').find('input[type=date]').length &&
-				$('body').find('input[type=date]').datepickerFallback instanceof Function &&
-				typeof datepickerOptions !== 'undefined'
-			) {
-				$('body').find('input[type=date]').datepickerFallback(datepickerOptions);
-			}
-		},
-		error: function(xhr, msg, error) {
-			/* error and no update, info logged into console */
-			console.log('%c -------- Error while updating the issue attribute dynamically -------- ', 'background: #ff0000; color: white; font-weight:900');
-			console.log('%c xhr data: ', 'background: black; color: white;');
-			console.log(xhr);
-			console.log('%c msg data: ', 'background: black; color: white;');
-			console.log(msg);
-			console.log('%c error data: ', 'background: black; color: white;');;
-			console.log(error);
-			console.log('%c ---------------------------------------------------------- ', 'background: #ff0000; color: white; font-weight:900');
-
-			$('.details .' + cssClass + ' i.fa-spin').removeClass('fa-refresh fa-spin').addClass('fa-times').html(" " + _TXT_ERROR_AJAX_CALL);
-			setTimeout(function(){
-				$('.details .' + cssClass + ' i.fa-times').remove();
-			}, 2000);
 		}
-	});
-};
-
-/* Listeners foreach attribute */
-function initEditFieldListeners() {
-	var domSelectStatus = $('body').find('#statusListDropdown select');
-	domSelectStatus.on('change', function(e) {
-		issueDynamicUpdate('status_id', domSelectStatus.val(), 'select', 'status');
-
-		/* update the classes status from */
-		$("#content > div.issue").removeClass(function (index, className) {
-			return (className.match (/(^|\s)status-\S+/g) || []).join(' ');
-		}).addClass('status-' + domSelectStatus.val());
-	}); /* end on change domSelectStatus */
-
-	var domSelectPriorities = $('body').find('#prioritiesListDropdown select');
-	domSelectPriorities.on('change', function(e){
-		issueDynamicUpdate('priority_id', domSelectPriorities.val(), 'select', 'priority');
-
-		/* update the classes priority from */
-		$("#content > div.issue").removeClass(function (index, className) {
-			return (className.match (/(^|\s)priority-\S+/g) || []).join(' ');
-		}).addClass('priority-' + domSelectPriorities.val());
-	}); /* end on change domSelectPriorities */
-
-	var domSelectCategories = $('body').find('#categoriesListDropdown select');
-	domSelectCategories.on('change', function(e){
-		issueDynamicUpdate('category_id', domSelectCategories.val(), 'select', 'category');
-
-		/* update the classes priority from */
-		$("#content > div.issue").removeClass(function (index, className) {
-			return (className.match (/(^|\s)priority-\S+/g) || []).join(' ');
-		}).addClass('category-' + domSelectPriorities.val());
-	}); /* end on change domSelectCategories */
-
-	var domSelectUsers = $('body').find('#usersListDropdown select');
-	domSelectUsers.on('change', function(e){
-		issueDynamicUpdate('assigned_to_id', domSelectUsers.val(), 'select', 'assigned-to');
-	}); /* end on change domSelectUsers */
-
-	var domSelectRatio = $('body').find('#doneRatioListDropdown select');
-	domSelectRatio.on('change', function(e){
-		issueDynamicUpdate('done_ratio', domSelectRatio.val(), 'progress', 'progress');
-	}); /* end on change domSelectRatio */
-
-	var domInputEstimatedTime = $('body').find('#EstimatedTimeInput input');
-	$('#EstimatedTimeInput a.btn.validate').on('click', function(e) {
-		e.preventDefault();
-		$('.estimated-hours .value .error').remove();
-		var estimatedTime = parseFloat(domInputEstimatedTime.val());
-
-		if (estimatedTime >= 0) {
-			issueDynamicUpdate('estimated_hours', estimatedTime, 'input', 'estimated-hours');
+	}
+	
+	if(formElement.length){
+		var clone = formElement.clone();
+		if(clone.is('select') && !clone.prop('multiple')) clone.on('change', function(e){sendData($(this).serializeArray());});
+		if(is_checkboxes || is_file || is_list) {
+			clone.prop('id', "issue_custom_field_values_" + CF_ID + "_dynamic");
 		} else {
-			/* estimated time must be > 0 */
-			$('.estimated-hours .value').append('<span class="error"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' + _TXT_ERROR_POSITIVE_NUMBER + '</span>');
+			clone.prop('id', formElement.prop('id') + "_dynamic");
 		}
+		var wrapper = $("<div/>").addClass('dynamicEditField');
+		wrapper.append(clone);
+		if(!clone.is('select') || clone.prop('multiple')) wrapper.append("<button class='action valid'><!--&check;-->" + SVG_VALID + "</button>");
+		wrapper.append("<button class='action refuse'><!--&#x2715;-->" + SVG_CANCEL + "</button>");
+		return wrapper;
+	}
 
-		return false;
-	});
+	return null;
+}
 
-	domInputEstimatedTime.on('keyup', function(e){
-		$('.details .attributes .estimated-hours.attribute .selectedValue span').html(
-			$('.details .attributes .estimated-hours.attribute .value input').val()
-		);
+/* Loop over all form attribute and clone them into details part */
+var cloneEditForm = function(){
+	$('.issue.details .subject').append('<button class="refreshData">&#10227;</button>');
+	$(".issue.details ").wrap("<form id='fakeDynamicForm'>");
 
-		if (e.keyCode == 13) {
-			$('#EstimatedTimeInput a.btn.validate').click();
+	$('div.issue.details .attribute').each(function(){
+		var classList = $(this).attr('class').split(/\s+/);
+		
+		var attributes = classList.filter(function(elem) { return elem != "attribute"; });
+		// Specific case : all "-" are replaced by "_" into form id
+		attributes = attributes.map(attr => attr.replaceAll('-', '_'));
+		
+		let custom_field = false;
+		attributes.forEach(function(part, index, arr) {
+		  if(arr[index] === "progress") arr[index] = "done_ratio";
+		  if(arr[index].startsWith('cf_')) {
+		  	arr[index] = arr[index].replace('cf', 'custom_field_values');
+		  	custom_field = arr[index];
+		  }
+		});
+		
+		attributes = attributes.join(" ");
+
+		let selected_elt = custom_field ? custom_field : attributes;
+		if(attributes && !_CONF_EXCLUDED_FIELD_ID.includes(selected_elt)){
+			let dynamicEditField = getEditFormHTML(selected_elt);
+			if(dynamicEditField) $(this).find('.value').append("&nbsp;<span class='iconEdit'><!--&#9998;-->" + SVG_EDIT + "</span>").append(dynamicEditField);
 		}
-	});/* end EstimatedTime */
+  	});
 
-	var domInputStartDate = $('body').find('#StartDateInput input');
-	$('#StartDateInput a.btn.validate').on('click', function(e) {
-		e.preventDefault();
-		$('.start-date .value .error').remove();
-		if (new Date(domInputStartDate.val()).getTime() <= new Date($('body').find('#DueDateInput input').val()).getTime() || $('body').find('#DueDateInput input').val() == "")
-		{
-			issueDynamicUpdate('start_date', domInputStartDate.val(), 'date', 'start-date');
-		} else {
-			/* start date must be < due date */
-			$('.start-date .value').append('<span class="error"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' + _TXT_ERROR_START_DATE + '</span>');
-		}
+  	// Specific Case : Description field
+  	if(!_CONF_EXCLUDED_FIELD_ID.includes("description") && document.querySelectorAll('div.issue.details .description').length){
+  		$('div.issue.details .description > p').first().find('strong').after("&nbsp;<span class='iconEdit'><!--&#9998;-->" + SVG_EDIT + "</span>");
+  		var formDescription = getEditFormHTML("description");
+  		formDescription.find("#issue_description_dynamic").removeAttr('data-tribute');
+  		$('div.issue.details .description').append(formDescription);
 
-		return false;
-	});
-
-	domInputStartDate.on('keyup', function(e){
-		if (e.keyCode == 13) {
-			$('#StartDateInput a.btn.validate').click();
-		}
-	});/* end StartDate */
-
-	var domInputDueDate = $('body').find('#DueDateInput input');
-	$('#DueDateInput a.btn.validate').on('click', function(e) {
-		e.preventDefault();
-		$('.due-date .value .error').remove();
-
-		if(new Date($('body').find('#StartDateInput input').val()).getTime() <= new Date(domInputDueDate.val()).getTime() || $('body').find('#StartDateInput input').val() == "" )
-		{
-			issueDynamicUpdate('due_date', domInputDueDate.val(), 'date', 'due-date');
-		} else {
-			/* start date must be < due date */
-			$('.due-date .value').append('<span class="error"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' + _TXT_ERROR_DUE_DATE + '</span>');
-		}
-		return false;
-	});
-
-	domInputDueDate.on('keyup', function(e){
-		if (e.keyCode == 13) {
-			$('#DueDateInput a.btn.validate').click();
-		}
-	});/* end StartDate */
-
-	var domInputTitle = $('body').find('#TitleInput input');
-	$('#TitleInput a.btn.validate').on('click', function(e) {
-		e.preventDefault();
-		issueDynamicUpdate('subject', domInputTitle.val(), 'input', 'subject');
-
-		return false;
-	});
-
-	domInputTitle.on('keyup', function(e){
-		if (e.keyCode == 13) {
-			$('#TitleInput a.btn.validate').click();
-		}
-	});/* end Title */
-
-	var domInputDescription = $('body').find('#DescriptionInput textarea');
-
-	if(domInputDescription.length) {
-
-		if (
+  		if (
 				typeof(CKEDITOR) === "object" &&
+				typeof(CKEDITOR.instances['issue_description'] !== "undefined") &&
 				typeof(CKEDITOR.instances['issue_description'].getData) === typeof(Function)
 		) {
 			var cfg = CKEDITOR.instances['issue_description'].config;
 			cfg.height = 100;
-			CKEDITOR.replace("description_textarea", cfg)
+			CKEDITOR.replace("issue_description_dynamic", cfg)
 		}else if (typeof(jsToolBar) === typeof(Function)) {
-			var wikiToolbar = new jsToolBar(document.getElementById('description_textarea')); wikiToolbar.draw();
+			var wikiToolbar = new jsToolBar(document.getElementById('issue_description_dynamic')); wikiToolbar.draw();
 		}
+  	}
 
-	 	$('#DescriptionInput a.btn.validate').on('click', function(e) {
-			e.preventDefault();
-			var new_value = domInputDescription.val();
+  	// Specific Case : Title field
+  	if(!_CONF_EXCLUDED_FIELD_ID.includes("subject")){
+  		$('div.issue.details .subject h3').append("&nbsp;<span class='iconEdit'><!--&#9998;-->" + SVG_EDIT + "</span>");
+  		var formTitle = getEditFormHTML("issue_subject");
+  		$('div.issue.details .subject').append(formTitle);
+  	}
+}
 
-			if (
-				typeof(CKEDITOR) === "object" &&
-				typeof(CKEDITOR.instances['description_textarea'].getData) === typeof(Function)
-			) {
-				new_value = CKEDITOR.instances['description_textarea'].getData();
+/* Perform action on .value (display edit form) */ 
+$('body').on(_CONF_LISTENER_TYPE_VALUE,
+	'div.issue.details .attributes .attribute .' + _CONF_LISTENER_TARGET + ', div.issue.details div.description > p, div.issue.details div.subject',
+ 	function(e){
+ 		if($(e.target).closest('.dynamicEditField').length) return; /* We're already into a dynamic field, ignore */
+ 		$('.dynamicEditField').each(function(e){ $(this).removeClass('open'); });
+		if(!$(e.target).closest('a').length && !$(e.target).closest('button').length){
+			if($(this).parent().hasClass('description')){
+				$(this).parent().find('.dynamicEditField').addClass('open');
+			} else {
+				$(this).find('.dynamicEditField').addClass('open');
 			}
+		}
+});
 
-			issueDynamicUpdate('description', new_value, 'textarea', 'description');
+/* Perform action on .iconEdit (display edit form) */
+$('body').on(_CONF_LISTENER_TYPE_ICON, 
+	'div.issue.details .iconEdit', function(e){
+	$('.dynamicEditField').each(function(e){ $(this).removeClass('open'); });
+	$(this).parent().find('.dynamicEditField').addClass('open');
+});
 
-			return false;
-		});
-	}
+/* Perform data update when clicking on valid button from edit form */
+$('body').on('click', '.dynamicEditField .action.valid', function(e){
+	e.preventDefault();
+	var input = $(this).parents('.dynamicEditField').find(':input');
+	sendData(input.serializeArray());
+	$(this).parents('.dynamicEditField').removeClass('open');
+});
 
-	var dynamic_edit_assigned_to_id = $('body').find('#dynamic_edit_assigned_to_id select');
+/* Hide edit form when clicking on cancel button */
+$('body').on('click', '.dynamicEditField .action.refuse', function(e){
+	e.preventDefault();
+	$(this).parents('.dynamicEditField').removeClass('open');
+});
 
-	if (dynamic_edit_assigned_to_id.length) {
-	 	dynamic_edit_assigned_to_id.on('change', function(e){
-			issueDynamicUpdate('assigned_to_id', dynamic_edit_assigned_to_id.val(), 'select', 'assigned-to');
-		});
-	}
+/* Update whole .details block + history + form with global refresh button */
+$('body').on('click', '.refreshData', function(e){
+	sendData();
+});
 
-	var dynamic_edit_fixed_version = $('body').find('#dynamic_edit_fixed_version select');
+/* Listen on esc key press to close opened dialog box */
+document.onkeydown = function(evt) {
+    evt = evt || window.event;
+    var isEscape = false;
+    if ("key" in evt) {
+        isEscape = (evt.key === "Escape" || evt.key === "Esc");
+    } else {
+        isEscape = (evt.keyCode === 27);
+    }
+    if (isEscape) {
+        $('.dynamicEditField').each(function(e){ $(this).removeClass('open'); });
+    }
+};
 
-	if (dynamic_edit_fixed_version.length) {
-	 	dynamic_edit_fixed_version.on('change', function(e){
-			issueDynamicUpdate('fixed_version_id', dynamic_edit_fixed_version.val(), 'select', 'fixed-version');
-		});
-	}
-
-	/* end Description */
-
-	/* Custom fields */
-	for (var i = 0 ; i < CF_VALUE_JSON.length ; i++) {
-		(
-			function() {
-				var info = CF_VALUE_JSON[i].custom_field;
-				var value = CF_VALUE_JSON[i].value;
-
-				if (info.visible && info.editable) {
-					var inputType = "input";
-					switch (info.field_format) {
-						case "bool":
-						case "user":
-						case "list":
-						case "enumeration":
-						case "version":
-							inputType = "select";
-							break;
-						case "text":
-							inputType = "textarea";
-							break;
-					}
-
-					if(info.format_store.edit_tag_style == "check_box"){
-						inputType = "checkbox";
-					}
-
-					var domInputField = $('body').find('#dynamic_issue_custom_field_values_' + info.id);
-				 	$('body').find('#dynamic_edit_cf_' + info.id + ' a.btn.validate').on('click', function(e) {
-				 		var new_value = domInputField.val();
-
-				 		// Specific case with checkboxes
-				 		if(typeof new_value === 'undefined'){
-			 				var new_value = $('body').find('#dynamic_edit_cf_' + info.id + " :input").serialize();
-				 		}
-
-						issueDynamicUpdate('custom_field_values_' + info.id , new_value, inputType, 'cf_' + info.id);
-
-						return false;
-				 	});
-
-				 	domInputField.on('keyup', function(e) {
-						if (e.keyCode == 13 && inputType != "textarea") {
-							$('body').find('#dynamic_edit_cf_' + info.id + ' a.btn.validate').click();
+let checkVersion = function(callback){
+	jQuery.ajax({
+					type: 'GET',
+					url: LOCATION_HREF,
+					crossDomain: true,
+					async: false,
+					success: function(msg) {
+						let parsed = $.parseHTML(msg);
+						let current_version = $(parsed).find('#issue_lock_version').val();
+						
+						if(current_version !== $('#issue_lock_version').val()){
+							if(!$('#content .conflict').length){
+								$('#content').prepend(`
+								<div class="conflict">
+								   	${_TXT_CONFLICT_TITLE}
+								    <div class="conflict-details">
+								      <div class="conflict-journal">
+								      <p>${_TXT_CONFLICT_TXT}</p>
+								      </div>
+								    </div>
+								</div>`);
+							}
+						} else {
+							$('#content .conflict').remove();
 						}
-					});
-				}
-			}()
-		); // closure FTW
+
+						if(callback) callback(current_version);
+					}
+				});
+}
+
+let checkVersionInterval = false;
+let setCheckVersionInterval = function(activate){
+	if(!_CONF_CHECK_ISSUE_UPDATE_CONFLICT) return false;
+	if(activate && !checkVersionInterval){
+		checkVersionInterval = window.setInterval(function(){ checkVersion(); }, 5000);
+	} else {
+		clearInterval(checkVersionInterval);
+		checkVersionInterval = false;
 	}
 }
 
-initEditFieldListeners();
+setCheckVersionInterval(true);
+
+/* Global function to perform AJAX call */
+var sendData = function(serialized_data){
+
+	let updateIssue = function(serialized_data){
+		setCheckVersionInterval(false);
+		var token = $("meta[name=csrf-token]").attr('content');
+		var params = serialized_data || [];
+		params.push({name: '_method', value: "patch"});
+		params.push({name: 'authenticity_token', value: token})
+
+		jQuery.ajax({
+			type: 'POST',
+			url: LOCATION_HREF,
+			data: $.param(params),
+			success: function(msg) {
+				/* get result page content (updated issue detail page with new status) */
+				$('#ajax-indicator').css('display', 'none');
+
+				var parsed = $.parseHTML(msg);
+
+				var error = $(parsed).find("#errorExplanation");
+				if (error.length) {
+
+					if ($('html').find("#errorExplanation").length == 0) {
+						$('.issue.details').before("<div id='errorExplanation'>" + error.html() + "</div>");
+
+						$([document.documentElement, document.body]).animate({
+					        scrollTop: $("#errorExplanation").offset().top
+					    }, 500);
+					} else {
+						$('html').find("#errorExplanation").html(error.html());
+					}
+
+					jQuery.ajax({
+						type: 'GET',
+						url: LOCATION_HREF,
+						data: { "authenticity_token" : token },
+						crossDomain: true,
+						async: false,
+						success: function(msg) {
+							parsed = $.parseHTML(msg);
+						}
+					});
+				} else {
+					/* removing error div if exists */
+					$('html').find("#errorExplanation").remove();
+				}
+
+				/* we update form*/
+				$('form#issue-form').html( $(parsed).find('form#issue-form').html() );
+
+				/* we update issue properties edit block */
+				$('#all_attributes').html( $(parsed).find('#all_attributes').html() );
+
+				/* we update the details block */
+				$('div.issue.details').html( $(parsed).find('div.issue.details').html() );
+
+				/* we update the history list */
+				$('#tab-content-history').append($(parsed).find('#history .journal.has-details:last-child'));
+
+				/* we init edit fields */
+				cloneEditForm();
+
+				//set datepicker fallback for input type date
+				if (
+					$('body').find('input[type=date]').length &&
+					$('body').find('input[type=date]').datepickerFallback instanceof Function &&
+					typeof datepickerOptions !== 'undefined'
+				) {
+					$('body').find('input[type=date]').datepickerFallback(datepickerOptions);
+				}
+
+				setCheckVersionInterval(true);
+			},
+			error: function(xhr, msg, error) {
+				setCheckVersionInterval(true);
+				$('#ajax-indicator').css('display', 'none');
+
+				/* error and no update, info logged into console */
+				console.groupCollapsed('%c -------- Error while updating the issue attribute dynamically -------- ', 'background: #ff0000; color: white; font-weight:900');
+				console.log("POST " + LOCATION_HREF);
+				console.table(params);
+				console.log('%c xhr data: ', 'background: black; color: white;');
+				console.log(xhr);
+				console.log('%c msg data: ', 'background: black; color: white;');
+				console.log(msg);
+				console.log('%c error data: ', 'background: black; color: white;');;
+				console.log(error);
+				console.groupEnd();
+			}
+		});
+	};
+
+	if(_CONF_CHECK_ISSUE_UPDATE_CONFLICT){
+		checkVersion(function(current_version){
+			if(current_version == $('#issue_lock_version').val()){
+				updateIssue(serialized_data);
+			} else {
+				$([document.documentElement, document.body]).animate({
+			        scrollTop: $("#content .conflict").offset().top
+			    }, 500);
+			}
+		});
+	} else {
+		updateIssue(serialized_data);
+	}
+}
+
+// Init plugin
+cloneEditForm();

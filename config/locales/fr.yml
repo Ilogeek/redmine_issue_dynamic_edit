@@ -1,8 +1,3 @@
 fr:
-  ide_txt_validation_btn        : 'Valider la modification'
-  ide_txt_error_positive_number : 'Le nombre doit être positif'
-  ide_txt_error_start_date      : "La date de début doit être antérieure à la date d'échéance"
-  ide_txt_error_due_date        : "La date d'échéance doit être postérieure à la date de début"
-  ide_txt_error_ajax_call       : 'Erreur (logs dans la console JS)'
-  ide_txt_cancel_btn            : 'Annuler la modification'
-  ide_txt_required_field        : 'Ce champs est obligatoire pour passer au Statut suivant'
+  ide_txt_notice_conflict_title : "La demande a été mise à jour pendant que vous la modifiez."
+  ide_txt_notice_conflict_text  : "<a href='#' class='refreshData'>Rafraichissez la page</a> pour voir une version à jour de la demande. <strong>Vos modifications actuelles seront perdues</strong>"

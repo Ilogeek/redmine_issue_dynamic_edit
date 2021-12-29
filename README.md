@@ -29,16 +29,16 @@ You can set some settings by editing the file `assets/javascripts/issue_dynamic_
 * **\_CONF\_LISTENER\_TYPE\_ICON** : Choose which action will trigger the apparition of the edition block when fired from the pencil icon (by default: same as **\_CONF\_LISTENER\_TYPE\_VALUE**). Allowed value : `none`, `click`, `dblclick`
 * **\_CONF\_LISTENER\_TARGET** : Choose which area will trigger the apparition of the edition block
 * **\_CONF\_EXCLUDED\_FIELD\_ID** : Choose which fields to exclude. They won't have the edit block and pencil. Eg: `TitleInput`, `DescriptionInput`, `statusListDropdown` ...
+* **\_CONF\_CHECK\_ISSUE\_UPDATE\_CONFLICT** : Choose if you allow current user to override all modifications performed by other users while editing the issue
 
 ### 🎨  Customization
 
 Feel free to edit `assets/stylesheets/issue_dynamic_edit.css` to update the look of your fields depending on your current Redmine Theme. 
 
-This plugin uses [FontAwesome icons 4.7](https://fontawesome.com/v4.7.0/)
-
 ### 🆕  Changelog
 
-* **v 0.7.2** : New settings added into config file (`\_CONF\_DISPLAY\_EDIT\_ICON` and `\_CONF\_LISTENER\_TYPE\_ICON`) see Configuration part for more info ; new event `none` for `\_CONF\_LISTENER\_TYPE\_VALUE` disabling listener on value ; css fix
+* **v 0.8.0** : Complete rework. Compatible with last Redmine version. New settings added : `_CONF_CHECK_ISSUE_UPDATE_CONFLICT` (#70 #88). Removed external lib (FontAwesome) (#74). Mobile style added (#87). Print style added (#84). Bug fix (#79, #85)
+* **v 0.7.2** : New settings added into config file (`_CONF_DISPLAY_EDIT_ICON` and `_CONF_LISTENER_TYPE_ICON`) see Configuration part for more info ; new event `none` for `_CONF_LISTENER_TYPE_VALUE` disabling listener on value ; css fix
 * **v 0.7.1** : Fixed incorrect DOM structure if user has read only access to the issue (#61 #64)
 * **v 0.7.0** : Category filter by project added (#55) and prevent dialog closing when using fa-pencil selector (#59)
 * **v 0.6.9** : Category field support (Github request #54)

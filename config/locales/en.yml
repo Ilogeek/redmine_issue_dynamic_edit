@@ -1,8 +1,3 @@
 en:
-  ide_txt_validation_btn        : 'Validate the modification'
-  ide_txt_error_positive_number : 'It must be a positive number'
-  ide_txt_error_start_date      : 'Start date must be anterior to due date'
-  ide_txt_error_due_date        : 'Due date must be posterior to start date'
-  ide_txt_error_ajax_call       : 'Error (check your JS console)'
-  ide_txt_cancel_btn            : 'Cancel the modification'
-  ide_txt_required_field        : 'This field is required to go to next step'
+  ide_txt_notice_conflict_title : "This issue has been updated by someone else while you are editing it."
+  ide_txt_notice_conflict_text  : "<a href='#' class='refreshData'>Refresh the current page</a> to get the updated data. <strong>Your current modifications will be lost</strong>"

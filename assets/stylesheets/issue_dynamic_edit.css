@@ -1,17 +1,20 @@
 /* prefix selector with body.controller-issues.action-show  to avoid unwanted style on other page ? */
 
-body.controller-issues.action-show div.issue.details .value, body.controller-issues.action-show div.issue.details .splitcontent {
+body.controller-issues.action-show div.issue.details .value, body.controller-issues.action-show div.issue.details .attributes .attribute .value {
 	overflow: visible;
+	position: relative;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+}
+
+body.controller-issues.action-show .issue.details div.description,
+body.controller-issues.action-show .issue.details div.subject {
 	position: relative;
 }
 
-body.controller-issues.action-show div.issue .attribute .value .percent {
-	display: inline-block;
-}
-
-/* Progress bar fix */
-body.controller-issues.action-show table.progress {
-	margin-right: 10px;
+body.controller-issues.action-show .issue.details.no-cursor .value {
+	cursor: initial;
 }
 
 body.controller-issues.action-show .attribute .error {
@@ -19,28 +22,39 @@ body.controller-issues.action-show .attribute .error {
 	margin-left: 3px;
 }
 
-body.controller-issues.action-show .fa-pencil {
+body.controller-issues.action-show div.issue.details .subject {
+	display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+body.controller-issues.action-show div.issue.details .subject .refreshData {
+	cursor: pointer;
+}
+
+body.controller-issues.action-show div.issue.details .splitcontent {
+	overflow: initial;
+}
+
+body.controller-issues.action-show div.issue.details .iconEdit {
 	opacity: 0;
+	display: inline-block;
+	transition: opacity .3s ease-in;
+	font-weight: 700;
 }
 
-body.controller-issues.action-show .issue.details .showValue {
-	cursor: pointer;
-}
-
-body.controller-issues.action-show .issue.details.no-cursor .showValue {
-	cursor: initial;
-}
-
-body.controller-issues.action-show .issue.details .value:hover .fa-pencil,
-body.controller-issues.action-show .issue.details.showDynamicEdit:hover .value .fa-pencil {
+body.controller-issues.action-show div.issue.details.showPencil .iconEdit,
+body.controller-issues.action-show div.issue.details .attribute:hover .iconEdit,
+body.controller-issues.action-show div.issue.details .description:hover .iconEdit,
+body.controller-issues.action-show div.issue.details .subject:hover .iconEdit {
 	opacity: 1;
-	cursor: pointer;
 }
 
-body.controller-issues.action-show .dynamicEdit {
+body.controller-issues.action-show .dynamicEditField {
 	display: inline-block;
 	position:absolute;
 	opacity: 0;
+	transition: opacity .3s ease-in;
 	/* left:0; correct position on top of icon */
 	bottom: 100%;
 	margin-bottom: 5px;
@@ -54,39 +68,36 @@ body.controller-issues.action-show .dynamicEdit {
 	white-space: nowrap; /* force icons to stay on the same line */
 }
 
-body.controller-issues.action-show #TitleInput.dynamicEdit {
-	font-size: 0.57em;
+body.controller-issues.action-show .subject .dynamicEditField {
+	bottom: initial;
+	top:100%;
 }
 
-body.controller-issues.action-show .dynamicEdit.version {
-	max-width: 100%;
-}
-
-body.controller-issues.action-show .edited .dynamicEdit {
+body.controller-issues.action-show .dynamicEditField.open {
+	opacity: 1;
+	z-index: 999;
 	pointer-events: auto;
 }
 
-body.controller-issues.action-show div.issue.details .value.edited .dynamicEdit {
-	opacity: 1;
-	z-index: 999;
+body.controller-issues.action-show #TitleInput.dynamicEditField {
+	font-size: 0.57em;
 }
 
-body.controller-issues.action-show div.issue.details .btn-primary {
-	color: white !important;
-	border-radius: 3px;
-	padding: 3px;
-	vertical-align: middle;
+body.controller-issues.action-show .dynamicEditField button.action {
+	margin-left: .5em;
+	cursor: pointer;
+	border: 0;
+	background-color: #efefef;
+	line-height: 0;
 }
 
-body.controller-issues.action-show div.issue.details .btn-primary.close {
-	background: #c0392b;
+body.controller-issues.action-show .dynamicEditField button.action.valid {
+	font-weight: 700;
+	background-color: #27ae60;
+	color: white;
 }
 
-body.controller-issues.action-show div.issue.details .btn-primary.validate {
-	background: #27ae60;
-}
-
-body.controller-issues.action-show .dynamicEdit select {
+body.controller-issues.action-show .dynamicEditField select {
 	border:none;
     background-image:none;
     background-color:transparent;
@@ -99,41 +110,77 @@ body.controller-issues.action-show .dynamicEdit select {
 	border-radius: 3px;
 }
 
-body.controller-issues.action-show .dynamicEdit select option[disabled="disabled"]
-{ 
+body.controller-issues.action-show .dynamicEditField select option[disabled="disabled"] { 
     display:none;
 }
 
-body.controller-issues.action-show div.issue.details .attributes {
-  display: table;
-  width: 100%;
-}
-
-body.controller-issues.action-show div.issue.details .splitcontent {
-  display: table-row;
-}
-
-div.issue div.subject h3 {
+body.controller-issues.action-show div.issue div.subject h3 {
 	position:relative;
 	display: inline-block;
+	cursor: pointer;
 }
 
-body.controller-issues.action-show .dynamicEdit input[type="text"] {
+body.controller-issues.action-show .dynamicEditField input[type="text"] {
 	width: auto !important;
 }
 
-body.controller-issues.action-show .dynamicEdit textarea {
+body.controller-issues.action-show .dynamicEditField textarea {
 	width: 100%;
 	display: block;
 	margin-bottom: 10px;
 }
 
-body.controller-issues.action-show .dynamicEdit input,
-body.controller-issues.action-show .dynamicEdit select {
+body.controller-issues.action-show .dynamicEditField input,
+body.controller-issues.action-show .dynamicEditField select {
 	vertical-align: middle;
 }
 
-body.controller-issues.action-show .dynamicEdit .check_box_group {
+body.controller-issues.action-show .dynamicEditField .check_box_group {
 	border: 0px !important;
 	margin-bottom: 10px;
+}
+
+/* MOBILE MEDIAQUERY */
+@media screen and (max-width: 899px){
+
+	body.controller-issues.action-show div.issue.details .subject {
+		display: block;
+	}
+
+	body.controller-issues.action-show div.issue.details .subject .refreshData {
+		display: none;
+	}
+
+	body.controller-issues.action-show div.issue.details .value, body.controller-issues.action-show div.issue.details .attributes .attribute .value {
+		display: block;
+	}
+
+	body.controller-issues.action-show .dynamicEditField {
+		display: block;
+		position: relative;
+		margin: 10px 0;
+		white-space: normal;
+		height: 0;
+		overflow: hidden;
+		padding: 0;
+	}
+
+	body.controller-issues.action-show .dynamicEditField.open {
+		height: auto;
+		padding: 10px;
+	}
+}
+
+/* PRINT MEDIAQUERY */
+@media print { 
+	body.controller-issues.action-show div.issue.details .subject .refreshData,
+	body.controller-issues.action-show div.issue.details .iconEdit,
+	body.controller-issues.action-show .dynamicEditField {
+		display : none !important;
+		height: 0;
+		width: 0;
+		overflow: hidden;
+		padding : 0;
+		margin: 0;
+	}
 }
