@@ -25,13 +25,24 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
   end
 
   def view_issues_show_details_bottom(context)
-    if User.current.allowed_to?(:edit_issues, context[:project])
-      content = "<script>\n"
-      content << " var _TXT_CONFLICT_TITLE = \"" + l(:ide_txt_notice_conflict_title) + "\";\n"
-      content << " var _TXT_CONFLICT_TXT = \"" + l(:ide_txt_notice_conflict_text) + "\";\n"
-      content << "</script>\n"
-      return content.html_safe
-    end
+    content = "<script>\n"
+    content << " var _TXT_CONFLICT_TITLE = \"" + l(:ide_txt_notice_conflict_title) + "\";\n"
+    content << " var _TXT_CONFLICT_TXT = \"" + l(:ide_txt_notice_conflict_text) + "\";\n"
+    content << "</script>\n"
+    content << "<style>/* PRINT MEDIAQUERY */\n"
+    content << "@media print {\n" 
+    content << "body.controller-issues.action-show div.issue.details .subject .refreshData,\n"
+    content << "body.controller-issues.action-show div.issue.details .iconEdit,\n"
+    content << "body.controller-issues.action-show .dynamicEditField {\n"
+    content << "display : none !important;\n"
+    content << "height: 0;\n"
+    content << "width: 0;\n"
+    content << "overflow: hidden;\n"
+    content << "padding : 0;\n"
+    content << "margin: 0;\n"
+    content << "}\n"
+    content << "}</style>\n"
+    return content.html_safe
   end
 
 end

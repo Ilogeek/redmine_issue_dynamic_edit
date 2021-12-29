@@ -99,9 +99,7 @@ body.controller-issues.action-show .dynamicEditField button.action.valid {
 
 
 body.controller-issues.action-show .dynamicEditField select {
-	border:none;
-	display:none;
-    background-image:none;
+	background-image:none;
     background-color:transparent;
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
@@ -110,6 +108,11 @@ body.controller-issues.action-show .dynamicEditField select {
     font-family: inherit;
 	border: 1px solid #ccc;
 	border-radius: 3px;
+}
+
+body.controller-issues.action-show .dynamicEditField select[multiple="multiple"] {
+	display: block;
+	width:  100%;
 }
 
 body.controller-issues.action-show .dynamicEditField select option[disabled="disabled"] { 
@@ -170,19 +173,5 @@ body.controller-issues.action-show .dynamicEditField .check_box_group {
 	body.controller-issues.action-show .dynamicEditField.open {
 		height: auto;
 		padding: 10px;
-	}
-}
-
-/* PRINT MEDIAQUERY */
-@media print { 
-	body.controller-issues.action-show div.issue.details .subject .refreshData,
-	body.controller-issues.action-show div.issue.details .iconEdit,
-	body.controller-issues.action-show .dynamicEditField {
-		display : none !important;
-		height: 0;
-		width: 0;
-		overflow: hidden;
-		padding : 0;
-		margin: 0;
 	}
 }
