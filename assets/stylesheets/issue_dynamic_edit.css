@@ -97,8 +97,10 @@ body.controller-issues.action-show .dynamicEditField button.action.valid {
 	color: white;
 }
 
+
 body.controller-issues.action-show .dynamicEditField select {
 	border:none;
+	display:none;
     background-image:none;
     background-color:transparent;
     -webkit-box-shadow: none;
