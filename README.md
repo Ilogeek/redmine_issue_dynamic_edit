@@ -37,6 +37,7 @@ Feel free to edit `assets/stylesheets/issue_dynamic_edit.css` to update the look
 
 ### 🆕  Changelog
 
+* **v 0.8.1** : fixed Github issue #89 : Issue version check (AJAX call) may give glitch while editing text + disable global event listener on ajaxSend
 * **v 0.8.0** : Complete rework. Compatible with last Redmine version. New settings added : `_CONF_CHECK_ISSUE_UPDATE_CONFLICT` (#70 #88). Removed external lib (FontAwesome) (#74). Mobile style added (#87). Print style added (#84). Bug fix (#79, #85)
 * **v 0.7.2** : New settings added into config file (`_CONF_DISPLAY_EDIT_ICON` and `_CONF_LISTENER_TYPE_ICON`) see Configuration part for more info ; new event `none` for `_CONF_LISTENER_TYPE_VALUE` disabling listener on value ; css fix
 * **v 0.7.1** : Fixed incorrect DOM structure if user has read only access to the issue (#61 #64)

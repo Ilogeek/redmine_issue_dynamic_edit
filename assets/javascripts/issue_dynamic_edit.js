@@ -206,7 +206,7 @@ let checkVersion = function(callback){
 					type: 'GET',
 					url: LOCATION_HREF,
 					crossDomain: true,
-					async: false,
+					global: false,
 					success: function(msg) {
 						let parsed = $.parseHTML(msg);
 						let current_version = $(parsed).find('#issue_lock_version').val();
