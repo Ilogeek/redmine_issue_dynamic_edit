@@ -37,6 +37,9 @@ if (_CONF_DISPLAY_EDIT_ICON === "block"){
 	$('body.controller-issues.action-show .issue.details').addClass('showPencils');
 }
 
+var token = $("meta[name=csrf-token]").attr('content');
+$('#new-relation-form').append('<input type="hidden" name="authenticity_token" value="'+token+'">');
+
 /* Generate edit block */
 var getEditFormHTML = function(attribute){
 	var formElement = $('#issue_' + attribute + "_id");
