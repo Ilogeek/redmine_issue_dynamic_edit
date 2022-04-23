@@ -1,6 +1,6 @@
 require 'redmine'
 
-require 'details_issue_hooks'
+require_relative './lib/details_issue_hooks.rb'
 
 Redmine::Plugin.register :redmine_issue_dynamic_edit do
   name 'Redmine Dynamic edit Issue plugin'

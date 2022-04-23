@@ -37,6 +37,23 @@ if (_CONF_DISPLAY_EDIT_ICON === "block"){
 	$('body.controller-issues.action-show .issue.details').addClass('showPencils');
 }
 
+let updateCSRFToken = function(token){
+	document.querySelectorAll('input[name="authenticity_token"]').forEach(elt => elt.value = token);
+	document.querySelector('meta[name="csrf-token"]').setAttribute("content", token);
+}
+
+let setCSRFTokenInput = function(token){
+	document.querySelectorAll('form[method="post"]').forEach(elt => {
+		if(!elt.querySelectorAll('input[name="authenticity_token"]').length){
+			let input = document.createElement("input");
+			input.setAttribute("type", "hidden");
+			input.setAttribute("name", "authenticity_token");
+			input.value = token;
+			elt.insertBefore(input, null);
+		}
+	});
+}
+
 /* Generate edit block */
 var getEditFormHTML = function(attribute){
 	var formElement = $('#issue_' + attribute + "_id");
@@ -317,6 +334,8 @@ var sendData = function(serialized_data){
 					$('body').find('input[type=date]').datepickerFallback(datepickerOptions);
 				}
 
+				setCSRFTokenInput($(parsed).find('input[name="authenticity_token"]').val());
+				updateCSRFToken($(parsed).find('input[name="authenticity_token"]').val());
 				setCheckVersionInterval(true);
 			},
 			error: function(xhr, msg, error) {
@@ -355,3 +374,4 @@ var sendData = function(serialized_data){
 
 // Init plugin
 cloneEditForm();
+setCSRFTokenInput(document.querySelector('meta[name="csrf-token"]').getAttribute("content"));
