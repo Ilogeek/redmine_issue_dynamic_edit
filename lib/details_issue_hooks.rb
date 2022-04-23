@@ -28,6 +28,7 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
     content = "<script>\n"
     content << " var _TXT_CONFLICT_TITLE = \"" + l(:ide_txt_notice_conflict_title) + "\";\n"
     content << " var _TXT_CONFLICT_TXT = \"" + l(:ide_txt_notice_conflict_text) + "\";\n"
+    content << " var _TXT_CONFLICT_LINK = \"" + l(:ide_txt_notice_conflict_link) + "\";\n"
     content << "</script>\n"
     content << "<style>/* PRINT MEDIAQUERY */\n"
     content << "@media print {\n" 

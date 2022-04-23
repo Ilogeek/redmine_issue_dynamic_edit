@@ -1,3 +1,4 @@
 fr:
   ide_txt_notice_conflict_title : "La demande a été mise à jour pendant que vous la modifiez."
-  ide_txt_notice_conflict_text  : "<a href='#' class='refreshData'>Rafraichissez la page</a> pour voir une version à jour de la demande. <strong>Vos modifications actuelles seront perdues</strong>"
+  ide_txt_notice_conflict_link : "Rafraichissez la page pour voir une version à jour de la demande."
+  ide_txt_notice_conflict_text  : "Vos modifications actuelles seront perdues"

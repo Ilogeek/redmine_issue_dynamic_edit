@@ -1,3 +1,4 @@
 en:
   ide_txt_notice_conflict_title : "This issue has been updated by someone else while you are editing it."
-  ide_txt_notice_conflict_text  : "<a href='#' class='refreshData'>Refresh the current page</a> to get the updated data. <strong>Your current modifications will be lost</strong>"
+  ide_txt_notice_conflict_link : "Refresh the current page to get the updated data."
+  ide_txt_notice_conflict_text  : "Your current modifications will be lost."

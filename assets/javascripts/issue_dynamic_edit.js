@@ -107,7 +107,7 @@ var getEditFormHTML = function(attribute){
 
 /* Loop over all form attribute and clone them into details part */
 var cloneEditForm = function(){
-	$('.issue.details .subject').append('<button class="refreshData">&#10227;</button>');
+	$('.issue.details div.subject').append('<button class="refreshData">&#10227;</button>');
 	$(".issue.details ").wrap("<form id='fakeDynamicForm'>");
 
 	$('div.issue.details .attribute').each(function(){
@@ -157,9 +157,9 @@ var cloneEditForm = function(){
 
   	// Specific Case : Title field
   	if(!_CONF_EXCLUDED_FIELD_ID.includes("subject")){
-  		$('div.issue.details .subject h3').append("&nbsp;<span class='iconEdit'><!--&#9998;-->" + SVG_EDIT + "</span>");
+  		$('div.issue.details div.subject h3').append("&nbsp;<span class='iconEdit'><!--&#9998;-->" + SVG_EDIT + "</span>");
   		var formTitle = getEditFormHTML("issue_subject");
-  		$('div.issue.details .subject').append(formTitle);
+  		$('div.issue.details div.subject').append(formTitle);
   	}
 }
 
@@ -201,6 +201,7 @@ $('body').on('click', '.dynamicEditField .action.refuse', function(e){
 
 /* Update whole .details block + history + form with global refresh button */
 $('body').on('click', '.refreshData', function(e){
+	e.preventDefault();
 	sendData();
 });
 
@@ -235,7 +236,7 @@ let checkVersion = function(callback){
 								   	${_TXT_CONFLICT_TITLE}
 								    <div class="conflict-details">
 								      <div class="conflict-journal">
-								      <p>${_TXT_CONFLICT_TXT}</p>
+								      <p><a href='#' onClick="window.location.href=window.location.href">${_TXT_CONFLICT_LINK}</a> <strong>${_TXT_CONFLICT_TXT}</strong></p>
 								      </div>
 								    </div>
 								</div>`);
@@ -321,6 +322,9 @@ var sendData = function(serialized_data){
 
 				/* we update the history list */
 				$('#tab-content-history').append($(parsed).find('#history .journal.has-details:last-child'));
+
+				/* Update lock version with last one */
+				$('#issue_lock_version').val($(parsed).find("#issue_lock_version").val());
 
 				/* we init edit fields */
 				cloneEditForm();
