@@ -41,6 +41,7 @@ body.controller-issues.action-show div.issue.details .iconEdit {
 	display: inline-block;
 	transition: opacity .3s ease-in;
 	font-weight: 700;
+	margin-left: 1ch;
 }
 
 body.controller-issues.action-show div.issue.details.showPencil .iconEdit,
@@ -108,6 +109,7 @@ body.controller-issues.action-show .dynamicEditField select {
     font-family: inherit;
 	border: 1px solid #ccc;
 	border-radius: 3px;
+	width: auto;
 }
 
 body.controller-issues.action-show .dynamicEditField select[multiple="multiple"] {
@@ -143,6 +145,7 @@ body.controller-issues.action-show .dynamicEditField select {
 body.controller-issues.action-show .dynamicEditField .check_box_group {
 	border: 0px !important;
 	margin-bottom: 10px;
+	width:100%;
 }
 
 /* MOBILE MEDIAQUERY */

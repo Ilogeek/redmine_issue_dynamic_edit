@@ -31,7 +31,7 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
     content << " var _TXT_CONFLICT_LINK = \"" + l(:ide_txt_notice_conflict_link) + "\";\n"
     content << "</script>\n"
     content << "<style>/* PRINT MEDIAQUERY */\n"
-    content << "@media print {\n" 
+    content << "@media print {\n"
     content << "body.controller-issues.action-show div.issue.details .subject .refreshData,\n"
     content << "body.controller-issues.action-show div.issue.details .iconEdit,\n"
     content << "body.controller-issues.action-show .dynamicEditField {\n"
