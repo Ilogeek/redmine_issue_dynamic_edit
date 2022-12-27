@@ -278,7 +278,7 @@ document.onkeydown = function(evt) {
     }
 };
 
-const checkVersion = function(callback){
+const getVersion = function(callback){
 	fetch(LOCATION_HREF, {
 		method: 'GET',
 		crossDomain: true,
@@ -286,22 +286,46 @@ const checkVersion = function(callback){
 		const parser = new DOMParser();
 		const doc = parser.parseFromString(data, 'text/html');
 		const distant_version = doc.querySelector('#issue_lock_version').value;
-		if(distant_version !== document.querySelector('#issue_lock_version').value){
-			if(!document.querySelector('#content . conflict')){
-				const msg = document.createElement('div');
-				msg.classList.add('conflict');
-				msg.innerHTML = `${_TXT_CONFLICT_TITLE}
-				<div class="conflict-details">
-				  <div class="conflict-journal">
-				  <p><a href='#' onClick="window.location.href=window.location.href">${_TXT_CONFLICT_LINK}</a> <strong>${_TXT_CONFLICT_TXT}</strong></p>
-				  </div>
-				</div>`
-				document.querySelector('#content').insertBefore(msg, document.querySelector('#content').firstChild);
-			}
-		} else {
-			if(document.querySelector('#content .conflict')) document.querySelector('#content .conflict').remove();
-		}
 		if(callback) callback(distant_version);
+		return distant_version;
+	}).catch(err => {
+		console.warn('Issue while trying to get version (avoiding conflict)');
+		console.log(err);
+	});
+}
+
+let loadedDate = new Date();
+const checkVersion = function(callback){
+
+	fetch(LOCATION_HREF + ".json", {
+		method: 'GET',
+		crossDomain: true,
+	}).then(res => res.text()).then(data => {
+		try {
+			const parsedData = JSON.parse(data);
+			const lastUpdate = new Date(parsedData.issue.updated_on);
+			if(lastUpdate > loadedDate){
+				loadedDate = lastUpdate;
+				if(!document.querySelectorAll('#content .conflict').length){
+					let msg = document.createElement('div');
+					msg.classList.add('conflict');
+					msg.innerHTML = `${_TXT_CONFLICT_TITLE}
+					<div class="conflict-details">
+					<div class="conflict-journal">
+					<p><a href='#' onClick="window.location.href=window.location.href">${_TXT_CONFLICT_LINK}</a> <strong>${_TXT_CONFLICT_TXT}</strong></p>
+					</div>
+					</div>`
+					document.querySelector('#content').insertBefore(msg, document.querySelector('#content').firstChild);
+				}
+				if(callback) getVersion(callback);
+			} else {
+				if(document.querySelector('#content .conflict')) document.querySelector('#content .conflict').remove();
+				if(callback) callback(parseInt(document.querySelector('#issue_lock_version').value));
+			}
+		} catch (e) {
+			throw new Error('Error occured: ', e);
+		}
+		
 	}).catch(err => {
 		console.warn('Issue while trying to get version (avoiding conflict)');
 		console.log(err);
@@ -313,7 +337,7 @@ let setCheckVersionInterval = function(activate){
 	if(!_CONF_CHECK_ISSUE_UPDATE_CONFLICT) return false;
 	if(activate && !checkVersionInterval){
 		checkVersionInterval = window.setInterval(function(){ 
-			if(Document.visibilityState === "visible") checkVersion(); 
+			if(document.visibilityState === "visible") checkVersion(); 
 		}, 5000);
 	} else {
 		clearInterval(checkVersionInterval);
