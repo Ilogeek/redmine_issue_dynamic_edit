@@ -1,0 +1,4 @@
+es:
+  ide_txt_notice_conflict_title : "Este problema ha sido actualizado por otra persona mientras lo editaba."
+  ide_txt_notice_conflict_link : "Actualice la página actual para obtener los datos actualizados."
+  ide_txt_notice_conflict_text  : "Sus modificaciones actuales se perderán."
