@@ -180,7 +180,10 @@ const cloneEditForm = function(){
 			cfg.height = 100;
 			CKEDITOR.replace("issue_description_dynamic", cfg)
 		}else if (typeof(jsToolBar) === typeof(Function)) {
-			const wikiToolbar = new jsToolBar(document.querySelector('#issue_description_dynamic')); wikiToolbar.draw();
+			const DynamicDescriptionToolbar = new jsToolBar(document.querySelector('#issue_description_dynamic'));
+			DynamicDescriptionToolbar.setHelpLink('/help/en/wiki_syntax_common_mark.html');
+			DynamicDescriptionToolbar.setPreviewUrl('/issues/preview?issue_id=' + _ISSUE_ID + '&project_id=' + _PROJECT_ID); 
+			DynamicDescriptionToolbar.draw();
 		}
   	}
 
@@ -319,7 +322,6 @@ const checkVersion = function(callback){
 				}
 				if(callback) getVersion(callback);
 			} else {
-				if(document.querySelector('#content .conflict')) document.querySelector('#content .conflict').remove();
 				if(callback) callback(parseInt(document.querySelector('#issue_lock_version').value));
 			}
 		} catch (e) {
@@ -423,6 +425,9 @@ let sendData = function(serialized_data){
 
 					setCSRFTokenInput(doc.querySelector('input[name="authenticity_token"]').value);
 					updateCSRFToken(doc.querySelector('input[name="authenticity_token"]').value);
+
+					/* Once we've updated our issue, we have to reset the loadedDate to now to be up to date with the check version */
+					loadedDate = new Date();
 					setCheckVersionInterval(true);
 				} else {
 					callError(this.status);

@@ -78,6 +78,8 @@ body.controller-issues.action-show .dynamicEditField.open {
 	opacity: 1;
 	z-index: 999;
 	pointer-events: auto;
+	resize: horizontal;
+	overflow: auto;
 }
 
 body.controller-issues.action-show #TitleInput.dynamicEditField {

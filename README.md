@@ -37,6 +37,7 @@ Feel free to edit `assets/stylesheets/issue_dynamic_edit.css` to update the look
 
 ### 🆕  Changelog
 
+* **v 0.9.2** : JSToolbar fixed (#100)
 * **v 0.9.1** : Check version improved (avoiding update conflicts) : using [Redmine REST API](https://www.redmine.org/projects/redmine/wiki/rest_issues) and disabling check when tab is not focused (#97)
 * **v 0.9.0** : JS rewritten to remove jQuery code
 * **v 0.8.1** : fixed Github issue #89 : Issue version check (AJAX call) may give glitch while editing text + disable global event listener on ajaxSend
