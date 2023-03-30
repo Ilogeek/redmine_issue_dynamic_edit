@@ -25,12 +25,18 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
   end
 
   def view_issues_show_details_bottom(context)
+    api_key = if Setting.rest_api_enabled?
+      User.current.api_key || ""
+    else
+      ""
+    end
     content = "<script>\n"
     content << " const _ISSUE_ID = \"#{context[:request].path_parameters[:id]}\";\n"
     content << " const _PROJECT_ID = \"#{Issue.find(context[:request].path_parameters[:id]).project_id}\";\n"
     content << " const _TXT_CONFLICT_TITLE = \"" + l(:ide_txt_notice_conflict_title) + "\";\n"
     content << " const _TXT_CONFLICT_TXT = \"" + l(:ide_txt_notice_conflict_text) + "\";\n"
     content << " const _TXT_CONFLICT_LINK = \"" + l(:ide_txt_notice_conflict_link) + "\";\n"
+    content << " const _REDMINE_API_KEY = \"" + api_key + "\";\n" if api_key.present?
     content << "</script>\n"
     content << "<style>/* PRINT MEDIAQUERY */\n"
     content << "@media print {\n"

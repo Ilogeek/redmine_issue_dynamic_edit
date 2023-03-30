@@ -7,7 +7,8 @@ var _CONF_LISTENER_TYPE_VALUE = _CONF_LISTENER_TYPE_VALUE || "click";
 var _CONF_LISTENER_TYPE_ICON = _CONF_LISTENER_TYPE_ICON || "none";
 var _CONF_LISTENER_TARGET = _CONF_LISTENER_TARGET || "value";
 var _CONF_EXCLUDED_FIELD_ID = _CONF_EXCLUDED_FIELD_ID || [];
-var _CONF_CHECK_ISSUE_UPDATE_CONFLICT = _CONF_CHECK_ISSUE_UPDATE_CONFLICT || false;
+var __hasKey = (typeof _REDMINE_API_KEY !== 'undefined') && _REDMINE_API_KEY.length;
+var _CONF_CHECK_ISSUE_UPDATE_CONFLICT = (_CONF_CHECK_ISSUE_UPDATE_CONFLICT && __hasKey) || false;
 
 _CONF_LISTENER_TARGET = _CONF_LISTENER_TARGET === "all" ? "*" : _CONF_LISTENER_TARGET;
 
@@ -299,10 +300,12 @@ const getVersion = function(callback){
 
 let loadedDate = new Date();
 const checkVersion = function(callback){
-
 	fetch(LOCATION_HREF + ".json", {
 		method: 'GET',
 		crossDomain: true,
+		headers: {
+			'X-Redmine-API-Key': _REDMINE_API_KEY
+		},
 	}).then(res => res.text()).then(data => {
 		try {
 			const parsedData = JSON.parse(data);
