@@ -24,7 +24,13 @@ const SVG_CANCEL = '<svg style="width: 1em; height: 1em;" version="1.1" viewBox=
  * Allow inclusion from other page
  * See https://github.com/Ilogeek/redmine_issue_dynamic_edit/commit/26684a2dd9b12dcc7377afd79e9fe5c142d26ebd for more info
  */
-let LOCATION_HREF = typeof custom_location_href !== 'undefined' ? custom_location_href : window.location.href;
+
+let clean_url = (url) => {
+	let nu = new URL(url);
+	return `${nu.protocol}//${nu.host}${nu.pathname}`;
+}
+
+let LOCATION_HREF = typeof custom_location_href !== 'undefined' ? custom_location_href : clean_url(window.location.href);
 
 if (_CONF_FORCE_HTTPS) {
 	LOCATION_HREF = LOCATION_HREF.replace(/^http:\/\//i, 'https://');
@@ -409,7 +415,15 @@ let sendData = function(serialized_data){
 					document.querySelector('form#issue-form').innerHTML = doc.querySelector('form#issue-form').innerHTML;
 					document.querySelector('#all_attributes').innerHTML = doc.querySelector('#all_attributes').innerHTML;
 					document.querySelector('div.issue.details').innerHTML = doc.querySelector('div.issue.details').innerHTML;
-					document.querySelector('#tab-content-history').appendChild(doc.querySelector('#history .journal.has-details:last-child'));
+
+					let journal = doc.querySelector('#history .journal.has-details:last-child');
+					if(!journal) {
+						journal = doc.querySelector('#history .journal.has-details');
+					}
+					if(journal) {
+						document.querySelector('#tab-content-history').appendChild(journal);
+					}
+
 					document.querySelector('#issue_lock_version').value = doc.querySelector("#issue_lock_version").value;
 
 					cloneEditForm();
