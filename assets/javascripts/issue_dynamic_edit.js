@@ -417,11 +417,12 @@ let sendData = function(serialized_data){
 					document.querySelector('div.issue.details').innerHTML = doc.querySelector('div.issue.details').innerHTML;
 
 					let journal = doc.querySelector('#history .journal.has-details:last-child');
-					if(!journal) {
-						journal = doc.querySelector('#history .journal.has-details');
-					}
 					if(journal) {
-						document.querySelector('#tab-content-history').appendChild(journal);
+						let tch = document.querySelector('#tab-content-history');
+						// sometimes, there will be no history yet.
+						if(tch) {
+						   tch.appendChild(journal);
+						}
 					}
 
 					document.querySelector('#issue_lock_version').value = doc.querySelector("#issue_lock_version").value;
