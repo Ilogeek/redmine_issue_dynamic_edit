@@ -31,6 +31,7 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
     content << " const _TXT_CONFLICT_TITLE = \"" + l(:ide_txt_notice_conflict_title) + "\";\n"
     content << " const _TXT_CONFLICT_TXT = \"" + l(:ide_txt_notice_conflict_text) + "\";\n"
     content << " const _TXT_CONFLICT_LINK = \"" + l(:ide_txt_notice_conflict_link) + "\";\n"
+    content << " const _COMMENTS_IN_REVERSE_ORDER_ = #{User.current.wants_comments_in_reverse_order? ? 'true' : 'false'};\n"
     content << "</script>\n"
     content << "<style>/* PRINT MEDIAQUERY */\n"
     content << "@media print {\n"

@@ -416,12 +416,23 @@ let sendData = function(serialized_data){
 					document.querySelector('#all_attributes').innerHTML = doc.querySelector('#all_attributes').innerHTML;
 					document.querySelector('div.issue.details').innerHTML = doc.querySelector('div.issue.details').innerHTML;
 
-					let journal = doc.querySelector('#history .journal.has-details:last-child');
-					if(journal) {
-						let tch = document.querySelector('#tab-content-history');
-						// sometimes, there will be no history yet.
-						if(tch) {
-						   tch.appendChild(journal);
+					let tch = document.querySelector('#tab-content-history');
+					// sometimes, there will be no history yet (like when the issue was just created).
+					if(tch) {
+						let query
+						if(_COMMENTS_IN_REVERSE_ORDER_) {
+							query = '#history .journal.has-details:first-child';
+						} else {
+							query = '#history .journal.has-details:last-child';
+						}
+
+						let journal = doc.querySelector(query);
+						if(journal) {
+							if(_COMMENTS_IN_REVERSE_ORDER_) {
+								tch.insertBefore(journal, tch.firstChild);
+							} else {
+								tch.appendChild(journal);
+							}
 						}
 					}
 
