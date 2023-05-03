@@ -124,6 +124,26 @@ const getEditFormHTML = function(attribute){
 	return null;
 }
 
+const item_is_visible = function (selectedTabId, item) {
+	//item is an array of dom elements. We need to reach the div.journal
+	var div = $(item).filter('div.journal').first();
+	if(selectedTabId == "tab-notes") {
+		if($(div).hasClass("has-notes")) {
+			return true;
+		} else {
+			return false;
+		}
+	} else if(selectedTabId == "tab-properties") {
+		if($(div).hasClass("has-details")) {
+			return true;
+		} else {
+			return false;
+		}
+	} else {
+		return true;
+	}
+}
+
 /* Loop over all form attribute and clone them into details part */
 const cloneEditForm = function(){
 	const btn_refresh = document.createElement('button');
@@ -428,6 +448,11 @@ let sendData = function(serialized_data){
 
 						let journal = doc.querySelector(query);
 						if(journal) {
+							let selectedTabId = $("#history .tabs ul li a.selected").attr("id");
+							if(!item_is_visible(selectedTabId, journal)) {
+								$(journal).css('display', 'none');
+							}
+
 							if(_COMMENTS_IN_REVERSE_ORDER_) {
 								tch.insertBefore(journal, tch.firstChild);
 							} else {
