@@ -21,6 +21,27 @@ const SVG_VALID = '<svg style="width: 1em; height: 1em; fill:white;" version="1.
 const SVG_CANCEL = '<svg style="width: 1em; height: 1em;" version="1.1" viewBox="0 0 24 24" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="info"/><g id="icons"><path d="M14.8,12l3.6-3.6c0.8-0.8,0.8-2,0-2.8c-0.8-0.8-2-0.8-2.8,0L12,9.2L8.4,5.6c-0.8-0.8-2-0.8-2.8,0   c-0.8,0.8-0.8,2,0,2.8L9.2,12l-3.6,3.6c-0.8,0.8-0.8,2,0,2.8C6,18.8,6.5,19,7,19s1-0.2,1.4-0.6l3.6-3.6l3.6,3.6   C16,18.8,16.5,19,17,19s1-0.2,1.4-0.6c0.8-0.8,0.8-2,0-2.8L14.8,12z" class="svg_cancel"/></g></svg>';
 
 /*
+ * History DIV
+ */
+
+const HISTORY_DIV = `
+<div id="history">
+  <div class="tabs">
+  <ul>
+    <li><a id="tab-history" class="selected" onclick="showIssueHistory(&quot;history&quot;, this.href); return false;" href="/issues/38?tab=history">History</a></li>
+    <li><a id="tab-notes" onclick="showIssueHistory(&quot;notes&quot;, this.href); return false;" href="/issues/38?tab=notes">Notes</a></li>
+    <li><a id="tab-properties" onclick="showIssueHistory(&quot;properties&quot;, this.href); return false;" href="/issues/38?tab=properties">Property changes</a></li>
+  </ul>
+  <div class="tabs-buttons" style="display: none;">
+    <button class="tab-left" type="button" onclick="moveTabLeft(this);"></button>
+    <button class="tab-right" type="button" onclick="moveTabRight(this);"></button>
+  </div>
+  </div>
+  <div id="tab-content-history" class="tab-content" style=""></div>
+</div>`
+
+
+/*
  * Allow inclusion from other page
  * See https://github.com/Ilogeek/redmine_issue_dynamic_edit/commit/26684a2dd9b12dcc7377afd79e9fe5c142d26ebd for more info
  */
@@ -437,27 +458,34 @@ let sendData = function(serialized_data){
 					document.querySelector('div.issue.details').innerHTML = doc.querySelector('div.issue.details').innerHTML;
 
 					let tch = document.querySelector('#tab-content-history');
-					// sometimes, there will be no history yet (like when the issue was just created).
-					if(tch) {
-						let query
-						if(_COMMENTS_IN_REVERSE_ORDER_) {
-							query = '#history .journal.has-details:first-child';
-						} else {
-							query = '#history .journal.has-details:last-child';
+					// sometimes, there will be no tab-content-history yet (like when the issue was just created).
+					if(!tch) {
+						let parser = new DOMParser();
+						let dom = parser.parseFromString(HISTORY_DIV, 'text/html');
+						let newHistory = dom.querySelector('div'); 
+						let oldHistory = document.querySelector('div#history');
+						oldHistory.parentNode.replaceChild(newHistory, oldHistory);
+						tch = document.querySelector('#tab-content-history');
+					}
+
+					let query
+					if(_COMMENTS_IN_REVERSE_ORDER_) {
+						query = '#history .journal.has-details:first-child';
+					} else {
+						query = '#history .journal.has-details:last-child';
+					}
+
+					let journal = doc.querySelector(query);
+					if(journal) {
+						let selectedTabId = $("#history .tabs ul li a.selected").attr("id");
+						if(!item_is_visible(selectedTabId, journal)) {
+							$(journal).css('display', 'none');
 						}
 
-						let journal = doc.querySelector(query);
-						if(journal) {
-							let selectedTabId = $("#history .tabs ul li a.selected").attr("id");
-							if(!item_is_visible(selectedTabId, journal)) {
-								$(journal).css('display', 'none');
-							}
-
-							if(_COMMENTS_IN_REVERSE_ORDER_) {
-								tch.insertBefore(journal, tch.firstChild);
-							} else {
-								tch.appendChild(journal);
-							}
+						if(_COMMENTS_IN_REVERSE_ORDER_) {
+							tch.insertBefore(journal, tch.firstChild);
+						} else {
+							tch.appendChild(journal);
 						}
 					}
 
