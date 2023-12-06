@@ -24,7 +24,8 @@ const SVG_CANCEL = '<svg style="width: 1em; height: 1em;" version="1.1" viewBox=
  * Allow inclusion from other page
  * See https://github.com/Ilogeek/redmine_issue_dynamic_edit/commit/26684a2dd9b12dcc7377afd79e9fe5c142d26ebd for more info
  */
-let LOCATION_HREF = typeof custom_location_href !== 'undefined' ? custom_location_href : window.location.href;
+const cleanURL = function(url){ let u = new URL(url); return `${nu.protocol}//${nu.host}${nu.pathname}`; }
+let LOCATION_HREF = typeof custom_location_href !== 'undefined' ? cleanURL(custom_location_href) : cleanURL(window.location.href);
 
 if (_CONF_FORCE_HTTPS) {
 	LOCATION_HREF = LOCATION_HREF.replace(/^http:\/\//i, 'https://');
@@ -125,11 +126,6 @@ const cloneEditForm = function(){
 	btn_refresh.innerHTML = "&#10227;";
 	document.querySelector('.issue.details div.subject').insertBefore(btn_refresh, null);
 
-	const wrapper = document.createElement('form');
-	wrapper.setAttribute('id', 'fakeDynamicForm');
-	document.querySelector('.issue.details').parentNode.insertBefore(wrapper, document.querySelector('.issue.details'));
-	wrapper.appendChild(document.querySelector('.issue.details'));
-
 	document.querySelectorAll('div.issue.details .attribute').forEach(function(elt){
 		const classList = elt.classList.value.split(/\s+/);
 
@@ -211,7 +207,7 @@ document.querySelector('body').addEventListener(_CONF_LISTENER_TYPE_VALUE,
 				let selector = e.target.closest('.value');
 				if(is_description) selector = e.target.closest('.description');
 				if(is_subject) selector = e.target.closest('.subject');
-				selector.querySelector('.dynamicEditField').classList.add('open');
+				if(selector.querySelector('.dynamicEditField')) selector.querySelector('.dynamicEditField').classList.add('open');
 			}
 		}
 });
@@ -226,7 +222,7 @@ document.querySelector('body').addEventListener(_CONF_LISTENER_TYPE_ICON, functi
 		let selector = e.target.closest('.value');
 		if(is_description) selector = e.target.closest('.description');
 		if(is_subject) selector = e.target.closest('.subject');
-		selector.querySelector('.dynamicEditField').classList.add('open');
+		if(selector.querySelector('.dynamicEditField')) selector.querySelector('.dynamicEditField').classList.add('open');
 	}
 });
 
@@ -281,7 +277,7 @@ document.onkeydown = function(evt) {
     }
 };
 
-const getVersion = function(callback){
+const checkVersion = function(callback){
 	fetch(LOCATION_HREF, {
 		method: 'GET',
 		crossDomain: true,
@@ -289,45 +285,24 @@ const getVersion = function(callback){
 		const parser = new DOMParser();
 		const doc = parser.parseFromString(data, 'text/html');
 		const distant_version = doc.querySelector('#issue_lock_version').value;
+		const current_version = document.querySelector('#issue_lock_version').value;
+
+		if(distant_version > current_version){
+			if(!document.querySelectorAll('#content .conflict').length){
+				let msg = document.createElement('div');
+				msg.classList.add('conflict');
+				msg.innerHTML = `${_TXT_CONFLICT_TITLE}
+				<div class="conflict-details">
+				<div class="conflict-journal">
+				<p><a href='#' onClick="window.location.href=window.location.href">${_TXT_CONFLICT_LINK}</a> <strong>${_TXT_CONFLICT_TXT}</strong></p>
+				</div>
+				</div>`
+				document.querySelector('#content').insertBefore(msg, document.querySelector('#content').firstChild);
+			}
+		}
+
 		if(callback) callback(distant_version);
 		return distant_version;
-	}).catch(err => {
-		console.warn('Issue while trying to get version (avoiding conflict)');
-		console.log(err);
-	});
-}
-
-let loadedDate = new Date();
-const checkVersion = function(callback){
-
-	fetch(LOCATION_HREF + ".json", {
-		method: 'GET',
-		crossDomain: true,
-	}).then(res => res.text()).then(data => {
-		try {
-			const parsedData = JSON.parse(data);
-			const lastUpdate = new Date(parsedData.issue.updated_on);
-			if(lastUpdate > loadedDate){
-				loadedDate = lastUpdate;
-				if(!document.querySelectorAll('#content .conflict').length){
-					let msg = document.createElement('div');
-					msg.classList.add('conflict');
-					msg.innerHTML = `${_TXT_CONFLICT_TITLE}
-					<div class="conflict-details">
-					<div class="conflict-journal">
-					<p><a href='#' onClick="window.location.href=window.location.href">${_TXT_CONFLICT_LINK}</a> <strong>${_TXT_CONFLICT_TXT}</strong></p>
-					</div>
-					</div>`
-					document.querySelector('#content').insertBefore(msg, document.querySelector('#content').firstChild);
-				}
-				if(callback) getVersion(callback);
-			} else {
-				if(callback) callback(parseInt(document.querySelector('#issue_lock_version').value));
-			}
-		} catch (e) {
-			throw new Error('Error occured: ', e);
-		}
-		
 	}).catch(err => {
 		console.warn('Issue while trying to get version (avoiding conflict)');
 		console.log(err);
@@ -406,12 +381,18 @@ let sendData = function(serialized_data){
 						if(document.querySelector("#errorExplanation")) document.querySelector("#errorExplanation").remove();
 					}
 
-					document.querySelector('form#issue-form').innerHTML = doc.querySelector('form#issue-form').innerHTML;
-					document.querySelector('#all_attributes').innerHTML = doc.querySelector('#all_attributes').innerHTML;
-					document.querySelector('div.issue.details').innerHTML = doc.querySelector('div.issue.details').innerHTML;
-					document.querySelector('#tab-content-history').appendChild(doc.querySelector('#history .journal.has-details:last-child'));
-					document.querySelector('#issue_lock_version').value = doc.querySelector("#issue_lock_version").value;
-
+					if(document.querySelector('form#issue-form')) document.querySelector('form#issue-form').innerHTML = doc.querySelector('form#issue-form').innerHTML;
+					if(document.querySelector('#all_attributes')) document.querySelector('#all_attributes').innerHTML = doc.querySelector('#all_attributes').innerHTML;
+					if(document.querySelector('div.issue.details')) document.querySelector('div.issue.details').innerHTML = doc.querySelector('div.issue.details').innerHTML;
+					if(document.querySelector('#issue_lock_version')) document.querySelector('#issue_lock_version').value = doc.querySelector("#issue_lock_version").value;
+					if(document.querySelector('#tab-content-history')) {
+						if(_COMMENTS_IN_REVERSE_ORDER) {
+							document.querySelector('#tab-content-history').insertAdjacentElement('afterbegin', doc.querySelector('#history .journal.has-details:first-child'));
+						} else {
+							document.querySelector('#tab-content-history').appendChild(doc.querySelector('#history .journal.has-details:last-child'));
+						}
+					}
+					
 					cloneEditForm();
 
 					//set datepicker fallback for input type date
