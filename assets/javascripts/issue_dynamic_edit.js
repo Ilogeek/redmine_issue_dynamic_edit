@@ -24,7 +24,7 @@ const SVG_CANCEL = '<svg style="width: 1em; height: 1em;" version="1.1" viewBox=
  * Allow inclusion from other page
  * See https://github.com/Ilogeek/redmine_issue_dynamic_edit/commit/26684a2dd9b12dcc7377afd79e9fe5c142d26ebd for more info
  */
-const cleanURL = function(url){ let u = new URL(url); return `${nu.protocol}//${nu.host}${nu.pathname}`; }
+const cleanURL = function(url){ let u = new URL(url); return `${u.protocol}//${u.host}${u.pathname}`; }
 let LOCATION_HREF = typeof custom_location_href !== 'undefined' ? cleanURL(custom_location_href) : cleanURL(window.location.href);
 
 if (_CONF_FORCE_HTTPS) {
