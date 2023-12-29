@@ -55,6 +55,9 @@ const setCSRFTokenInput = function(token){
 	});
 }
 
+var token = $("meta[name=csrf-token]").attr('content');
+$('#new-relation-form').append('<input type="hidden" name="authenticity_token" value="'+token+'">');
+
 /* Generate edit block */
 const getEditFormHTML = function(attribute){
 	let formElement =  document.querySelector('#issue_' + attribute + "_id");
