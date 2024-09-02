@@ -1,0 +1,4 @@
+tr:
+  ide_txt_notice_conflict_title : "Bu uyarı, siz düzenleme yaparken başka biri tarafından düzenleme yapıldığı için alınmaktadır."
+  ide_txt_notice_conflict_link : "Güncellenmiş verileri almak için sayfayı yenileyin."
+  ide_txt_notice_conflict_text  : "Dikkat: Son yaptığınız değişiklikler kaybolacaktır."
