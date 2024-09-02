@@ -1,4 +1,5 @@
 class DetailsIssueHooks < Redmine::Hook::ViewListener
+
   def protect_against_forgery?
     false
   end
@@ -11,17 +12,23 @@ class DetailsIssueHooks < Redmine::Hook::ViewListener
   def view_layouts_base_html_head(context)
     return unless current_is_detail_page(context)
 
-    if User.current.allowed_to?(:edit_issues, context[:project])
+    is_disable_dynamic = User.current.custom_field_values.find{ |field| field.custom_field.name == 'Disable Issue Dynamic Edit' }
+
+    if is_disable_dynamic.to_s != "1" && User.current.allowed_to?(:edit_issues, context[:project])
       stylesheet_link_tag('issue_dynamic_edit.css', :plugin => :redmine_issue_dynamic_edit)
     end
+    
   end
 
   def view_layouts_base_body_bottom(context)
     return unless current_is_detail_page(context)
-
-    if User.current.allowed_to?(:edit_issues, context[:project])
+    
+    is_disable_dynamic = User.current.custom_field_values.find{ |field| field.custom_field.name == 'Disable Issue Dynamic Edit' }
+        
+    if is_disable_dynamic.to_s != "1" && User.current.allowed_to?(:edit_issues, context[:project])
       javascript_include_tag('issue_dynamic_edit_configuration_file.js', 'issue_dynamic_edit.js', :plugin => :redmine_issue_dynamic_edit)
     end
+    
   end
 
   def view_issues_show_details_bottom(context)
