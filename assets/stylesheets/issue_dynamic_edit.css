@@ -180,3 +180,13 @@ body.controller-issues.action-show .dynamicEditField .check_box_group {
 		padding: 10px;
 	}
 }
+
+body.theme-Purplemine div.status.attribute > div.value >i.fa.fa-pencil.dynamicEditIcon.fa-fw {
+    position: absolute;
+    margin-left: 14px;
+    z-index: 999;
+    font-size: initial;
+    color: #000000;
+    line-height: 17.2px;
+    font-size: 14px;
+}
