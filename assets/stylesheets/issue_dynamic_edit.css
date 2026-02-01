@@ -75,6 +75,17 @@ body.controller-issues.action-show .subject .dynamicEditField {
 	top:100%;
 }
 
+body.controller-issues.action-show .description .dynamicEditField {
+	bottom: initial;
+	top:100%;
+}
+
+/* Hide dynamicEditField in preview mode to prevent duplicate textboxes */
+body.controller-issues.action-preview .dynamicEditField,
+body.controller-issues.action-preview .iconEdit {
+	display: none !important;
+}
+
 body.controller-issues.action-show .dynamicEditField.open {
 	opacity: 1;
 	z-index: 999;
